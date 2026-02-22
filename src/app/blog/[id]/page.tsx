@@ -37,18 +37,24 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
 
                 {post.images && post.images.length > 0 && (
                     <div style={{ marginBottom: '2rem' }}>
-                        <img
-                            src={post.images[0]}
-                            alt={post.title}
-                            style={{
-                                width: '100%',
-                                height: '450px',
-                                objectFit: 'cover',
-                                borderRadius: 'var(--radius)',
-                                border: '1px solid var(--border)',
-                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
-                            }}
-                        />
+                        <a href={post.images[0]} target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
+                            <img
+                                src={post.images[0]}
+                                alt={post.title}
+                                style={{
+                                    width: '100%',
+                                    height: '450px',
+                                    objectFit: 'cover',
+                                    borderRadius: 'var(--radius)',
+                                    border: '1px solid var(--border)',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                    transition: 'filter 0.3s ease',
+                                    cursor: 'pointer'
+                                }}
+                                onMouseOver={(e) => (e.currentTarget.style.filter = 'brightness(1.1)')}
+                                onMouseOut={(e) => (e.currentTarget.style.filter = 'brightness(1)')}
+                            />
+                        </a>
                         {post.images.length > 1 && (
                             <div style={{ marginTop: '1.5rem' }}>
                                 <h4 style={{
@@ -66,7 +72,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                                     gap: '1rem',
                                 }}>
                                     {post.images.slice(1).map((img, i) => (
-                                        <div key={i} style={{ position: 'relative' }}>
+                                        <a href={img} target="_blank" rel="noopener noreferrer" key={i} style={{ position: 'relative', display: 'block' }}>
                                             <img
                                                 src={img}
                                                 alt={`${post.title} evidence ${i + 2}`}
@@ -76,7 +82,16 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                                                     objectFit: 'cover',
                                                     borderRadius: 'var(--radius)',
                                                     border: '1px solid var(--border)',
-                                                    transition: 'transform 0.2s ease'
+                                                    transition: 'all 0.2s ease',
+                                                    cursor: 'pointer'
+                                                }}
+                                                onMouseOver={(e) => {
+                                                    e.currentTarget.style.transform = 'scale(1.02)';
+                                                    e.currentTarget.style.filter = 'brightness(1.1)';
+                                                }}
+                                                onMouseOut={(e) => {
+                                                    e.currentTarget.style.transform = 'scale(1)';
+                                                    e.currentTarget.style.filter = 'brightness(1)';
                                                 }}
                                             />
                                             <span style={{
@@ -93,7 +108,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                                             }}>
                                                 Photo {i + 2}
                                             </span>
-                                        </div>
+                                        </a>
                                     ))}
                                 </div>
                             </div>
