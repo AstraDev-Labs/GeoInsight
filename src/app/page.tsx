@@ -4,25 +4,64 @@ import Navbar from '@/components/Navbar';
 import { Calendar, User, ArrowRight, Activity, Map, Globe2, Search, Filter } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/mock-api';
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import type { BlogPost } from '@/lib/types';
 import { RESEARCH_VECTOR_GROUPS } from '@/lib/categories';
+import { ShieldAlert, X as CloseIcon } from 'lucide-react';
 
-export default function Home() {
+function HomeContent() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [showAlert, setShowAlert] = useState(false);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     api.getPosts().then(publishedPosts => {
       setPosts(publishedPosts);
     });
-  }, []);
+
+    if (searchParams.get('auth_error') === 'invalid_access') {
+      setShowAlert(true);
+      // Auto-hide alert after 5 seconds
+      const timer = setTimeout(() => setShowAlert(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   return (
     <main className="min-h-screen flex flex-col bg-background text-foreground overflow-hidden relative">
       <Navbar />
+
+      {/* Floating Auth Alert */}
+      <AnimatePresence>
+        {showAlert && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, x: '-50%' }}
+            animate={{ opacity: 1, y: 100, x: '-50%' }}
+            exit={{ opacity: 0, y: -50, x: '-50%' }}
+            className="fixed left-1/2 z-[100] w-[90%] max-w-md"
+          >
+            <div className="bg-destructive/10 backdrop-blur-xl border border-destructive/20 rounded-2xl p-4 shadow-[0_0_30px_rgba(239,68,68,0.2)] flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-destructive/20 flex items-center justify-center shrink-0">
+                <ShieldAlert className="w-5 h-5 text-destructive" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-white">Security Intelligence Alert</p>
+                <p className="text-xs text-destructive/80">Invalid access attempt detected. Session denied.</p>
+              </div>
+              <button
+                onClick={() => setShowAlert(false)}
+                className="p-1 text-muted-foreground hover:text-white transition-colors"
+              >
+                <CloseIcon size={18} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Abstract Animated Background Gradients */}
       <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary/20 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
@@ -228,5 +267,17 @@ export default function Home() {
         </p>
       </footer>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </main>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }
