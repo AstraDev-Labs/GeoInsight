@@ -135,99 +135,102 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                         </div>
                     </div>
 
-                    {post.images && post.images.length > 0 && (
-                        <div style={{ marginBottom: '3rem' }}>
-                            <div
-                                onClick={() => setSelectedImage(post.images[0])}
-                                style={{ cursor: 'zoom-in', position: 'relative' }}
-                                className="group"
-                            >
-                                <img
-                                    src={post.images[0]}
-                                    alt={post.title}
-                                    style={{
-                                        width: '100%',
-                                        height: 'auto',
-                                        maxHeight: '400px',
-                                        objectFit: 'cover',
-                                        borderRadius: '1rem',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                    className="group-hover:brightness-110"
-                                />
-                                <div style={{
-                                    position: 'absolute',
-                                    inset: 0,
-                                    background: 'rgba(56, 189, 248, 0.1)',
-                                    opacity: 0,
-                                    transition: 'opacity 0.2s ease',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    borderRadius: '1rem'
-                                }} className="group-hover:opacity-100">
+                    {post.images && post.images.length > 0 && (() => {
+                        const images = post.images;
+                        return (
+                            <div style={{ marginBottom: '3rem' }}>
+                                <div
+                                    onClick={() => setSelectedImage(images[0])}
+                                    style={{ cursor: 'zoom-in', position: 'relative' }}
+                                    className="group"
+                                >
+                                    <img
+                                        src={images[0]}
+                                        alt={post.title}
+                                        style={{
+                                            width: '100%',
+                                            height: 'auto',
+                                            maxHeight: '400px',
+                                            objectFit: 'cover',
+                                            borderRadius: '1rem',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                            transition: 'all 0.3s ease'
+                                        }}
+                                        className="group-hover:brightness-110"
+                                    />
                                     <div style={{
-                                        background: 'rgba(15, 23, 42, 0.8)',
-                                        padding: '0.75rem 1.25rem',
-                                        borderRadius: '999px',
-                                        color: 'white',
-                                        fontSize: '0.85rem',
-                                        fontWeight: 600,
+                                        position: 'absolute',
+                                        inset: 0,
+                                        background: 'rgba(56, 189, 248, 0.1)',
+                                        opacity: 0,
+                                        transition: 'opacity 0.2s ease',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '8px',
-                                        border: '1px solid rgba(56, 189, 248, 0.3)'
-                                    }}>
-                                        <ExternalLink size={14} color="var(--primary)" /> Click to Expand
+                                        justifyContent: 'center',
+                                        borderRadius: '1rem'
+                                    }} className="group-hover:opacity-100">
+                                        <div style={{
+                                            background: 'rgba(15, 23, 42, 0.8)',
+                                            padding: '0.75rem 1.25rem',
+                                            borderRadius: '999px',
+                                            color: 'white',
+                                            fontSize: '0.85rem',
+                                            fontWeight: 600,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            border: '1px solid rgba(56, 189, 248, 0.3)'
+                                        }}>
+                                            <ExternalLink size={14} color="var(--primary)" /> Click to Expand
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            {post.images.length > 1 && (
-                                <div style={{ marginTop: '1.5rem' }}>
-                                    <h4 style={{
-                                        fontSize: '0.85rem',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em',
-                                        color: 'rgba(255,255,255,0.5)',
-                                        marginBottom: '0.75rem'
-                                    }}>
-                                        📷 All Evidence Photos ({post.images.length})
-                                    </h4>
-                                    <div style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-                                        gap: '1rem',
-                                    }}>
-                                        {post.images.slice(1).map((img, i) => (
-                                            <div
-                                                key={i}
-                                                style={{ position: 'relative', cursor: 'zoom-in' }}
-                                                onClick={() => setSelectedImage(img)}
-                                                className="group"
-                                            >
-                                                <img
-                                                    src={img}
-                                                    alt={`${post.title} evidence ${i + 2}`}
-                                                    style={{
-                                                        width: '100%',
-                                                        height: '140px',
-                                                        objectFit: 'cover',
-                                                        borderRadius: '0.75rem',
-                                                        border: '1px solid rgba(255,255,255,0.1)',
-                                                        transition: 'all 0.3s ease'
-                                                    }}
-                                                    className="group-hover:scale-105 group-hover:brightness-110"
-                                                />
-                                            </div>
-                                        ))}
+                                {images.length > 1 && (
+                                    <div style={{ marginTop: '1.5rem' }}>
+                                        <h4 style={{
+                                            fontSize: '0.85rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            color: 'rgba(255,255,255,0.5)',
+                                            marginBottom: '0.75rem'
+                                        }}>
+                                            📷 All Evidence Photos ({images.length})
+                                        </h4>
+                                        <div style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                                            gap: '1rem',
+                                        }}>
+                                            {images.slice(1).map((img, i) => (
+                                                <div
+                                                    key={i}
+                                                    style={{ position: 'relative', cursor: 'zoom-in' }}
+                                                    onClick={() => setSelectedImage(img)}
+                                                    className="group"
+                                                >
+                                                    <img
+                                                        src={img}
+                                                        alt={`${post.title} evidence ${i + 2}`}
+                                                        style={{
+                                                            width: '100%',
+                                                            height: '140px',
+                                                            objectFit: 'cover',
+                                                            borderRadius: '0.75rem',
+                                                            border: '1px solid rgba(255,255,255,0.1)',
+                                                            transition: 'all 0.3s ease'
+                                                        }}
+                                                        className="group-hover:scale-105 group-hover:brightness-110"
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                                )}
+                            </div>
+                        );
+                    })()}
 
                     <div className="prose prose-invert prose-lg max-w-none prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-headings:text-white prose-strong:text-white prose-code:text-primary mb-12">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
