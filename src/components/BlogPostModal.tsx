@@ -139,14 +139,8 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                         const images = post.images;
                         return (
                             <div style={{ marginBottom: '3rem' }}>
-                                <a
-                                    href={images[0]}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        window.open(images[0], '_blank', 'noopener,noreferrer');
-                                    }}
-                                    style={{ cursor: 'pointer', position: 'relative', display: 'block' }}
+                                <div
+                                    style={{ cursor: 'context-menu', position: 'relative', display: 'block' }}
                                     className="group"
                                 >
                                     <img
@@ -189,10 +183,10 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                             gap: '8px',
                                             border: '1px solid rgba(56, 189, 248, 0.3)'
                                         }}>
-                                            <ExternalLink size={14} color="var(--primary)" /> Open Original (New Tab)
+                                            <ExternalLink size={14} color="var(--primary)" /> Right-click → Open image in new tab
                                         </div>
                                     </div>
-                                </a>
+                                </div>
 
                                 {images.length > 1 && (
                                     <div style={{ marginTop: '1.5rem' }}>
@@ -211,15 +205,9 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                             gap: '1rem',
                                         }}>
                                             {images.slice(1).map((img, i) => (
-                                                <a
+                                                <div
                                                     key={i}
-                                                    href={img}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        window.open(img, '_blank', 'noopener,noreferrer');
-                                                    }}
-                                                    style={{ position: 'relative', cursor: 'pointer', display: 'block' }}
+                                                    style={{ position: 'relative', cursor: 'context-menu', display: 'block' }}
                                                     className="group"
                                                 >
                                                     <img
@@ -235,10 +223,12 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                                         }}
                                                         className="group-hover:scale-105 group-hover:brightness-110"
                                                     />
-                                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center rounded-xl">
-                                                        <span className="opacity-0 group-hover:opacity-100 text-white text-xs font-semibold px-2 py-1 bg-black/60 rounded backdrop-blur-sm transition-opacity pointer-events-none">Open</span>
+                                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors flex items-center justify-center rounded-xl px-2 text-center">
+                                                        <span className="opacity-0 group-hover:opacity-100 text-white text-[10px] sm:text-xs font-semibold px-2 py-1 bg-black/80 rounded backdrop-blur-sm transition-opacity pointer-events-none">
+                                                            Right-click → Open image in new tab
+                                                        </span>
                                                     </div>
-                                                </a>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
