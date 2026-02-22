@@ -8,23 +8,25 @@ export const metadata = {
 
 export default function PrivacyPolicy() {
     return (
-        <main className="min-h-screen flex flex-col bg-background text-foreground relative">
-            <Navbar />
+        <main className="min-h-screen flex flex-col bg-white text-black font-sans relative">
+            <div className="bg-[#1a1a1a] shadow-md z-20 relative w-full">
+                <Navbar />
+            </div>
 
-            <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
+            
 
             <article className="pt-36 pb-16 px-6 md:px-12 max-w-4xl mx-auto relative z-10 flex-1">
                 <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
-                        <Shield className="text-primary" size={24} />
+                    <div className="w-12 h-12 bg-[#006699]/10 rounded-full flex items-center justify-center border border-[#006699]/20">
+                        <Shield className="text-[#006699]" size={24} />
                     </div>
                     <div>
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Privacy Policy</h1>
-                        <p className="text-muted-foreground text-sm mt-1">Last updated: February 2026</p>
+                        <p className="text-[#555] text-sm mt-1">Last updated: February 2026</p>
                     </div>
                 </div>
 
-                <div className="prose prose-invert prose-lg max-w-none prose-headings:text-foreground prose-p:text-white/70 prose-strong:text-white prose-a:text-primary">
+                <div className="prose  prose-lg max-w-none prose-headings:text-[#222] prose-headings:font-serif prose-p:text-[#444] prose-strong:text-[#111] prose-a:text-[#006699]">
                     <h2>1. Information We Collect</h2>
                     <p>
                         When you submit a research post or interact with GeoInsights, we may collect the following information:
@@ -102,9 +104,9 @@ export default function PrivacyPolicy() {
                 </div>
             </article>
 
-            <footer className="relative z-10 border-t border-white/10 bg-black/50 backdrop-blur-md py-12 text-center text-muted-foreground mt-auto">
+            <footer className="border-t border-[#e5e5e5] bg-[#f9f9f9] py-12 text-center text-[#666] font-sans text-sm mt-auto">
                 <p className="font-medium text-sm">
-                    © {new Date().getFullYear()} Remote Sensing & GIS Intelligence. Built with Next.js, Framer Motion & AWS.
+                    © {new Date().getFullYear()} Remote Sensing & GIS Intelligence. Data Integrity & Scientific Excellence.
                 </p>
             </footer>
         </main>

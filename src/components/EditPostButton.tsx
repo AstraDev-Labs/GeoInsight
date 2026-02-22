@@ -51,220 +51,107 @@ export default function EditPostButton({ post }: { post: any }) {
         <>
             <button
                 onClick={() => setShowModal(true)}
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '0.6rem 1.2rem',
-                    background: 'hsl(var(--muted))',
-                    color: 'hsl(var(--foreground))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: 'var(--radius)',
-                    fontSize: '0.9rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    fontFamily: 'inherit'
-                }}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-[#e5e5e5] text-[#222] font-semibold text-sm hover:bg-[#f9f9f9] transition-all font-sans w-full"
             >
-                <Edit3 size={16} /> Edit Post
+                <Edit3 size={16} className="text-[#006699]" /> Edit Post
             </button>
 
             {showModal && (
-                <div style={{
-                    position: 'fixed',
-                    inset: 0,
-                    background: 'rgba(0, 0, 0, 0.8)',
-                    backdropFilter: 'blur(8px)',
-                    zIndex: 2000,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '1rem'
-                }} onClick={(e) => { e.stopPropagation(); setShowModal(false); }}>
-                    <div style={{
-                        background: 'hsl(var(--background))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: 'var(--radius)',
-                        padding: '2rem',
-                        width: '100%',
-                        maxWidth: '1000px',
-                        maxHeight: '90vh',
-                        overflowY: 'auto',
-                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                        position: 'relative'
-                    }} onClick={(e) => e.stopPropagation()}>
+                <div
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[2000] flex items-center justify-center p-4"
+                    onClick={(e) => { e.stopPropagation(); setShowModal(false); }}
+                >
+                    <div
+                        className="bg-white border border-[#e5e5e5] p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative font-sans"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <button
                             onClick={() => setShowModal(false)}
-                            style={{
-                                position: 'absolute',
-                                top: '1rem',
-                                right: '1rem',
-                                background: 'transparent',
-                                border: 'none',
-                                color: 'hsl(var(--muted-foreground))',
-                                cursor: 'pointer',
-                                padding: '0.5rem'
-                            }}
+                            className="absolute top-6 right-6 text-[#888] hover:text-[#222] transition-colors p-1"
                         >
-                            <X size={20} />
+                            <X size={24} />
                         </button>
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: 'hsl(var(--foreground))' }}>
+
+                        <h2 className="text-2xl font-bold mb-2 text-[#222] font-serif">
                             Edit Published Transmission
                         </h2>
 
-                        <p style={{ color: 'hsl(var(--muted-foreground))', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                        <p className="text-[#666] text-sm mb-8">
                             Update your research findings below. You must verify your identity to save changes.
                         </p>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+                        <div className="flex flex-col gap-5 mb-8">
                             <div>
-                                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem', color: 'hsl(var(--foreground))' }}>Title</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest text-[#555] mb-2">Title</label>
                                 <input
                                     type="text"
                                     value={title}
                                     onChange={e => setTitle(e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.8rem 1rem',
-                                        background: 'hsl(var(--input))',
-                                        border: '1px solid hsl(var(--border))',
-                                        borderRadius: 'var(--radius)',
-                                        color: 'hsl(var(--foreground))',
-                                        fontFamily: 'inherit',
-                                        outline: 'none'
-                                    }}
+                                    className="w-full px-4 py-3 bg-[#f9f9f9] border border-[#d5d5d5] text-[#222] outline-none focus:border-[#006699] transition-colors"
                                 />
                             </div>
 
                             <div>
-                                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem', color: 'hsl(var(--foreground))' }}>Abstract / Summary</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest text-[#555] mb-2">Abstract / Summary</label>
                                 <textarea
                                     value={abstract}
                                     onChange={e => setAbstract(e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.8rem 1rem',
-                                        background: 'hsl(var(--input))',
-                                        border: '1px solid hsl(var(--border))',
-                                        borderRadius: 'var(--radius)',
-                                        color: 'hsl(var(--foreground))',
-                                        fontFamily: 'inherit',
-                                        outline: 'none',
-                                        minHeight: '80px',
-                                        resize: 'vertical'
-                                    }}
+                                    className="w-full px-4 py-3 bg-[#f9f9f9] border border-[#d5d5d5] text-[#222] outline-none focus:border-[#006699] transition-colors min-h-[100px] resize-y"
                                 />
                             </div>
 
                             <div>
-                                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem', color: 'hsl(var(--foreground))' }}>Full Content (Markdown)</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest text-[#555] mb-2">Full Content (Markdown)</label>
                                 <textarea
                                     value={content}
                                     onChange={e => setContent(e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.8rem 1rem',
-                                        background: 'hsl(var(--input))',
-                                        border: '1px solid hsl(var(--border))',
-                                        borderRadius: 'var(--radius)',
-                                        color: 'hsl(var(--foreground))',
-                                        fontFamily: 'monospace',
-                                        fontSize: '0.9rem',
-                                        outline: 'none',
-                                        minHeight: '400px',
-                                        resize: 'vertical'
-                                    }}
+                                    className="w-full px-4 py-3 bg-[#f9f9f9] border border-[#d5d5d5] text-[#222] font-mono text-sm outline-none focus:border-[#006699] transition-colors min-h-[400px] resize-y leading-relaxed whitespace-pre-wrap"
+                                    spellCheck={false}
                                 />
                             </div>
                         </div>
 
-                        <div style={{
-                            background: 'rgba(56, 189, 248, 0.05)',
-                            border: '1px solid rgba(56, 189, 248, 0.2)',
-                            borderRadius: 'var(--radius)',
-                            padding: '1.5rem',
-                            marginBottom: '1.5rem'
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-                                <Shield size={18} color="hsl(var(--primary))" />
-                                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'hsl(var(--foreground))' }}>Verify Identity</h3>
+                        <div className="bg-[#f4f4f4] border border-[#e5e5e5] p-6 mb-8 mt-8 border-l-4 border-l-[#006699]">
+                            <div className="flex items-center gap-2 mb-4">
+                                <Shield size={18} className="text-[#006699]" />
+                                <h3 className="text-sm font-bold uppercase tracking-widest text-[#222]">Verify Identity</h3>
                             </div>
 
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your original author email"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.8rem 1rem',
-                                    background: 'hsl(var(--input))',
-                                    border: error ? '1px solid #ef4444' : '1px solid hsl(var(--border))',
-                                    borderRadius: 'var(--radius)',
-                                    color: 'hsl(var(--foreground))',
-                                    fontFamily: 'inherit',
-                                    marginBottom: '0.75rem',
-                                    outline: 'none'
-                                }}
-                            />
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter Author Deletion Password"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.8rem 1rem',
-                                    background: 'hsl(var(--input))',
-                                    border: error ? '1px solid #ef4444' : '1px solid hsl(var(--border))',
-                                    borderRadius: 'var(--radius)',
-                                    color: 'hsl(var(--foreground))',
-                                    fontFamily: 'inherit',
-                                    outline: 'none'
-                                }}
-                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Original Author Email"
+                                    className={`w-full px-4 py-3 bg-white border ${error ? 'border-red-500' : 'border-[#d5d5d5]'} text-[#222] outline-none focus:border-[#006699] transition-colors placeholder-[#888]`}
+                                />
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Author Deletion Password"
+                                    className={`w-full px-4 py-3 bg-white border ${error ? 'border-red-500' : 'border-[#d5d5d5]'} text-[#222] outline-none focus:border-[#006699] transition-colors placeholder-[#888]`}
+                                />
+                            </div>
                         </div>
 
                         {error && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: 600 }}>
+                            <p className="text-red-600 text-sm mb-4 font-semibold">
                                 {error}
                             </p>
                         )}
 
-                        <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                        <div className="flex gap-4 mt-6 pt-6 border-t border-[#e5e5e5]">
                             <button
                                 onClick={handleSave}
                                 disabled={saving}
-                                style={{
-                                    flex: 1,
-                                    padding: '0.8rem',
-                                    background: 'hsl(var(--primary))',
-                                    color: '#fff',
-                                    border: 'none',
-                                    borderRadius: 'var(--radius)',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 700,
-                                    cursor: saving ? 'wait' : 'pointer',
-                                    fontFamily: 'inherit',
-                                    opacity: saving ? 0.7 : 1
-                                }}
+                                className="flex-1 px-4 py-3 bg-[#006699] text-white font-bold border-none text-md cursor-pointer disabled:opacity-70 disabled:cursor-wait hover:bg-[#004f7a] transition-colors"
                             >
-                                {saving ? 'Submitting...' : 'Request Edit Approval'}
+                                {saving ? 'Submitting Edit...' : 'Request Edit Approval'}
                             </button>
                             <button
                                 onClick={() => setShowModal(false)}
-                                style={{
-                                    padding: '0.8rem 1.2rem',
-                                    background: 'hsl(var(--muted))',
-                                    color: 'hsl(var(--foreground))',
-                                    border: '1px solid hsl(var(--border))',
-                                    borderRadius: 'var(--radius)',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 600,
-                                    cursor: 'pointer',
-                                    fontFamily: 'inherit'
-                                }}
+                                className="px-6 py-3 bg-white text-[#222] border border-[#d5d5d5] font-bold text-md cursor-pointer hover:bg-[#f0f0f0] transition-colors"
                             >
                                 Cancel
                             </button>

@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import { api } from '@/lib/mock-api';
 import { Send, CheckCircle2, ImagePlus, Paperclip, X, Upload, FileText, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Footer from '@/components/Footer';
 import dynamic from 'next/dynamic';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
@@ -16,7 +17,13 @@ export default function RequestPost() {
     const [uploading, setUploading] = useState(false);
     const [password, setPassword] = useState('');
     const [richContent, setRichContent] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('Land Cover Change');
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(['Land Cover Change']);
+
+    const toggleCategory = (vector: string) => {
+        setSelectedCategories(prev =>
+            prev.includes(vector) ? prev.filter(c => c !== vector) : [...prev, vector]
+        );
+    };
 
     // Image file uploads
     const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -87,10 +94,17 @@ export default function RequestPost() {
         const title = formDataObj.get('title') as string;
         const author = formDataObj.get('author') as string;
         const email = formDataObj.get('email') as string;
-        const category = selectedCategory === 'Other' ? (formDataObj.get('customCategory') as string) : selectedCategory;
-        const abstract = formDataObj.get('abstract') as string;
+
+        let category = selectedCategories.filter(c => c !== 'Other').join(', ');
+        const customCat = formDataObj.get('customCategory') as string;
+        if (selectedCategories.includes('Other') && customCat) {
+            category = category ? `${category}, ${customCat}` : customCat;
+        }
+
         const content = richContent; // From TipTap rich text editor
         const authorPassword = formDataObj.get('authorPassword') as string;
+        const satellite = formDataObj.get('satellite') as string;
+        const areaOfInterest = formDataObj.get('areaOfInterest') as string;
         const honeypot = formDataObj.get('organization') as string;
 
         // Spam protection: if honeypot is filled, simulate success silently
@@ -130,11 +144,12 @@ export default function RequestPost() {
                 author,
                 email,
                 category,
-                abstract,
                 content,
                 images: imageUrls,
                 attachments: docUrls,
                 authorPassword,
+                satellite,
+                areaOfInterest,
             };
 
             await api.submitRequest(data);
@@ -149,24 +164,22 @@ export default function RequestPost() {
     }
 
     return (
-        <main className="min-h-screen flex flex-col bg-background text-foreground relative pt-24 pb-0 overflow-hidden">
-            <Navbar />
+        <main className="min-h-screen flex flex-col bg-white text-black relative">
+            <div className="bg-[#1a1a1a] shadow-md z-20 relative">
+                <Navbar />
+            </div>
 
-            {/* Glowing Abstract Elements */}
-            <div className="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
-
-            <div className="max-w-3xl mx-auto px-6 relative z-10 flex-1 w-full pb-20">
+            <div className="max-w-3xl mx-auto px-6 relative z-10 flex-1 w-full pt-16 pb-20">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                     className="text-center mb-12"
                 >
-                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
-                        Contribute <span className="text-primary font-light">Findings</span>
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-[#222]">
+                        Contribute <span className="text-[#006699] font-light">Findings</span>
                     </h1>
-                    <p className="text-muted-foreground text-lg font-light leading-relaxed max-w-xl mx-auto">
+                    <p className="text-[#555] text-lg font-light leading-relaxed max-w-xl mx-auto">
                         Share your analytical results. Once submitted, the admin will review your research before publishing it to the entire intelligence network.
                     </p>
                 </motion.div>
@@ -175,11 +188,11 @@ export default function RequestPost() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="glass-card shadow-lg p-12 text-center flex flex-col items-center justify-center border-l-4 border-l-secondary"
+                        className="bg-white border border-[#e5e5e5] shadow-sm p-12 text-center flex flex-col items-center justify-center border-l-4 border-l-[#006699]"
                     >
-                        <CheckCircle2 className="text-secondary w-20 h-20 mb-6 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
-                        <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">Transmission Successful</h2>
-                        <p className="text-muted-foreground mb-8">
+                        <CheckCircle2 className="text-[#006699] w-20 h-20 mb-6" />
+                        <h2 className="text-3xl font-bold text-[#222] mb-3 tracking-tight">Transmission Successful</h2>
+                        <p className="text-[#555] mb-8">
                             Your research request is securely enqueued for review. You will be notified via email upon processing.
                         </p>
                         <button
@@ -190,7 +203,7 @@ export default function RequestPost() {
                                 setDocFiles([]);
                                 setPassword('');
                             }}
-                            className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium py-3 px-8 rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                            className="bg-[#f0f0f0] border border-[#d5d5d5] hover:bg-[#e5e5e5] text-[#222] font-bold py-3 px-8 transition-all"
                         >
                             Submit Additional Analysis
                         </button>
@@ -200,140 +213,162 @@ export default function RequestPost() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="glass-card p-8 md:p-10 border-t-2 border-t-primary/50 relative overflow-hidden group"
+                        className="bg-white border border-[#e5e5e5] shadow-sm p-8 md:p-10 border-t-4 border-t-[#006699]"
                         onSubmit={handleSubmit}
                     >
-                        {/* Shimmer Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-
                         <div className="space-y-8 relative z-10">
 
                             <div className="space-y-3">
-                                <label className="text-sm font-semibold tracking-wide uppercase text-white/80">Transmission Title</label>
+                                <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Transmission Title</label>
                                 <input
                                     type="text"
                                     name="title"
                                     required
-                                    className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 backdrop-blur-md"
+                                    className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
                                     placeholder="e.g. Remote Sensing of Mangrove Degredation"
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-3">
-                                    <label className="text-sm font-semibold tracking-wide uppercase text-white/80">Author Identifier</label>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Author Identifier</label>
                                     <input
                                         type="text"
                                         name="author"
                                         required
-                                        className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 backdrop-blur-md"
+                                        className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
                                         placeholder="Full Name"
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-sm font-semibold tracking-wide uppercase text-white/80">Secure Email</label>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Secure Email</label>
                                     <input
                                         type="email"
                                         name="email"
                                         required
-                                        className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 backdrop-blur-md"
+                                        className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
                                         placeholder="university.email@edu"
                                         pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
-                                        title="Please enter a valid email address (e.g. user@example.com)"
                                     />
                                 </div>
                             </div>
 
-                            {/* Honeypot field - visually hidden */}
                             <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
                                 <label>Organization (Do not fill this out if you are human)</label>
                                 <input type="text" name="organization" tabIndex={-1} autoComplete="off" />
                             </div>
 
                             <div className="space-y-3">
-                                <label className="text-sm font-semibold tracking-wide uppercase text-white/80">Author Deletion Password</label>
-                                <p className="text-xs text-muted-foreground">This password will be strongly encrypted. You can use it later if you need to delete your published transmission.</p>
+                                <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Author Deletion Password</label>
+                                <p className="text-xs text-[#777]">This password will be strongly encrypted. You can use it later if you need to delete your published transmission.</p>
                                 <input
                                     type="password"
                                     name="authorPassword"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 backdrop-blur-md"
+                                    className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
                                     placeholder="Set a secret password..."
                                     autoComplete="new-password"
                                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}"
-                                    title="Password must be at least 6 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one symbol."
                                 />
 
-                                <div className="mt-4 bg-black/30 p-4 rounded-xl border border-white/5 shadow-inner">
-                                    <p className="text-xs font-semibold tracking-wider uppercase text-white/90 mb-3">Password Requirements</p>
+                                <div className="mt-4 bg-[#f4f4f4] p-4 border border-[#e5e5e5]">
+                                    <p className="text-xs font-bold tracking-widest uppercase text-[#333] mb-3">Password Requirements</p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 text-sm">
-                                        <div className={`flex items-center gap-2 transition-colors ${password.length >= 6 ? 'text-secondary' : 'text-muted-foreground'}`}>
-                                            {password.length >= 6 ? <Check size={16} /> : <X size={16} className={password.length > 0 ? "text-destructive" : ""} />}
-                                            <span className={password.length > 0 && password.length < 6 ? "text-destructive" : ""}>At least 6 characters</span>
+                                        <div className={`flex items-center gap-2 transition-colors ${password.length >= 6 ? 'text-[#006699]' : 'text-[#777]'}`}>
+                                            {password.length >= 6 ? <Check size={16} /> : <X size={16} className={password.length > 0 ? "text-red-500" : ""} />}
+                                            <span className={password.length > 0 && password.length < 6 ? "text-red-500" : ""}>At least 6 characters</span>
                                         </div>
-                                        <div className={`flex items-center gap-2 transition-colors ${/[A-Z]/.test(password) ? 'text-secondary' : 'text-muted-foreground'}`}>
-                                            {/[A-Z]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[A-Z]/.test(password) ? "text-destructive" : ""} />}
-                                            <span className={password.length > 0 && !/[A-Z]/.test(password) ? "text-destructive" : ""}>One uppercase letter</span>
+                                        <div className={`flex items-center gap-2 transition-colors ${/[A-Z]/.test(password) ? 'text-[#006699]' : 'text-[#777]'}`}>
+                                            {/[A-Z]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[A-Z]/.test(password) ? "text-red-500" : ""} />}
+                                            <span className={password.length > 0 && !/[A-Z]/.test(password) ? "text-red-500" : ""}>One uppercase letter</span>
                                         </div>
-                                        <div className={`flex items-center gap-2 transition-colors ${/[a-z]/.test(password) ? 'text-secondary' : 'text-muted-foreground'}`}>
-                                            {/[a-z]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[a-z]/.test(password) ? "text-destructive" : ""} />}
-                                            <span className={password.length > 0 && !/[a-z]/.test(password) ? "text-destructive" : ""}>One lowercase letter</span>
+                                        <div className={`flex items-center gap-2 transition-colors ${/[a-z]/.test(password) ? 'text-[#006699]' : 'text-[#777]'}`}>
+                                            {/[a-z]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[a-z]/.test(password) ? "text-red-500" : ""} />}
+                                            <span className={password.length > 0 && !/[a-z]/.test(password) ? "text-red-500" : ""}>One lowercase letter</span>
                                         </div>
-                                        <div className={`flex items-center gap-2 transition-colors ${/\d/.test(password) ? 'text-secondary' : 'text-muted-foreground'}`}>
-                                            {/\d/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/\d/.test(password) ? "text-destructive" : ""} />}
-                                            <span className={password.length > 0 && !/\d/.test(password) ? "text-destructive" : ""}>One number</span>
+                                        <div className={`flex items-center gap-2 transition-colors ${/\d/.test(password) ? 'text-[#006699]' : 'text-[#777]'}`}>
+                                            {/\d/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/\d/.test(password) ? "text-red-500" : ""} />}
+                                            <span className={password.length > 0 && !/\d/.test(password) ? "text-red-500" : ""}>One number</span>
                                         </div>
-                                        <div className={`flex items-center gap-2 transition-colors ${/[^a-zA-Z0-9]/.test(password) ? 'text-secondary' : 'text-muted-foreground'}`}>
-                                            {/[^a-zA-Z0-9]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[^a-zA-Z0-9]/.test(password) ? "text-destructive" : ""} />}
-                                            <span className={password.length > 0 && !/[^a-zA-Z0-9]/.test(password) ? "text-destructive" : ""}>One special symbol</span>
+                                        <div className={`flex items-center gap-2 transition-colors ${/[^a-zA-Z0-9]/.test(password) ? 'text-[#006699]' : 'text-[#777]'}`}>
+                                            {/[^a-zA-Z0-9]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[^a-zA-Z0-9]/.test(password) ? "text-red-500" : ""} />}
+                                            <span className={password.length > 0 && !/[^a-zA-Z0-9]/.test(password) ? "text-red-500" : ""}>One symbol</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="space-y-3">
-                                <label className="text-sm font-semibold tracking-wide uppercase text-white/80">Research Vector</label>
-                                <select
-                                    name="category"
-                                    value={selectedCategory}
-                                    onChange={(e) => setSelectedCategory(e.target.value)}
-                                    className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 appearance-none backdrop-blur-md cursor-pointer"
-                                >
+                                <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Research Vector(s)</label>
+                                <div className="w-full bg-[#f9f9f9] border border-[#d5d5d5] p-5 max-h-[300px] overflow-y-auto custom-scrollbar">
                                     {Object.entries(RESEARCH_VECTOR_GROUPS).map(([group, vectors]) => (
-                                        <optgroup key={group} label={group} className="bg-popover text-white/50 font-semibold">
-                                            {vectors.map((v: string) => (
-                                                <option key={v} value={v} className="bg-popover text-white font-normal">{v}</option>
-                                            ))}
-                                        </optgroup>
+                                        <div key={group} className="mb-4 last:mb-0">
+                                            <span className="text-[#888] font-bold uppercase text-xs mb-2 block">{group}</span>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                {vectors.map((v: string) => (
+                                                    <label key={v} className="flex items-start gap-3 cursor-pointer group">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedCategories.includes(v)}
+                                                            onChange={() => toggleCategory(v)}
+                                                            className="mt-1 w-4 h-4 text-[#006699] border-[#d5d5d5] rounded focus:ring-[#006699]"
+                                                        />
+                                                        <span className="text-[#333] text-sm group-hover:text-[#006699] transition-colors">{v}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
                                     ))}
-                                    <option value="Other" className="bg-popover text-white">Other</option>
-                                </select>
-                                {selectedCategory === 'Other' && (
-                                    <input
-                                        name="customCategory"
-                                        required
-                                        className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 backdrop-blur-md mt-3"
-                                        placeholder="Type your research domain..."
-                                    />
-                                )}
+                                    <div className="mt-4 pt-4 border-t border-[#d5d5d5]">
+                                        <label className="flex items-start gap-3 cursor-pointer group">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedCategories.includes('Other')}
+                                                onChange={() => toggleCategory('Other')}
+                                                className="mt-1 w-4 h-4 text-[#006699] border-[#d5d5d5] rounded focus:ring-[#006699]"
+                                            />
+                                            <span className="text-[#333] text-sm group-hover:text-[#006699] transition-colors font-bold">Other / Custom Vector</span>
+                                        </label>
+                                        {selectedCategories.includes('Other') && (
+                                            <input
+                                                name="customCategory"
+                                                required
+                                                className="w-full bg-white border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-4 py-2 outline-none transition-all focus:ring-1 focus:ring-[#006699] mt-3 text-sm"
+                                                placeholder="Type your custom research domain..."
+                                            />
+                                        )}
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="space-y-3">
-                                <label className="text-sm font-semibold tracking-wide uppercase text-white/80">Abstract / Executive Summary</label>
-                                <textarea
-                                    name="abstract"
-                                    required
-                                    className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 resize-y min-h-[120px] backdrop-blur-md"
-                                    placeholder="Briefly describe your methodology and key findings..."
-                                />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div className="space-y-3">
+                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Satellite / Sensor Tag</label>
+                                    <input
+                                        type="text"
+                                        name="satellite"
+                                        className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
+                                        placeholder="e.g. Sentinel-2, Landsat 8"
+                                    />
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Area of Interest</label>
+                                    <input
+                                        type="text"
+                                        name="areaOfInterest"
+                                        className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
+                                        placeholder="Target location coords or Region"
+                                        required
+                                    />
+                                </div>
                             </div>
 
                             <div className="space-y-3">
                                 <div className="flex items-baseline justify-between">
-                                    <label className="text-sm font-semibold tracking-wide uppercase text-white/80">Full Intelligence Report</label>
-                                    <span className="text-xs text-primary hidden sm:block">Rich Text Editor</span>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Full Intelligence Report</label>
+                                    <span className="text-xs text-[#006699] hidden sm:block">Rich Text Editor</span>
                                 </div>
                                 <RichTextEditor
                                     content={richContent}
@@ -342,26 +377,25 @@ export default function RequestPost() {
                                 />
                             </div>
 
-                            {/* Image Upload */}
-                            <div className="space-y-4 pt-4 border-t border-white/10">
+                            <div className="space-y-4 pt-4 border-t border-[#e5e5e5]">
                                 <div className="flex items-center gap-2">
-                                    <ImagePlus className="w-5 h-5 text-primary" />
-                                    <label className="text-sm font-semibold tracking-wide uppercase text-white">Visual Evidence (Imagery)</label>
+                                    <ImagePlus className="w-5 h-5 text-[#006699]" />
+                                    <label className="text-xs font-bold uppercase tracking-widest text-[#222]">Visual Evidence (Imagery)</label>
                                 </div>
 
                                 {imagePreviews.length > 0 && (
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                                         {imagePreviews.map((preview, index) => (
-                                            <div key={index} className="relative group rounded-xl overflow-hidden border border-white/10 bg-black/50">
+                                            <div key={index} className="relative group overflow-hidden border border-[#d5d5d5] bg-[#f9f9f9]">
                                                 <img src={preview} alt={`Preview ${index}`} className="w-full h-24 object-cover" />
                                                 <button
                                                     type="button"
                                                     onClick={() => removeImage(index)}
-                                                    className="absolute top-1 right-1 bg-destructive/80 hover:bg-destructive text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md"
+                                                    className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
                                                     <X size={14} />
                                                 </button>
-                                                <div className="absolute bottom-0 inset-x-0 bg-black/60 backdrop-blur-md text-[10px] text-white/70 px-2 py-1 truncate">
+                                                <div className="absolute bottom-0 inset-x-0 bg-white/90 text-[10px] text-[#222] font-bold px-2 py-1 truncate">
                                                     {imageFiles[index]?.name}
                                                 </div>
                                             </div>
@@ -373,31 +407,30 @@ export default function RequestPost() {
                                 <button
                                     type="button"
                                     onClick={() => imageInputRef.current?.click()}
-                                    className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary/10 hover:bg-primary/20 border border-primary/20 text-primary text-sm font-medium transition-all"
+                                    className="flex items-center justify-center gap-2 px-5 py-3 bg-[#f0f0f0] border border-[#d5d5d5] hover:bg-[#e5e5e5] text-[#222] text-sm font-bold uppercase tracking-widest transition-all w-full md:w-auto"
                                 >
                                     <Upload size={16} />
                                     {imagePreviews.length > 0 ? 'Attach Additional Imagery' : 'Select Imagery'}
                                 </button>
                             </div>
 
-                            {/* Document Upload */}
-                            <div className="space-y-4 pt-4 border-t border-white/10">
+                            <div className="space-y-4 pt-4 border-t border-[#e5e5e5]">
                                 <div className="flex items-center gap-2">
-                                    <Paperclip className="w-5 h-5 text-secondary" />
-                                    <label className="text-sm font-semibold tracking-wide uppercase text-white">Supporting Documents</label>
+                                    <Paperclip className="w-5 h-5 text-[#006699]" />
+                                    <label className="text-xs font-bold uppercase tracking-widest text-[#222]">Supporting Documents</label>
                                 </div>
 
                                 {docFiles.length > 0 && (
                                     <div className="space-y-2 mb-4">
                                         {docFiles.map((file, index) => (
-                                            <div key={index} className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-3 rounded-xl group relative">
-                                                <FileText className="w-4 h-4 text-secondary flex-shrink-0" />
-                                                <span className="text-sm text-white/90 truncate flex-1">{file.name}</span>
-                                                <span className="text-xs text-muted-foreground flex-shrink-0">{(file.size / 1024).toFixed(0)} KB</span>
+                                            <div key={index} className="flex items-center gap-3 bg-[#f9f9f9] border border-[#d5d5d5] px-4 py-3 group relative">
+                                                <FileText className="w-4 h-4 text-[#006699] flex-shrink-0" />
+                                                <span className="text-sm text-[#333] font-medium truncate flex-1">{file.name}</span>
+                                                <span className="text-xs text-[#888] flex-shrink-0">{(file.size / 1024).toFixed(0)} KB</span>
                                                 <button
                                                     type="button"
                                                     onClick={() => removeDoc(index)}
-                                                    className="text-destructive opacity-50 hover:opacity-100 transition-opacity p-1"
+                                                    className="text-red-500 opacity-50 hover:opacity-100 transition-opacity p-1"
                                                 >
                                                     <X size={16} />
                                                 </button>
@@ -410,7 +443,7 @@ export default function RequestPost() {
                                 <button
                                     type="button"
                                     onClick={() => docInputRef.current?.click()}
-                                    className="flex items-center gap-2 px-5 py-3 rounded-xl bg-secondary/10 hover:bg-secondary/20 border border-secondary/20 text-secondary text-sm font-medium transition-all"
+                                    className="flex items-center justify-center gap-2 px-5 py-3 bg-[#f0f0f0] border border-[#d5d5d5] hover:bg-[#e5e5e5] text-[#222] text-sm font-bold uppercase tracking-widest transition-all w-full md:w-auto"
                                 >
                                     <Upload size={16} />
                                     {docFiles.length > 0 ? 'Attach Additional Documents' : 'Select Documents'}
@@ -420,20 +453,17 @@ export default function RequestPost() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full mt-8 py-5 rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary hover:to-primary text-white font-bold text-lg shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
+                                className="w-full mt-8 py-4 bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-bold tracking-widest uppercase flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden text-sm"
                             >
-                                {/* Shine */}
-                                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-
                                 {loading ? (
                                     <div className="flex items-center gap-2">
                                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        <span>{uploading ? 'Uplinking Assets...' : 'Transmitting Protocol...'}</span>
+                                        <span>{uploading ? 'Uploading Files...' : 'Submitting Data...'}</span>
                                     </div>
                                 ) : (
                                     <>
-                                        <span>Initiate Submission Protocol</span>
-                                        <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                        <span>Submit Data Finding</span>
+                                        <Send size={18} className="group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
                             </button>
@@ -442,12 +472,7 @@ export default function RequestPost() {
                 )}
             </div>
 
-            {/* Footer */}
-            <footer className="relative z-10 border-t border-white/10 bg-black/50 backdrop-blur-md py-12 text-center text-muted-foreground mt-auto">
-                <p className="font-medium text-sm">
-                    © {new Date().getFullYear()} Remote Sensing & GIS Intelligence. Built with Next.js, Framer Motion & AWS.
-                </p>
-            </footer>
+            <Footer />
         </main>
     );
 }

@@ -34,7 +34,9 @@ export async function PATCH(
                 attachments: req.attachments || [],
                 status: 'pending',
                 authorPassword: req.authorPassword,
-                authorEmail: req.email
+                authorEmail: req.email,
+                satellite: req.satellite,
+                areaOfInterest: req.areaOfInterest
             };
             await dataService.savePost(newPost);
         }

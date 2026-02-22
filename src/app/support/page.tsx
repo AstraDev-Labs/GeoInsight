@@ -21,11 +21,13 @@ export default function SupportPage() {
     };
 
     return (
-        <main className="min-h-screen flex flex-col bg-background text-foreground relative">
-            <Navbar />
+        <main className="min-h-screen flex flex-col bg-white text-black font-sans relative">
+            <div className="bg-[#1a1a1a] shadow-md z-20 relative w-full">
+                <Navbar />
+            </div>
 
-            <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
+            
+            
 
             <div className="pt-36 pb-16 px-6 md:px-12 max-w-5xl mx-auto relative z-10 flex-1 w-full">
                 <motion.div
@@ -34,11 +36,11 @@ export default function SupportPage() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-secondary/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                        <LifeBuoy className="text-secondary" size={32} />
+                    <div className="w-16 h-16 bg-[#f0f0f0] rounded-full flex items-center justify-center mx-auto mb-6 border border-[#e5e5e5] shadow-sm">
+                        <LifeBuoy className="text-[#222]" size={32} />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Support Center</h1>
-                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                    <p className="text-[#555] text-lg max-w-2xl mx-auto">
                         Need help with your submission, account, or have a question? We&apos;re here to assist you.
                     </p>
                 </motion.div>
@@ -49,12 +51,12 @@ export default function SupportPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="glass-card p-6 text-center"
+                        className="bg-[#f9f9f9] border border-[#e5e5e5] shadow-sm p-6 text-center"
                     >
-                        <FileText className="text-primary mx-auto mb-4" size={28} />
+                        <FileText className="text-[#006699] mx-auto mb-4" size={28} />
                         <h3 className="font-bold text-lg mb-2">Documentation</h3>
-                        <p className="text-muted-foreground text-sm mb-4">Learn how to submit research, manage posts, and use the platform.</p>
-                        <Link href="/privacy" className="text-primary text-sm font-medium hover:underline">
+                        <p className="text-[#555] text-sm mb-4">Learn how to submit research, manage posts, and use the platform.</p>
+                        <Link href="/privacy" className="text-[#006699] text-sm font-medium hover:underline">
                             Read Privacy Policy →
                         </Link>
                     </motion.div>
@@ -63,12 +65,12 @@ export default function SupportPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="glass-card p-6 text-center"
+                        className="bg-[#f9f9f9] border border-[#e5e5e5] shadow-sm p-6 text-center"
                     >
-                        <Mail className="text-secondary mx-auto mb-4" size={28} />
+                        <Mail className="text-[#222] mx-auto mb-4" size={28} />
                         <h3 className="font-bold text-lg mb-2">Email Us</h3>
-                        <p className="text-muted-foreground text-sm mb-4">Reach out directly for urgent issues or detailed inquiries.</p>
-                        <a href="mailto:geoinsight.org@gmail.com" className="text-secondary text-sm font-medium hover:underline">
+                        <p className="text-[#555] text-sm mb-4">Reach out directly for urgent issues or detailed inquiries.</p>
+                        <a href="mailto:geoinsight.org@gmail.com" className="text-[#222] text-sm font-medium hover:underline">
                             geoinsight.org@gmail.com
                         </a>
                     </motion.div>
@@ -77,11 +79,11 @@ export default function SupportPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="glass-card p-6 text-center"
+                        className="bg-[#f9f9f9] border border-[#e5e5e5] shadow-sm p-6 text-center"
                     >
                         <MessageSquare className="text-amber-400 mx-auto mb-4" size={28} />
                         <h3 className="font-bold text-lg mb-2">FAQs</h3>
-                        <p className="text-muted-foreground text-sm mb-4">Find quick answers to the most commonly asked questions.</p>
+                        <p className="text-[#555] text-sm mb-4">Find quick answers to the most commonly asked questions.</p>
                         <span className="text-amber-400 text-sm font-medium">See below ↓</span>
                     </motion.div>
                 </div>
@@ -91,19 +93,19 @@ export default function SupportPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="glass-card p-8 md:p-10 mb-16"
+                    className="bg-[#f9f9f9] border border-[#e5e5e5] shadow-sm p-8 md:p-10 mb-16"
                 >
                     <h2 className="text-2xl font-bold mb-2">Send a Message</h2>
-                    <p className="text-muted-foreground text-sm mb-8">Fill out the form below and we&apos;ll get back to you within 24-48 hours.</p>
+                    <p className="text-[#555] text-sm mb-8">Fill out the form below and we&apos;ll get back to you within 24-48 hours.</p>
 
                     {sent ? (
                         <div className="text-center py-12">
-                            <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-secondary/20">
-                                <span className="text-2xl font-bold text-secondary">✓</span>
+                            <div className="w-16 h-16 bg-[#f0f0f0] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#e5e5e5]">
+                                <span className="text-2xl font-bold text-[#222]">✓</span>
                             </div>
                             <h3 className="text-xl font-bold mb-2">Message Prepared!</h3>
-                            <p className="text-muted-foreground text-sm">Your email client should have opened. If not, email us directly at geoinsight.org@gmail.com</p>
-                            <button onClick={() => setSent(false)} className="mt-6 px-6 py-2 bg-white/5 border border-white/10 rounded-xl text-sm hover:bg-white/10 transition-colors">
+                            <p className="text-[#555] text-sm">Your email client should have opened. If not, email us directly at geoinsight.org@gmail.com</p>
+                            <button onClick={() => setSent(false)} className="mt-6 px-6 py-2 bg-[#f9f9f9] border border-[#e5e5e5] rounded-xl text-sm hover:bg-[#f0f0f0] transition-colors">
                                 Send Another Message
                             </button>
                         </div>
@@ -111,41 +113,41 @@ export default function SupportPage() {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-white/80">Your Name</label>
+                                    <label className="text-sm font-semibold text-[#444] font-bold uppercase tracking-widest text-xs">Your Name</label>
                                     <input
                                         type="text"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
                                         required
-                                        className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20"
+                                        className="w-full bg-[#f4f4f4] border border-[#e5e5e5] focus:border-[#006699]/50 text-[#222] placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20"
                                         placeholder="John Smith"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-white/80">Email Address</label>
+                                    <label className="text-sm font-semibold text-[#444] font-bold uppercase tracking-widest text-xs">Email Address</label>
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
                                         required
-                                        className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20"
+                                        className="w-full bg-[#f4f4f4] border border-[#e5e5e5] focus:border-[#006699]/50 text-[#222] placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20"
                                         placeholder="you@example.com"
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-white/80">Message</label>
+                                <label className="text-sm font-semibold text-[#444] font-bold uppercase tracking-widest text-xs">Message</label>
                                 <textarea
                                     value={message}
                                     onChange={e => setMessage(e.target.value)}
                                     required
-                                    className="w-full bg-black/50 border border-white/10 focus:border-primary/50 text-white placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 resize-y min-h-[150px]"
+                                    className="w-full bg-[#f4f4f4] border border-[#e5e5e5] focus:border-[#006699]/50 text-[#222] placeholder-white/20 rounded-xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-primary/20 resize-y min-h-[150px]"
                                     placeholder="Describe your issue or question..."
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full py-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] flex items-center justify-center gap-3 transition-all"
+                                className="w-full py-4 rounded-xl bg-[#006699] hover:bg-[#006699]/90 text-[#222] font-bold text-lg shadow-sm hover:shadow-sm flex items-center justify-center gap-3 transition-all"
                             >
                                 <Send size={20} /> Send Message
                             </button>
@@ -172,18 +174,18 @@ export default function SupportPage() {
                             { q: 'What file formats are supported for uploads?', a: 'For images: JPG, PNG, GIF, WebP. For documents: PDF, DOC, DOCX, XLSX, CSV, ZIP, TXT. Maximum file sizes apply depending on the hosting configuration.' },
                             { q: 'Is my data secure?', a: 'Yes. Passwords are hashed with bcrypt, files are stored on encrypted AWS S3, and all connections use HTTPS. Read our full Privacy Policy for more details.' },
                         ].map((faq, i) => (
-                            <div key={i} className="glass-card p-6">
-                                <h3 className="font-bold text-white mb-2">{faq.q}</h3>
-                                <p className="text-muted-foreground text-sm leading-relaxed">{faq.a}</p>
+                            <div key={i} className="bg-[#f9f9f9] border border-[#e5e5e5] shadow-sm p-6">
+                                <h3 className="font-bold text-[#222] mb-2">{faq.q}</h3>
+                                <p className="text-[#555] text-sm leading-relaxed">{faq.a}</p>
                             </div>
                         ))}
                     </div>
                 </motion.div>
             </div>
 
-            <footer className="relative z-10 border-t border-white/10 bg-black/50 backdrop-blur-md py-12 text-center text-muted-foreground mt-auto">
+            <footer className="border-t border-[#e5e5e5] bg-[#f9f9f9] py-12 text-center text-[#666] font-sans text-sm mt-auto">
                 <p className="font-medium text-sm">
-                    © {new Date().getFullYear()} Remote Sensing & GIS Intelligence. Built with Next.js, Framer Motion & AWS.
+                    © {new Date().getFullYear()} Remote Sensing & GIS Intelligence. Data Integrity & Scientific Excellence.
                 </p>
             </footer>
         </main>

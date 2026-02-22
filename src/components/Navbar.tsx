@@ -1,25 +1,26 @@
 import Link from 'next/link';
-import { Globe, PlusCircle, LayoutDashboard, Home } from 'lucide-react';
+import { Globe, PlusCircle, LayoutDashboard, Home, Tag } from 'lucide-react';
 
 export default function Navbar() {
     return (
-        <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-4 mx-4 mt-4 lg:mx-auto max-w-7xl rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)] transition-all">
-            <Link href="/" className="flex items-center gap-2 group">
-                <Globe className="text-primary transition-transform duration-300 group-hover:rotate-180" />
-                <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent bg-[length:200%_auto] animate-glass-shimmer font-bold text-xl tracking-tight">
+        <nav className="w-full bg-[#1a1a1a] shadow-md flex items-center justify-between px-6 lg:px-12 py-4">
+            <Link href="/" className="flex items-center gap-3 group">
+                <Globe className="text-[#0ea5e9] transition-transform duration-300 group-hover:rotate-180 w-6 h-6" />
+                <span className="text-white font-semibold text-xl tracking-tight">
                     GeoInsights
                 </span>
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
-                <NavLink href="/" icon={<Home size={18} />} label="Home" />
-                <NavLink href="/request-post" icon={<PlusCircle size={18} />} label="Request Post" />
-                <NavLink href="/admin" icon={<LayoutDashboard size={18} />} label="Admin" />
+                <NavLink href="/" icon={<Home size={16} />} label="HOME" />
+                <NavLink href="/categories" icon={<Tag size={16} />} label="CATEGORIES" />
+                <NavLink href="/request-post" icon={<PlusCircle size={16} />} label="SUBMIT REPORT" />
+                <NavLink href="/admin" icon={<LayoutDashboard size={16} />} label="ADMIN" />
             </div>
 
             <Link
                 href="/request-post"
-                className="hidden md:flex items-center justify-center px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] hover:-translate-y-0.5"
+                className="hidden md:flex items-center justify-center px-6 py-2 bg-[#0ea5e9] text-white text-sm font-bold uppercase tracking-widest hover:bg-[#0284c7] transition-colors"
             >
                 Submit Data Finding
             </Link>
@@ -31,7 +32,7 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
     return (
         <Link
             href={href}
-            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors hover:scale-105"
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-300 hover:text-white transition-colors"
         >
             {icon} {label}
         </Link>

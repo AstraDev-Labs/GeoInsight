@@ -11,68 +11,67 @@ export default async function AuthorProfile({ params }: { params: Promise<{ name
     const authorPosts = allPosts.filter(p => p.status === 'published' && p.author.toLowerCase() === decodedName.toLowerCase());
 
     return (
-        <main className="min-h-screen flex flex-col bg-background text-foreground overflow-hidden relative pb-0">
-            <Navbar />
+        <main className="min-h-screen flex flex-col bg-white text-black overflow-hidden relative pb-0 font-sans">
+            <div className="bg-[#1a1a1a] shadow-md z-20 relative w-full">
+                <Navbar />
+            </div>
 
-            {/* Background elements */}
-            <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
-
-            <div className="pt-32 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto relative z-10">
+            <div className="pt-16 pb-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto w-full relative z-10 flex-1">
                 <div className="flex flex-col items-center justify-center text-center mb-16">
-                    <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 border border-primary/20 shadow-[0_0_30px_rgba(56,189,248,0.2)]">
-                        <User size={48} />
+                    <div className="w-24 h-24 bg-[#f0f0f0] rounded-none flex items-center justify-center text-[#222] mb-6 border border-[#e5e5e5]">
+                        <User size={48} className="text-[#006699]" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">{decodedName}</h1>
-                    <p className="text-muted-foreground text-lg">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif text-[#222]">{decodedName}</h1>
+                    <p className="text-[#666] text-lg uppercase tracking-widest text-sm font-bold">
                         Contributing Researcher
-                        <span className="mx-3 text-white/20">•</span>
+                        <span className="mx-3 text-[#ccc]">•</span>
                         {authorPosts.length} Published Findings
                     </p>
                 </div>
 
                 <div className="space-y-8">
-                    <h2 className="text-2xl font-bold border-b border-white/10 pb-4 flex items-center gap-3">
-                        <span className="w-6 h-1 bg-secondary rounded-full" />
+                    <h2 className="text-2xl font-bold border-b border-[#e5e5e5] pb-4 flex items-center gap-3 font-serif text-[#222]">
+                        <span className="w-6 h-1 bg-[#006699] rounded-none" />
                         Research Portfolio
                     </h2>
 
                     {authorPosts.length === 0 ? (
-                        <div className="text-center py-12 text-muted-foreground bg-white/5 rounded-2xl border border-white/10">
+                        <div className="text-center py-12 text-[#555] bg-[#f9f9f9] border border-[#e5e5e5] italic">
                             No publications found by this author.
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {authorPosts.map(post => (
-                                <div key={post.id} className="group border border-white/10 bg-black/40 backdrop-blur-xl rounded-3xl overflow-hidden shadow-xl hover:shadow-secondary/20 transition-all flex flex-col h-full">
+                                <div key={post.id} className="group border border-[#e5e5e5] bg-white transition-all flex flex-col h-full hover:shadow-md">
                                     <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
                                         {post.images && post.images.length > 0 ? (
-                                            <div className="relative h-48 overflow-hidden">
-                                                <img src={post.images[0]} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
-                                                <div className="absolute top-4 left-4 bg-secondary/90 text-secondary-foreground text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-md">
+                                            <div className="relative h-48 overflow-hidden bg-[#f0f0f0]">
+                                                <img src={post.images[0]} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                                                <div className="absolute top-4 left-4 bg-[#006699] text-white text-xs font-bold px-3 py-1 uppercase tracking-widest shadow-sm">
                                                     {post.category}
                                                 </div>
                                             </div>
                                         ) : (
-                                            <div className="relative h-48 bg-gradient-to-br from-primary/20 to-secondary/20 flex flex-col items-center justify-center border-b border-white/5">
-                                                <div className="absolute top-4 left-4 bg-white/10 text-white border border-white/20 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-md">
+                                            <div className="relative h-48 bg-[#f4f4f4] flex flex-col items-center justify-center border-b border-[#e5e5e5]">
+                                                <div className="absolute top-4 left-4 bg-[#222] text-white text-xs font-bold px-3 py-1 uppercase tracking-widest">
                                                     {post.category}
                                                 </div>
-                                                <Map className="w-16 h-16 text-white/30" />
+                                                <Map className="w-16 h-16 text-[#ccc]" />
                                             </div>
                                         )}
 
-                                        <div className="p-8 flex-1 flex flex-col">
-                                            <h3 className="text-xl font-bold mb-3 leading-tight group-hover:text-secondary transition-colors line-clamp-2">
+                                        <div className="p-6 flex-1 flex flex-col">
+                                            <h3 className="text-[1.3rem] font-bold mb-3 leading-[1.3] text-[#222] group-hover:text-[#006699] transition-colors font-serif line-clamp-2">
                                                 {post.title}
                                             </h3>
-                                            <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed">
+                                            <p className="text-[#555] text-[0.95rem] line-clamp-3 leading-relaxed">
                                                 {post.excerpt}
                                             </p>
                                         </div>
                                     </Link>
-                                    <div className="px-8 pb-8 mt-auto flex items-center gap-2 text-xs font-medium text-white/50 border-t border-white/10 pt-4">
-                                        <Calendar size={14} className="text-muted-foreground" />
-                                        {post.postedAt ? new Date(post.postedAt).toLocaleDateString() : post.date}
+                                    <div className="px-6 pb-6 mt-auto flex items-center gap-2 text-xs font-bold text-[#888] uppercase tracking-widest border-[#e5e5e5] pt-4">
+                                        <Calendar size={14} className="text-[#888]" />
+                                        {post.postedAt ? new Date(post.postedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : post.date}
                                     </div>
                                 </div>
                             ))}
@@ -81,11 +80,14 @@ export default async function AuthorProfile({ params }: { params: Promise<{ name
                 </div>
             </div>
 
-            {/* Footer */}
-            <footer className="relative z-10 border-t border-white/10 bg-black/50 backdrop-blur-md py-12 text-center text-muted-foreground mt-auto">
-                <p className="font-medium text-sm">
-                    © {new Date().getFullYear()} Remote Sensing & GIS Intelligence. Built with Next.js, Framer Motion & AWS.
+            <footer className="border-t border-[#e5e5e5] bg-[#f9f9f9] py-12 text-center text-[#666666] font-sans text-sm mt-auto">
+                <p>
+                    © {new Date().getFullYear()} Remote Sensing & GIS Team. Data Integrity & Scientific Excellence.
                 </p>
+                <div className="flex justify-center gap-6 mt-4">
+                    <Link href="/privacy" className="hover:text-[#006699] uppercase tracking-wider text-xs font-bold transition-colors">Privacy Policy</Link>
+                    <Link href="/support" className="hover:text-[#006699] uppercase tracking-wider text-xs font-bold transition-colors">Support</Link>
+                </div>
             </footer>
         </main>
     )

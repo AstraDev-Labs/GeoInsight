@@ -15,6 +15,8 @@ export interface BlogPost {
     attachments?: string[]; // Links to documents, PDFs, etc.
     authorPassword?: string; // Hashed password for author to delete the post
     authorEmail?: string; // Author email for deletion
+    satellite?: string; // e.g. Sentinel-2, Landsat 8
+    areaOfInterest?: string; // e.g. Amazon Rainforest, New York City
 }
 
 export interface PostRequest {
@@ -22,7 +24,7 @@ export interface PostRequest {
     title: string;
     author: string;
     email: string;
-    abstract: string;
+    abstract?: string;
     content: string;  // Full blog content written by the author
     category: string;
     submittedAt: string;
@@ -30,4 +32,6 @@ export interface PostRequest {
     images?: string[]; // Author can provide evidence images
     attachments?: string[]; // Links to documents, proofs, etc.
     authorPassword?: string; // Hashed password for author to delete the post
+    satellite?: string;
+    areaOfInterest?: string;
 }
