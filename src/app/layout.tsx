@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geoinsights.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

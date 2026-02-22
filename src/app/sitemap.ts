@@ -1,7 +1,7 @@
 import { dataService } from '@/lib/data-service';
 import { MetadataRoute } from 'next';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geoinsights.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Static pages
