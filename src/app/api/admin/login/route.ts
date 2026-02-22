@@ -7,7 +7,14 @@ export async function POST(request: Request) {
         const { password } = await request.json();
 
         // Admin password stored as env var (should be a bcrypt hash in production)
-        const adminPassword = process.env.ADMIN_PASSWORD || "";
+        let adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
+
+        // Strip accidental quotes if they were included in the literal string
+        if (adminPassword.startsWith("'") && adminPassword.endsWith("'")) {
+            adminPassword = adminPassword.slice(1, -1);
+        } else if (adminPassword.startsWith('"') && adminPassword.endsWith('"')) {
+            adminPassword = adminPassword.slice(1, -1);
+        }
 
         if (!adminPassword) {
             return NextResponse.json(
