@@ -161,43 +161,43 @@ export const dataService = {
     },
 
     clearHistory: async (): Promise<void> => {
-        // 1. Get current data
-        const allRequests = await dataService.getRequests();
-        const allPosts = await dataService.getPosts();
+        try {
+            // 1. Get current data for identification
+            const allRequests = await dataService.getRequests();
+            const allPosts = await dataService.getPosts();
 
-        // 2. Clear Local JSON DB
-        const db = readDb();
-        db.requests = db.requests.filter(r => r.status === 'pending');
-        db.posts = db.posts.filter(p => p.status !== 'rejected'); // Keep published and pending posts
-        writeDb(db);
+            // 2. Clear Local JSON DB (Safe sync operation)
+            const db = readDb();
+            db.requests = db.requests.filter(r => r.status === 'pending');
+            db.posts = db.posts.filter(p => p.status !== 'rejected');
+            writeDb(db);
 
-        // 3. Clear AWS DynamoDB if active
-        if (awsEnabled && ddbDocClient) {
-            try {
+            // 3. Clear AWS DynamoDB if active
+            if (awsEnabled && ddbDocClient) {
                 const { DeleteCommand } = await import("@aws-sdk/lib-dynamodb");
+                const client = ddbDocClient; // Capture non-null reference
 
-                // Identify items to delete from AWS
+                // Identify items to delete
                 const requestsToDelete = allRequests.filter(r => r.status !== 'pending');
                 const postsToDelete = allPosts.filter(p => p.status === 'rejected');
 
-                // Delete requests
-                for (const req of requestsToDelete) {
-                    await ddbDocClient.send(new DeleteCommand({
-                        TableName: TABLE_NAME,
-                        Key: { id: req.id }
-                    }));
-                }
+                console.log(`🧹 Clearing ${requestsToDelete.length} requests and ${postsToDelete.length} rejected posts from AWS...`);
 
-                // Delete rejected posts
-                for (const post of postsToDelete) {
-                    await ddbDocClient.send(new DeleteCommand({
-                        TableName: TABLE_NAME,
-                        Key: { id: post.id }
-                    }));
-                }
-            } catch (error) {
-                console.error("AWS DynamoDB clearHistory failed:", error);
+                // Parallel execution for speed (within limits)
+                const deletePromises = [
+                    ...requestsToDelete.map(req =>
+                        client.send(new DeleteCommand({ TableName: TABLE_NAME, Key: { id: req.id } }))
+                    ),
+                    ...postsToDelete.map(post =>
+                        client.send(new DeleteCommand({ TableName: TABLE_NAME, Key: { id: post.id } }))
+                    )
+                ];
+
+                await Promise.all(deletePromises);
             }
+        } catch (error: any) {
+            console.error("CRITICAL: clearHistory failed:", error);
+            throw new Error(error.message || "Failed to execute database purge");
         }
-    }
+    },
 };

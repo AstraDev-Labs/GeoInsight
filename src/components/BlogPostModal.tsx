@@ -172,8 +172,10 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                         opacity: 0,
                                         transition: 'opacity 0.2s ease',
                                         display: 'flex',
+                                        flexDirection: 'column',
                                         alignItems: 'center',
                                         justifyContent: 'center',
+                                        gap: '12px',
                                         borderRadius: '1rem'
                                     }} className="group-hover:opacity-100">
                                         <div style={{
@@ -188,8 +190,28 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                             gap: '8px',
                                             border: '1px solid rgba(56, 189, 248, 0.3)'
                                         }}>
-                                            <ExternalLink size={14} color="var(--primary)" /> Click to Expand
+                                            <ExternalLink size={14} color="var(--primary)" /> Zoom & Explore
                                         </div>
+                                        <a
+                                            href={images[0]}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            style={{
+                                                background: 'rgba(0, 0, 0, 0.6)',
+                                                backdropFilter: 'blur(10px)',
+                                                padding: '0.5rem 1rem',
+                                                borderRadius: '999px',
+                                                color: 'var(--primary)',
+                                                fontSize: '0.75rem',
+                                                textDecoration: 'none',
+                                                fontWeight: 700,
+                                                border: '1px solid rgba(56, 189, 248, 0.2)'
+                                            }}
+                                            className="hover:scale-110 transition-transform"
+                                        >
+                                            View Original (New Tab)
+                                        </a>
                                     </div>
                                 </div>
 
@@ -331,26 +353,47 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                         setSelectedImage(null);
                     }}
                 >
-                    <button
-                        onClick={() => setSelectedImage(null)}
-                        style={{
-                            position: 'absolute',
-                            top: '2rem',
-                            right: '2rem',
-                            background: 'rgba(255,255,255,0.1)',
-                            border: 'none',
-                            color: 'white',
-                            cursor: 'pointer',
-                            padding: '0.75rem',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            zIndex: 10
-                        }}
-                    >
-                        <X size={24} />
-                    </button>
+                    <div style={{ position: 'absolute', top: '2rem', right: '2rem', display: 'flex', gap: '1rem' }}>
+                        <a
+                            href={selectedImage}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                                background: 'rgba(15, 23, 42, 0.8)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                color: 'white',
+                                padding: '0.75rem 1.25rem',
+                                borderRadius: '999px',
+                                fontSize: '0.9rem',
+                                fontWeight: 600,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                textDecoration: 'none'
+                            }}
+                            className="hover:bg-primary/20 hover:border-primary transition-all"
+                        >
+                            <ExternalLink size={18} /> Open Original in New Tab
+                        </a>
+                        <button
+                            onClick={() => setSelectedImage(null)}
+                            style={{
+                                background: 'rgba(255,255,255,0.1)',
+                                border: 'none',
+                                color: 'white',
+                                cursor: 'pointer',
+                                padding: '0.75rem',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backdropFilter: 'blur(10px)'
+                            }}
+                        >
+                            <X size={24} />
+                        </button>
+                    </div>
                     <img
                         src={selectedImage}
                         alt="Research Evidence Fullscreen"
