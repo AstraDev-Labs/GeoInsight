@@ -19,5 +19,13 @@ export const readDb = (): DbSchema => {
 };
 
 export const writeDb = (data: DbSchema) => {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+    try {
+        fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+    } catch (error: any) {
+        if (error.code === 'EROFS') {
+            console.warn("Local DB write skipped: Vercel Read-Only Filesystem.");
+        } else {
+            console.warn("Failed to write to local DB:", error.message);
+        }
+    }
 };

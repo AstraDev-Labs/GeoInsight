@@ -1,4 +1,4 @@
-import { PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, ScanCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import { ddbDocClient, TABLE_NAME, useAWS as awsEnabled } from "./aws-config";
 import { BlogPost, PostRequest } from "./types";
 import { readDb, writeDb } from "./db-server";
@@ -163,18 +163,20 @@ export const dataService = {
     clearHistory: async (): Promise<void> => {
         try {
             // 1. Get current data for identification
-            const allRequests = await dataService.getRequests();
-            const allPosts = await dataService.getPosts();
+            const allRequests = await dataService.getRequests() || [];
+            const allPosts = await dataService.getPosts() || [];
 
             // 2. Clear Local JSON DB (Safe sync operation)
-            const db = readDb();
-            db.requests = db.requests.filter(r => r.status === 'pending');
-            db.posts = db.posts.filter(p => p.status !== 'rejected');
+            const db = readDb() || { posts: [], requests: [] };
+            const safeRequests = Array.isArray(db.requests) ? db.requests : [];
+            const safePosts = Array.isArray(db.posts) ? db.posts : [];
+
+            db.requests = safeRequests.filter((r: any) => r.status === 'pending');
+            db.posts = safePosts.filter((p: any) => p.status !== 'rejected');
             writeDb(db);
 
             // 3. Clear AWS DynamoDB if active
             if (awsEnabled && ddbDocClient) {
-                const { DeleteCommand } = await import("@aws-sdk/lib-dynamodb");
                 const client = ddbDocClient; // Capture non-null reference
 
                 // Identify items to delete

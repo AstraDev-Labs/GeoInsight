@@ -15,17 +15,15 @@ interface BlogPostModalProps {
 }
 
 export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-    // Prevent scrolling on body when modal or lightbox is open
+    // Prevent scrolling on body when modal is open
     useEffect(() => {
-        if (selectedImage || post) {
+        if (post) {
             document.body.style.overflow = 'hidden';
         }
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [selectedImage, post]);
+    }, [post]);
 
     const postedDate = post.postedAt ? new Date(post.postedAt) : new Date(post.date);
 
@@ -41,7 +39,6 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
             justifyContent: 'center',
             padding: '2rem'
         }} className="animate-in fade-in duration-300" onClick={(e) => {
-            if (selectedImage) return; // Don't close modal if lightbox is open
             onClose();
         }}>
 
@@ -142,12 +139,12 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                         const images = post.images;
                         return (
                             <div style={{ marginBottom: '3rem' }}>
-                                <div
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedImage(images[0]);
-                                    }}
-                                    style={{ cursor: 'zoom-in', position: 'relative' }}
+                                <a
+                                    href={images[0]}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    style={{ cursor: 'pointer', position: 'relative', display: 'block' }}
                                     className="group"
                                 >
                                     <img
@@ -190,30 +187,10 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                             gap: '8px',
                                             border: '1px solid rgba(56, 189, 248, 0.3)'
                                         }}>
-                                            <ExternalLink size={14} color="var(--primary)" /> Zoom & Explore
+                                            <ExternalLink size={14} color="var(--primary)" /> Open Original (New Tab)
                                         </div>
-                                        <a
-                                            href={images[0]}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            onClick={(e) => e.stopPropagation()}
-                                            style={{
-                                                background: 'rgba(0, 0, 0, 0.6)',
-                                                backdropFilter: 'blur(10px)',
-                                                padding: '0.5rem 1rem',
-                                                borderRadius: '999px',
-                                                color: 'var(--primary)',
-                                                fontSize: '0.75rem',
-                                                textDecoration: 'none',
-                                                fontWeight: 700,
-                                                border: '1px solid rgba(56, 189, 248, 0.2)'
-                                            }}
-                                            className="hover:scale-110 transition-transform"
-                                        >
-                                            View Original (New Tab)
-                                        </a>
                                     </div>
-                                </div>
+                                </a>
 
                                 {images.length > 1 && (
                                     <div style={{ marginTop: '1.5rem' }}>
@@ -232,13 +209,13 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                             gap: '1rem',
                                         }}>
                                             {images.slice(1).map((img, i) => (
-                                                <div
+                                                <a
                                                     key={i}
-                                                    style={{ position: 'relative', cursor: 'zoom-in' }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setSelectedImage(img);
-                                                    }}
+                                                    href={img}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    style={{ position: 'relative', cursor: 'pointer', display: 'block' }}
+                                                    onClick={(e) => e.stopPropagation()}
                                                     className="group"
                                                 >
                                                     <img
@@ -254,7 +231,10 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                                         }}
                                                         className="group-hover:scale-105 group-hover:brightness-110"
                                                     />
-                                                </div>
+                                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center rounded-xl">
+                                                        <span className="opacity-0 group-hover:opacity-100 text-white text-xs font-semibold px-2 py-1 bg-black/60 rounded backdrop-blur-sm transition-opacity pointer-events-none">Open</span>
+                                                    </div>
+                                                </a>
                                             ))}
                                         </div>
                                     </div>
@@ -333,82 +313,6 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                 </div>
             </div>
 
-            {/* Image Detail Lightbox */}
-            {selectedImage && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        inset: 0,
-                        background: 'rgba(0, 0, 0, 0.9)',
-                        backdropFilter: 'blur(20px)',
-                        zIndex: 2000, // Higher than modal
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: '2rem'
-                    }}
-                    className="animate-in fade-in zoom-in duration-300"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedImage(null);
-                    }}
-                >
-                    <div style={{ position: 'absolute', top: '2rem', right: '2rem', display: 'flex', gap: '1rem' }}>
-                        <a
-                            href={selectedImage}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            style={{
-                                background: 'rgba(15, 23, 42, 0.8)',
-                                border: '1px solid rgba(255,255,255,0.1)',
-                                color: 'white',
-                                padding: '0.75rem 1.25rem',
-                                borderRadius: '999px',
-                                fontSize: '0.9rem',
-                                fontWeight: 600,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                textDecoration: 'none'
-                            }}
-                            className="hover:bg-primary/20 hover:border-primary transition-all"
-                        >
-                            <ExternalLink size={18} /> Open Original in New Tab
-                        </a>
-                        <button
-                            onClick={() => setSelectedImage(null)}
-                            style={{
-                                background: 'rgba(255,255,255,0.1)',
-                                border: 'none',
-                                color: 'white',
-                                cursor: 'pointer',
-                                padding: '0.75rem',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backdropFilter: 'blur(10px)'
-                            }}
-                        >
-                            <X size={24} />
-                        </button>
-                    </div>
-                    <img
-                        src={selectedImage}
-                        alt="Research Evidence Fullscreen"
-                        style={{
-                            maxWidth: '100%',
-                            maxHeight: '100%',
-                            objectFit: 'contain',
-                            borderRadius: '1rem',
-                            boxShadow: '0 0 50px rgba(56, 189, 248, 0.2)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)'
-                        }}
-                        onClick={e => e.stopPropagation()}
-                    />
-                </div>
-            )}
         </div>
     );
 }
