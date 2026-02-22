@@ -37,6 +37,15 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
 
                 {post.images && post.images.length > 0 && (
                     <div style={{ marginBottom: '2rem' }}>
+                        <h4 style={{
+                            fontSize: '0.85rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            color: 'var(--muted-foreground)',
+                            marginBottom: '1rem'
+                        }}>
+                            📷 All Evidence Photos ({post.images.length})
+                        </h4>
                         <a href={post.images[0]} target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
                             <img
                                 src={post.images[0]}
@@ -51,21 +60,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                                     transition: 'filter 0.3s ease',
                                     cursor: 'pointer'
                                 }}
-                                onMouseOver={(e) => (e.currentTarget.style.filter = 'brightness(1.1)')}
-                                onMouseOut={(e) => (e.currentTarget.style.filter = 'brightness(1)')}
+                                className="hover:brightness-110 transition-all duration-300"
                             />
                         </a>
                         {post.images.length > 1 && (
                             <div style={{ marginTop: '1.5rem' }}>
-                                <h4 style={{
-                                    fontSize: '0.85rem',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.05em',
-                                    color: 'var(--muted-foreground)',
-                                    marginBottom: '0.75rem'
-                                }}>
-                                    📷 All Evidence Photos ({post.images.length})
-                                </h4>
                                 <div style={{
                                     display: 'grid',
                                     gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
@@ -85,14 +84,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                                                     transition: 'all 0.2s ease',
                                                     cursor: 'pointer'
                                                 }}
-                                                onMouseOver={(e) => {
-                                                    e.currentTarget.style.transform = 'scale(1.02)';
-                                                    e.currentTarget.style.filter = 'brightness(1.1)';
-                                                }}
-                                                onMouseOut={(e) => {
-                                                    e.currentTarget.style.transform = 'scale(1)';
-                                                    e.currentTarget.style.filter = 'brightness(1)';
-                                                }}
+                                                className="hover:scale-[1.02] hover:brightness-110 transition-all duration-200"
                                             />
                                             <span style={{
                                                 position: 'absolute',

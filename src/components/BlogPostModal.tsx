@@ -139,6 +139,15 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                         const images = post.images;
                         return (
                             <div style={{ marginBottom: '3rem' }}>
+                                <h4 style={{
+                                    fontSize: '0.85rem',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em',
+                                    color: 'rgba(255,255,255,0.5)',
+                                    marginBottom: '1rem'
+                                }}>
+                                    📷 All Evidence Photos ({images.length})
+                                </h4>
                                 <div
                                     style={{ cursor: 'context-menu', position: 'relative', display: 'block' }}
                                     className="group"
@@ -190,15 +199,6 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
 
                                 {images.length > 1 && (
                                     <div style={{ marginTop: '1.5rem' }}>
-                                        <h4 style={{
-                                            fontSize: '0.85rem',
-                                            textTransform: 'uppercase',
-                                            letterSpacing: '0.05em',
-                                            color: 'rgba(255,255,255,0.5)',
-                                            marginBottom: '0.75rem'
-                                        }}>
-                                            📷 All Evidence Photos ({images.length})
-                                        </h4>
                                         <div style={{
                                             display: 'grid',
                                             gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
