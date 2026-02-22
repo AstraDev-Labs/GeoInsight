@@ -7,7 +7,7 @@ import remarkGfm from 'remark-gfm';
 import EditPostButton from '@/components/EditPostButton';
 import DeletePostButton from '@/components/DeletePostButton';
 import { BlogPost } from '@/lib/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface BlogPostModalProps {
     post: BlogPost;
@@ -15,13 +15,17 @@ interface BlogPostModalProps {
 }
 
 export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
-    // Prevent scrolling on body when modal is open
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    // Prevent scrolling on body when modal or lightbox is open
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
+        if (selectedImage || post) {
+            document.body.style.overflow = 'hidden';
+        }
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, []);
+    }, [selectedImage, post]);
 
     const postedDate = post.postedAt ? new Date(post.postedAt) : new Date(post.date);
 
@@ -52,7 +56,7 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                 flexDirection: 'column'
             }} className="glass-card" onClick={e => e.stopPropagation()}>
 
-                {/* Header Header */}
+                {/* Header */}
                 <div style={{
                     position: 'sticky',
                     top: 0,
@@ -133,19 +137,54 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
 
                     {post.images && post.images.length > 0 && (
                         <div style={{ marginBottom: '3rem' }}>
-                            <img
-                                src={post.images[0]}
-                                alt={post.title}
-                                style={{
-                                    width: '100%',
-                                    height: 'auto',
-                                    maxHeight: '400px',
-                                    objectFit: 'cover',
-                                    borderRadius: '1rem',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
-                                }}
-                            />
+                            <div
+                                onClick={() => setSelectedImage(post.images[0])}
+                                style={{ cursor: 'zoom-in', position: 'relative' }}
+                                className="group"
+                            >
+                                <img
+                                    src={post.images[0]}
+                                    alt={post.title}
+                                    style={{
+                                        width: '100%',
+                                        height: 'auto',
+                                        maxHeight: '400px',
+                                        objectFit: 'cover',
+                                        borderRadius: '1rem',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    className="group-hover:brightness-110"
+                                />
+                                <div style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    background: 'rgba(56, 189, 248, 0.1)',
+                                    opacity: 0,
+                                    transition: 'opacity 0.2s ease',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: '1rem'
+                                }} className="group-hover:opacity-100">
+                                    <div style={{
+                                        background: 'rgba(15, 23, 42, 0.8)',
+                                        padding: '0.75rem 1.25rem',
+                                        borderRadius: '999px',
+                                        color: 'white',
+                                        fontSize: '0.85rem',
+                                        fontWeight: 600,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        border: '1px solid rgba(56, 189, 248, 0.3)'
+                                    }}>
+                                        <ExternalLink size={14} color="var(--primary)" /> Click to Expand
+                                    </div>
+                                </div>
+                            </div>
+
                             {post.images.length > 1 && (
                                 <div style={{ marginTop: '1.5rem' }}>
                                     <h4 style={{
@@ -163,7 +202,12 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                         gap: '1rem',
                                     }}>
                                         {post.images.slice(1).map((img, i) => (
-                                            <div key={i} style={{ position: 'relative' }}>
+                                            <div
+                                                key={i}
+                                                style={{ position: 'relative', cursor: 'zoom-in' }}
+                                                onClick={() => setSelectedImage(img)}
+                                                className="group"
+                                            >
                                                 <img
                                                     src={img}
                                                     alt={`${post.title} evidence ${i + 2}`}
@@ -173,8 +217,9 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                                         objectFit: 'cover',
                                                         borderRadius: '0.75rem',
                                                         border: '1px solid rgba(255,255,255,0.1)',
-                                                        transition: 'transform 0.2s ease'
+                                                        transition: 'all 0.3s ease'
                                                     }}
+                                                    className="group-hover:scale-105 group-hover:brightness-110"
                                                 />
                                             </div>
                                         ))}
@@ -253,6 +298,59 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                     </div>
                 </div>
             </div>
+
+            {/* Image Detail Lightbox */}
+            {selectedImage && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        inset: 0,
+                        background: 'rgba(0, 0, 0, 0.9)',
+                        backdropFilter: 'blur(20px)',
+                        zIndex: 1100,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '2rem'
+                    }}
+                    className="animate-in fade-in zoom-in duration-300"
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <button
+                        onClick={() => setSelectedImage(null)}
+                        style={{
+                            position: 'absolute',
+                            top: '2rem',
+                            right: '2rem',
+                            background: 'rgba(255,255,255,0.1)',
+                            border: 'none',
+                            color: 'white',
+                            cursor: 'pointer',
+                            padding: '0.75rem',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 10
+                        }}
+                    >
+                        <X size={24} />
+                    </button>
+                    <img
+                        src={selectedImage}
+                        alt="Research Evidence Fullscreen"
+                        style={{
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'contain',
+                            borderRadius: '1rem',
+                            boxShadow: '0 0 50px rgba(56, 189, 248, 0.2)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)'
+                        }}
+                        onClick={e => e.stopPropagation()}
+                    />
+                </div>
+            )}
         </div>
     );
 }
