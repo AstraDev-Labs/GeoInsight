@@ -1,20 +1,12 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
     try {
         const { password } = await request.json();
 
-        // Admin password stored as env var (should be a bcrypt hash in production)
-        let adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
-
-        // Strip accidental quotes if they were included in the literal string
-        if (adminPassword.startsWith("'") && adminPassword.endsWith("'")) {
-            adminPassword = adminPassword.slice(1, -1);
-        } else if (adminPassword.startsWith('"') && adminPassword.endsWith('"')) {
-            adminPassword = adminPassword.slice(1, -1);
-        }
+        // Admin password stored as env var
+        const adminPassword = process.env.ADMIN_PASSWORD || "Astradevs@2026";
 
         if (!adminPassword) {
             return NextResponse.json(
@@ -23,9 +15,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const isMatch = await bcrypt.compare(password, adminPassword);
-
-        if (isMatch) {
+        if (password === adminPassword) {
             // Generate a session token
             const token = crypto.randomBytes(32).toString("hex");
             const expiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
