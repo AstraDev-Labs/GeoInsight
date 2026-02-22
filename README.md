@@ -179,7 +179,7 @@ BING_SITE_VERIFICATION=your-bing-code
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000)
+Open [https://geo-insight-seven.vercel.app](https://geo-insight-seven.vercel.app)
 
 ### 5. Deploy to Vercel
 ```bash

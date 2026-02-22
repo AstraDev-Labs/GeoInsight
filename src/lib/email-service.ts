@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 const FROM_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@geoinsights.com';
 const SITE_NAME = 'GeoInsights';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
 
 interface EmailOptions {
     to: string;
