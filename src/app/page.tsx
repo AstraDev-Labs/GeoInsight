@@ -27,6 +27,8 @@ function HomeContent() {
     const categoryParam = searchParams.get('category');
     if (categoryParam) {
       setActiveCategory(categoryParam);
+    } else {
+      setActiveCategory('All');
     }
 
     if (searchParams.get('auth_error') === 'invalid_access') {
