@@ -1,24 +1,16 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
+import { generateAdminToken } from "@/lib/auth-util";
 
 export async function POST(request: Request) {
     try {
         const { password } = await request.json();
 
         // Admin password stored as env var
-        const adminPassword = process.env.ADMIN_PASSWORD || "Astradevs@2026";
-
-        if (!adminPassword) {
-            return NextResponse.json(
-                { success: false, message: "Server configuration error" },
-                { status: 500 }
-            );
-        }
+        const adminPassword = (process.env.ADMIN_PASSWORD || "Astradevs@2026").trim();
 
         if (password === adminPassword) {
             // Generate a session token
-            const token = crypto.randomBytes(32).toString("hex");
-            const expiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+            const token = generateAdminToken(adminPassword);
 
             // Store token in a cookie
             const response = NextResponse.json({
@@ -33,11 +25,6 @@ export async function POST(request: Request) {
                 maxAge: 86400, // 24 hours
                 path: "/",
             });
-
-            // Also store the token hash server-side for validation
-            // Using a simple approach: store in a global (for production, use Redis/DB)
-            globalThis.__adminTokens = globalThis.__adminTokens || {};
-            globalThis.__adminTokens[token] = expiry;
 
             return response;
         }

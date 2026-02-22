@@ -1,21 +1,13 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { verifyAdminToken } from "@/lib/auth-util";
 
 export async function GET() {
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;
+    const adminPassword = (process.env.ADMIN_PASSWORD || "Astradevs@2026").trim();
 
-    if (!token) {
-        return NextResponse.json({ authenticated: false }, { status: 401 });
-    }
-
-    // Verify token exists and hasn't expired
-    const tokens = globalThis.__adminTokens || {};
-    const expiry = tokens[token];
-
-    if (!expiry || Date.now() > expiry) {
-        // Token expired or invalid
-        if (expiry) delete tokens[token];
+    if (!token || !verifyAdminToken(token, adminPassword)) {
         return NextResponse.json({ authenticated: false }, { status: 401 });
     }
 

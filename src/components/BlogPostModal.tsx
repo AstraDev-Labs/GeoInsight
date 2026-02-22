@@ -143,7 +143,10 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                         return (
                             <div style={{ marginBottom: '3rem' }}>
                                 <div
-                                    onClick={() => setSelectedImage(images[0])}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedImage(images[0]);
+                                    }}
                                     style={{ cursor: 'zoom-in', position: 'relative' }}
                                     className="group"
                                 >
@@ -210,7 +213,10 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                                 <div
                                                     key={i}
                                                     style={{ position: 'relative', cursor: 'zoom-in' }}
-                                                    onClick={() => setSelectedImage(img)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedImage(img);
+                                                    }}
                                                     className="group"
                                                 >
                                                     <img

@@ -3,12 +3,13 @@ export const dynamic = 'force-dynamic';
 
 import { dataService } from '@/lib/data-service';
 import { cookies } from 'next/headers';
+import { verifyAdminToken } from '@/lib/auth-util';
 
 export async function POST() {
     const cookieStore = await cookies();
     const token = cookieStore.get('admin_token')?.value;
-    const tokens = (globalThis as any).__adminTokens || {};
-    const isAdmin = token && tokens[token] && Date.now() < tokens[token];
+    const adminPassword = (process.env.ADMIN_PASSWORD || "Astradevs@2026").trim();
+    const isAdmin = verifyAdminToken(token, adminPassword);
 
     if (!isAdmin) {
         return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });

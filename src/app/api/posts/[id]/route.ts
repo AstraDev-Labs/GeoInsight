@@ -5,6 +5,7 @@ import { dataService } from '@/lib/data-service';
 import { BlogPost } from '@/lib/types';
 import { cookies } from 'next/headers';
 import bcrypt from 'bcryptjs';
+import { verifyAdminToken } from '@/lib/auth-util';
 
 export async function PATCH(
     request: Request,
@@ -13,8 +14,8 @@ export async function PATCH(
     const { id } = await params;
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;
-    const tokens = (globalThis as any).__adminTokens || {};
-    const isAdmin = token && tokens[token] && Date.now() < tokens[token];
+    const adminPassword = (process.env.ADMIN_PASSWORD || "Astradevs@2026").trim();
+    const isAdmin = verifyAdminToken(token, adminPassword);
 
     const updates: Partial<BlogPost> & { email?: string; password?: string } = await request.json();
 
@@ -78,8 +79,8 @@ export async function DELETE(
     // Check if admin (has valid cookie)
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;
-    const tokens = (globalThis as any).__adminTokens || {};
-    const isAdmin = token && tokens[token] && Date.now() < tokens[token];
+    const adminPassword = (process.env.ADMIN_PASSWORD || "Astradevs@2026").trim();
+    const isAdmin = verifyAdminToken(token, adminPassword);
 
     if (isAdmin) {
         // Admin can delete any post
