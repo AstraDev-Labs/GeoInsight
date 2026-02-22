@@ -6,7 +6,7 @@ A premium, full-stack collaborative research blog built with **Next.js 16**, **A
 ![AWS](https://img.shields.io/badge/AWS-DynamoDB%20%2B%20S3-orange?logo=amazon-aws)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8?logo=tailwindcss)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
-![License](https://img.shields.io/badge/License-Proprietary-red)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
@@ -264,7 +264,7 @@ Create a bucket named `rs-blog-images` with:
 
 ## 📝 License
 
-This project is **proprietary software**. All rights reserved. See [LICENSE](./LICENSE) for details. Unauthorized copying, modification, or distribution is strictly prohibited.
+This project is licensed under the **MIT License**. See [LICENSE](./LICENSE) for details. Feel free to use, modify, and distribute as long as the original license is included.
 
 ---
 
