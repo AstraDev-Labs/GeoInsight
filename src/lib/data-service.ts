@@ -161,28 +161,39 @@ export const dataService = {
     },
 
     clearHistory: async (): Promise<void> => {
-        // Use the proper get functions to retrieve from AWS if active, otherwise local DB
+        // 1. Get current data
         const allRequests = await dataService.getRequests();
         const allPosts = await dataService.getPosts();
 
-        const oldRequests = allRequests.filter(r => r.status !== 'pending');
-        const oldPosts = allPosts.filter(p => p.status === 'rejected');
-
-        // Clear local DB regardless
+        // 2. Clear Local JSON DB
         const db = readDb();
         db.requests = db.requests.filter(r => r.status === 'pending');
-        db.posts = db.posts.filter(p => p.status !== 'rejected');
+        db.posts = db.posts.filter(p => p.status !== 'rejected'); // Keep published and pending posts
         writeDb(db);
 
-        // Clear AWS DB if active
+        // 3. Clear AWS DynamoDB if active
         if (awsEnabled && ddbDocClient) {
             try {
                 const { DeleteCommand } = await import("@aws-sdk/lib-dynamodb");
-                for (const req of oldRequests) {
-                    await ddbDocClient.send(new DeleteCommand({ TableName: TABLE_NAME, Key: { id: req.id } }));
+
+                // Identify items to delete from AWS
+                const requestsToDelete = allRequests.filter(r => r.status !== 'pending');
+                const postsToDelete = allPosts.filter(p => p.status === 'rejected');
+
+                // Delete requests
+                for (const req of requestsToDelete) {
+                    await ddbDocClient.send(new DeleteCommand({
+                        TableName: TABLE_NAME,
+                        Key: { id: req.id }
+                    }));
                 }
-                for (const post of oldPosts) {
-                    await ddbDocClient.send(new DeleteCommand({ TableName: TABLE_NAME, Key: { id: post.id } }));
+
+                // Delete rejected posts
+                for (const post of postsToDelete) {
+                    await ddbDocClient.send(new DeleteCommand({
+                        TableName: TABLE_NAME,
+                        Key: { id: post.id }
+                    }));
                 }
             } catch (error) {
                 console.error("AWS DynamoDB clearHistory failed:", error);
