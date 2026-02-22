@@ -24,7 +24,7 @@ export async function PATCH(
             const newPost: BlogPost = {
                 id: 'post-' + Math.random().toString(36).substr(2, 9),
                 title: req.title,
-                excerpt: req.abstract,
+                excerpt: req.abstract || '',
                 content: req.content || '',
                 author: req.author,
                 category: req.category,
