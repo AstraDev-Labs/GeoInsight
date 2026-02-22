@@ -18,7 +18,7 @@ export default function AdminDashboard() {
     // Data state
     const [requests, setRequests] = useState<PostRequest[]>([]);
     const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
-    const [activeTab, setActiveTab] = useState<'requests' | 'posts' | 'logs'>('requests');
+    const [activeTab, setActiveTab] = useState<'requests' | 'posts' | 'live' | 'logs'>('requests');
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 8;
     const [loading, setLoading] = useState(true);
@@ -109,8 +109,16 @@ export default function AdminDashboard() {
 
     const handleClearHistory = async () => {
         if (confirm('Are you sure you want to clear all history? This will permanently delete all completed requests and rejected publications. Published posts will remain.')) {
-            await api.clearHistory();
-            fetchData();
+            try {
+                const res = await api.clearHistory();
+                if (res.error) {
+                    alert('Failed to clear history: ' + res.error);
+                } else {
+                    fetchData();
+                }
+            } catch (err) {
+                alert('Connection error while clearing history.');
+            }
         }
     };
 
@@ -165,7 +173,12 @@ export default function AdminDashboard() {
         setPublishing(true);
 
         try {
-            await api.updatePostStatus(publishingPost.id, 'rejected');
+            const res = await api.updatePostStatus(publishingPost.id, 'rejected');
+
+            if (res.error) {
+                alert('Failed to decline: ' + res.error);
+                return;
+            }
 
             // Send email notification (non-blocking)
             if (publishingPost.authorEmail) {
@@ -263,12 +276,14 @@ export default function AdminDashboard() {
     const pendingRequests = requests.filter(r => r.status === 'pending');
     const pendingPosts = allPosts.filter(p => p.status === 'pending');
     const historyRequests = requests.filter(r => r.status !== 'pending');
-    const historyPosts = allPosts.filter(p => p.status === 'rejected' || p.status === 'published');
 
     const historyItems = [
         ...historyRequests.map(r => ({ id: r.id, title: r.title, author: r.author, status: r.status, type: 'Request', date: r.submittedAt || '' })),
-        ...historyPosts.map(p => ({ id: p.id, title: p.title, author: p.author, status: p.status, type: 'Post', date: p.postedAt || p.date || '' }))
+        ...allPosts.filter(p => p.status === 'rejected').map(p => ({ id: p.id, title: p.title, author: p.author, status: p.status, type: 'Post', date: p.postedAt || p.date || '' }))
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    const liveFindings = allPosts.filter(p => p.status === 'published').sort((a, b) => new Date(b.postedAt || b.date).getTime() - new Date(a.postedAt || a.date).getTime());
+
 
     const totalPublished = allPosts.filter(p => p.status === 'published').length;
     const totalPendingActions = pendingRequests.length + pendingPosts.length;
@@ -339,10 +354,16 @@ export default function AdminDashboard() {
                         Content Review ({pendingPosts.length})
                     </button>
                     <button
+                        onClick={() => { setActiveTab('live'); setCurrentPage(1); }}
+                        className={`px-6 py-3 rounded-xl font-medium transition-all ${activeTab === 'live' ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-white'}`}
+                    >
+                        Live Archive ({liveFindings.length})
+                    </button>
+                    <button
                         onClick={() => { setActiveTab('logs'); setCurrentPage(1); }}
                         className={`px-6 py-3 rounded-xl font-medium transition-all ${activeTab === 'logs' ? 'bg-secondary text-primary-foreground shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-white'}`}
                     >
-                        Logs & History ({historyItems.length})
+                        Action Audit ({historyItems.length})
                     </button>
                 </div>
 
@@ -352,10 +373,40 @@ export default function AdminDashboard() {
                     key={activeTab}
                     className="glass-card shadow-lg overflow-x-auto"
                 >
-                    {activeTab === 'logs' ? (
+                    {activeTab === 'live' ? (
+                        <div className="p-5">
+                            <h3 className="text-lg font-semibold text-white mb-4">Live Discovery Archive</h3>
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="border-b border-white/10 text-muted-foreground text-sm uppercase tracking-wider bg-black/20">
+                                        <th className="p-4 font-semibold">Discovery Title</th>
+                                        <th className="p-4 font-semibold">Author</th>
+                                        <th className="p-4 font-semibold">Category</th>
+                                        <th className="p-4 font-semibold">Active Since</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-sm divide-y divide-white/5">
+                                    {liveFindings.length === 0 ? (
+                                        <tr><td colSpan={4} className="p-8 text-center text-muted-foreground">No live content currently published.</td></tr>
+                                    ) : (
+                                        liveFindings.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE).map((post, idx) => (
+                                            <tr key={idx} className="hover:bg-white/5 transition-colors group">
+                                                <td className="p-4 font-semibold text-white/90">{post.title}</td>
+                                                <td className="p-4 text-white/70">{post.author}</td>
+                                                <td className="p-4">
+                                                    <span className="bg-primary/10 text-primary border border-primary/20 px-2 py-1 rounded text-xs leading-none">{post.category}</span>
+                                                </td>
+                                                <td className="p-4 text-xs text-muted-foreground">{new Date(post.postedAt || post.date).toLocaleDateString()}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : activeTab === 'logs' ? (
                         <div className="p-5">
                             <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-white">System Activity Log</h3>
+                                <h3 className="text-lg font-semibold text-white">System Action Audit</h3>
                                 <button
                                     onClick={handleClearHistory}
                                     className="px-4 py-2 bg-destructive/10 hover:bg-destructive/30 text-destructive text-sm font-semibold rounded-lg transition-colors border border-destructive/20 flex items-center gap-2"

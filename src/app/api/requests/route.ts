@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
+
 import { dataService } from '@/lib/data-service';
 import { PostRequest } from '@/lib/types';
 import bcrypt from 'bcryptjs';

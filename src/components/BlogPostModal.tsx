@@ -40,7 +40,10 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '2rem'
-        }} className="animate-in fade-in duration-300" onClick={onClose}>
+        }} className="animate-in fade-in duration-300" onClick={(e) => {
+            if (selectedImage) return; // Don't close modal if lightbox is open
+            onClose();
+        }}>
 
             <div style={{
                 background: 'rgba(15, 23, 42, 0.7)',
@@ -310,14 +313,17 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                         inset: 0,
                         background: 'rgba(0, 0, 0, 0.9)',
                         backdropFilter: 'blur(20px)',
-                        zIndex: 1100,
+                        zIndex: 2000, // Higher than modal
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         padding: '2rem'
                     }}
                     className="animate-in fade-in zoom-in duration-300"
-                    onClick={() => setSelectedImage(null)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImage(null);
+                    }}
                 >
                     <button
                         onClick={() => setSelectedImage(null)}
