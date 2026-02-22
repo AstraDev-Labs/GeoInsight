@@ -23,24 +23,40 @@ interface EmailOptions {
 }
 
 async function sendEmail(options: EmailOptions): Promise<boolean> {
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+
     // If SMTP is not configured, log and skip
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-        console.log('📧 Email notification skipped (SMTP not configured):', options.subject);
-        console.log('   To:', options.to);
+    if (!user || !pass) {
+        console.warn('⚠️ SMTP credentials missing. Email skipped.');
+        console.log('   Context:', { subject: options.subject, to: options.to });
         return false;
     }
 
     try {
-        await transporter.sendMail({
+        console.log(`📧 Attempting to send email to ${options.to}...`);
+
+        const result = await transporter.sendMail({
             from: `"${SITE_NAME}" <${FROM_EMAIL}>`,
             to: options.to,
             subject: options.subject,
             html: options.html,
         });
-        console.log('✅ Email sent successfully to:', options.to);
+
+        console.log('✅ Email sent successfully!', {
+            messageId: result.messageId,
+            to: options.to,
+            subject: options.subject
+        });
         return true;
-    } catch (error) {
-        console.error('❌ Failed to send email:', error);
+    } catch (error: any) {
+        console.error('❌ SMTP SEND ERROR:', {
+            error: error.message,
+            code: error.code,
+            command: error.command,
+            to: options.to,
+            subject: options.subject
+        });
         return false;
     }
 }
