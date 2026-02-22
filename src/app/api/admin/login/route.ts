@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
     try {
         const { password } = await request.json();
 
-        // Admin password stored as env var (hashed comparison)
-        const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+        // Admin password stored as env var (should be a bcrypt hash in production)
+        const adminPassword = process.env.ADMIN_PASSWORD || "";
 
-        if (password === adminPassword) {
+        if (!adminPassword) {
+            return NextResponse.json(
+                { success: false, message: "Server configuration error" },
+                { status: 500 }
+            );
+        }
+
+        const isMatch = await bcrypt.compare(password, adminPassword);
+
+        if (isMatch) {
             // Generate a session token
             const token = crypto.randomBytes(32).toString("hex");
             const expiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
