@@ -141,9 +141,11 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                             <div style={{ marginBottom: '3rem' }}>
                                 <a
                                     href={images[0]}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(e) => e.stopPropagation()}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        window.open(images[0], '_blank', 'noopener,noreferrer');
+                                    }}
                                     style={{ cursor: 'pointer', position: 'relative', display: 'block' }}
                                     className="group"
                                 >
@@ -212,10 +214,12 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                                 <a
                                                     key={i}
                                                     href={img}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        window.open(img, '_blank', 'noopener,noreferrer');
+                                                    }}
                                                     style={{ position: 'relative', cursor: 'pointer', display: 'block' }}
-                                                    onClick={(e) => e.stopPropagation()}
                                                     className="group"
                                                 >
                                                     <img
