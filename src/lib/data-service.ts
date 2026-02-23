@@ -1,7 +1,10 @@
 import { PutCommand, ScanCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import { ddbDocClient, TABLE_NAME, useAWS as awsEnabled } from "./aws-config";
+import { ddbDocClient, TABLE_NAME, useAWS as awsEnabled, s3, S3_BUCKET } from "./aws-config";
 import { BlogPost, PostRequest } from "./types";
 import { readDb, writeDb } from "./db-server";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import fs from 'fs';
+import path from 'path';
 
 export const dataService = {
     // Requests
@@ -119,6 +122,44 @@ export const dataService = {
     },
 
     deletePost: async (id: string): Promise<void> => {
+        // 1. Fetch the post first to identify associated files
+        const posts = await dataService.getPosts();
+        const post = posts.find(p => p.id === id);
+
+        if (!post) return;
+
+        // 2. Clear files from S3 or Local storage
+        const filesToDelete = [...(post.images || []), ...(post.attachments || [])];
+
+        for (const fileUrl of filesToDelete) {
+            try {
+                if (awsEnabled && ddbDocClient && s3 && fileUrl.startsWith('https://')) {
+                    // Extract S3 Key from URL
+                    // Format: https://bucket.s3.region.amazonaws.com/key
+                    const s3UrlParts = fileUrl.split('.amazonaws.com/');
+                    if (s3UrlParts.length > 1) {
+                        const key = s3UrlParts[1];
+                        console.log(`🗑️ Deleting S3 object: ${key}`);
+                        await s3.send(new DeleteObjectCommand({
+                            Bucket: S3_BUCKET,
+                            Key: key
+                        }));
+                    }
+                } else if (fileUrl.startsWith('/uploads/')) {
+                    // Delete local file
+                    const filename = fileUrl.replace('/uploads/', '');
+                    const filePath = path.join(process.cwd(), 'public', 'uploads', filename);
+                    if (fs.existsSync(filePath)) {
+                        console.log(`🗑️ Deleting local file: ${filename}`);
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            } catch (err) {
+                console.error(`Failed to delete file ${fileUrl}:`, err);
+            }
+        }
+
+        // 3. Delete from Database
         if (awsEnabled && ddbDocClient) {
             try {
                 const { DeleteCommand } = await import("@aws-sdk/lib-dynamodb");
