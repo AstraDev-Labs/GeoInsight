@@ -6,10 +6,10 @@ export default function Navbar() {
     const { language, setLanguage } = useLanguage();
 
     return (
-        <nav className="w-full bg-background border-b shadow-sm flex items-center justify-between px-6 lg:px-12 py-4">
+        <nav className="w-full bg-[#0a0a0a] border-b border-white/5 shadow-sm flex items-center justify-between px-6 lg:px-12 py-4">
             <Link href="/" className="flex items-center gap-3 group">
                 <Globe className="text-primary transition-transform duration-300 group-hover:rotate-180 w-6 h-6" />
-                <span className="text-foreground font-semibold text-xl tracking-tight">
+                <span className="text-white font-semibold text-xl tracking-tight">
                     GeoInsights
                 </span>
             </Link>
@@ -22,18 +22,18 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 bg-muted/30 border rounded-lg px-3 py-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-                    <Languages size={14} className="text-muted-foreground" />
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                    <Languages size={14} className="text-white/40" />
                     <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value as any)}
-                        className="bg-transparent text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer appearance-none text-foreground"
+                        className="bg-transparent text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer appearance-none text-white/80"
                     >
-                        <option value="en">English</option>
-                        <option value="es">Español</option>
-                        <option value="fr">Français</option>
-                        <option value="de">Deutsch</option>
-                        <option value="ar">العربية</option>
+                        <option value="en" className="bg-[#0a0a0a]">English</option>
+                        <option value="es" className="bg-[#0a0a0a]">Español</option>
+                        <option value="fr" className="bg-[#0a0a0a]">Français</option>
+                        <option value="de" className="bg-[#0a0a0a]">Deutsch</option>
+                        <option value="ar" className="bg-[#0a0a0a]">العربية</option>
                     </select>
                 </div>
 
@@ -52,7 +52,7 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
     return (
         <Link
             href={href}
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/50 hover:text-white transition-colors"
         >
             {icon} {label}
         </Link>
