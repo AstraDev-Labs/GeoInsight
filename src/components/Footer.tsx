@@ -50,7 +50,7 @@ export default function Footer() {
             <div className="max-w-[1200px] mx-auto px-6 md:px-12 pt-8 border-t border-white/5">
                 <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 mb-8">
                     <p className="text-white/40 text-xs font-medium uppercase tracking-widest">
-                        © {new Date().getFullYear()} Remote Sensing & GIS Intelligence
+                        © {new Date().getFullYear()} {t('branding')}
                     </p>
                     <div className="flex gap-6 text-[10px] text-white/40 uppercase tracking-[0.2em] font-bold">
                         {t('builtForEO')}

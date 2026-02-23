@@ -44,12 +44,23 @@ interface Translations {
 }
 
 export const translations = {
+    branding: {
+        en: 'Remote Sensing & GIS Intelligence',
+        es: 'Inteligencia de Teledetección y SIG',
+        fr: 'Intelligence en Télédétection et SIG',
+        de: 'Fernerkundung & GIS Intelligenz',
+        ar: 'استخبارات الاستشعار عن بعد ونظم المعلومات الجغرافية',
+        hi: 'रिमोट सेंसिंग और जीआईएस इंटेलिजेंस',
+        zh: '遥感与 GIS 情报',
+    },
     missionFeed: {
         en: 'Mission Intelligence Feed',
         es: 'Flujo de Inteligencia de Misión',
         fr: 'Flux d\'Intelligence de Mission',
         de: 'Mission Intelligence-Feed',
         ar: 'موجز استخبارات المهمة',
+        hi: 'मिशन इंटेलिजेंस फीड',
+        zh: '任务情报提要',
     },
     researchFindings: {
         en: 'Research Findings',
@@ -57,6 +68,8 @@ export const translations = {
         fr: 'Résultats de Recherche',
         de: 'Forschungsergebnisse',
         ar: 'نتائج البحث',
+        hi: 'अनुसंधान निष्कर्ष',
+        zh: '研究结果',
     },
     collaborationDesc: {
         en: 'A collaborative intelligence space for remote sensing peers to share findings, analyze satellite telemetry, and explore Earth observation research.',
@@ -127,27 +140,51 @@ export const translations = {
         fr: 'Accueil',
         de: 'Startseite',
         ar: 'الرئيسية',
+        hi: 'मुख्य पृष्ठ',
+        zh: '首页',
+        ja: 'ホーム',
+        ru: 'Главная',
+        pt: 'Início',
+        it: 'Home',
     },
     categories: {
         en: 'Categories',
         es: 'Categorías',
         fr: 'Catégories',
         de: 'Kategorien',
-        ar: 'الفئات',
+        ar: 'التصنيفات',
+        hi: 'श्रेणियां',
+        zh: '类别',
+        ja: 'カテゴリー',
+        ru: 'Категории',
+        pt: 'Categorias',
+        it: 'Categorie',
     },
     submitReport: {
         en: 'Submit Report',
         es: 'Enviar Informe',
         fr: 'Soumettre un Rapport',
-        de: 'Bericht Einreichen',
+        de: 'Bericht einreichen',
         ar: 'تقديم تقرير',
+        hi: 'रिपोर्ट जमा करें',
+        zh: '提交报告',
+        ja: 'レポートを提出',
+        ru: 'Отправить отчет',
+        pt: 'Enviar Relatório',
+        it: 'Invia Rapporto',
     },
     adminPortal: {
         en: 'Admin Portal',
-        es: 'Portal de Admin',
+        es: 'Portal de Administración',
         fr: 'Portail Admin',
         de: 'Admin-Portal',
         ar: 'بوابة المسؤول',
+        hi: 'व्यवस्थापक पोर्टल',
+        zh: '管理后台',
+        ja: '管理者ポータル',
+        ru: 'Портал администратора',
+        pt: 'Portal Administrativo',
+        it: 'Portale Amministratore',
     },
     privacyPolicy: {
         en: 'Privacy Policy',
@@ -521,7 +558,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const savedLang = localStorage.getItem('language') as Language;
-        if (savedLang && ['en', 'es', 'fr', 'de', 'ar'].includes(savedLang)) {
+        if (savedLang && SUPPORTED_LANGUAGES.some(l => l.code === savedLang)) {
             setLanguage(savedLang);
         }
     }, []);
@@ -529,7 +566,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         localStorage.setItem('language', language);
         document.documentElement.lang = language;
-        // document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr'; // Disabled to prevent full layout flip
+        document.documentElement.dir = ['ar', 'he', 'fa'].includes(language) ? 'rtl' : 'ltr';
     }, [language]);
 
     const t = (key: keyof typeof translations) => {
@@ -537,7 +574,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         return transObj[language] || transObj['en'] || key;
     };
 
-    const isRTL = language === 'ar';
+    const isRTL = ['ar', 'he', 'fa'].includes(language);
 
     return (
         <LanguageContext.Provider value={{ language, setLanguage, t, isRTL }}>
