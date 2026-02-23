@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { LanguageProvider } from "@/lib/language-context";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -199,11 +198,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-sans antialiased min-h-screen flex flex-col`}>
-        <LanguageProvider>
-          {children}
-          <SpeedInsights />
-          <Analytics />
-        </LanguageProvider>
+        {children}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

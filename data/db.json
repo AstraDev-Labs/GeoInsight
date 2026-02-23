@@ -75,5 +75,30 @@
       "status": "published"
     }
   ],
-  "requests": []
+  "requests": [],
+  "comments": [],
+  "commentUsers": [],
+  "commentSanctions": [],
+  "botSettings": {
+    "autoModerationEnabled": true,
+    "violationTerms": [
+      "slur",
+      "hate speech",
+      "porn",
+      "xxx",
+      "nude",
+      "nsfw",
+      "sex video",
+      "racist"
+    ],
+    "severeTerms": [
+      "child porn",
+      "sexual assault",
+      "rape",
+      "kill yourself",
+      "terror attack"
+    ],
+    "violationMuteHours": 24,
+    "autoBanOnSevere": true
+  }
 }

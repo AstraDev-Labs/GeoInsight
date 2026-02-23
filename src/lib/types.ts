@@ -35,3 +35,57 @@ export interface PostRequest {
     satellite?: string;
     areaOfInterest?: string;
 }
+
+export interface PostComment {
+    id: string;
+    postId: string;
+    parentId?: string;
+    authorName: string;
+    commenterId?: string;
+    commenterKey?: string;
+    message: string;
+    createdAt: string;
+    status?: 'visible' | 'hidden';
+    moderatedBy?: string;
+    moderatedAt?: string;
+    moderationReason?: string;
+}
+
+export type CommentRole = 'user' | 'bot' | 'admin';
+
+export interface CommentUser {
+    userId: string;
+    commenterKey: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    role: CommentRole;
+    passwordHash: string;
+    emailVerificationCodeHash?: string;
+    emailVerificationExpiresAt?: string;
+    createdAt: string;
+}
+
+export interface CommentSanction {
+    subjectId: string;
+    commenterKey: string;
+    commenterName: string;
+    strikes: number;
+    mutedUntil?: string;
+    banned?: boolean;
+    lastViolationAt?: string;
+    lastReason?: string;
+}
+
+export interface BotSettings {
+    autoModerationEnabled: boolean;
+    violationTerms: string[];
+    severeTerms: string[];
+    violationMuteHours: number;
+    autoBanOnSevere: boolean;
+}
+
+export interface EditPostResponse {
+    success: boolean;
+    error?: string;
+}

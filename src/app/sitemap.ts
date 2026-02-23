@@ -30,6 +30,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'yearly',
             priority: 0.4,
         },
+        {
+            url: `${SITE_URL}/categories`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.7,
+        },
+        {
+            url: `${SITE_URL}/terms`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.3,
+        },
     ];
 
     // Dynamic blog post pages
@@ -45,12 +57,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Dynamic author profile pages
     const uniqueAuthors = [...new Set(publishedPosts.map(p => p.author))];
-    const authorPages: MetadataRoute.Sitemap = uniqueAuthors.map(author => ({
-        url: `${SITE_URL}/author/${encodeURIComponent(author)}`,
-        lastModified: new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.5,
-    }));
+    const authorPages: MetadataRoute.Sitemap = uniqueAuthors.map(author => {
+        const authorPosts = publishedPosts.filter((post) => post.author === author);
+        const latest = authorPosts
+            .map((post) => new Date(post.postedAt || post.date).getTime())
+            .filter((value) => !Number.isNaN(value))
+            .sort((a, b) => b - a)[0];
+        return {
+            url: `${SITE_URL}/author/${encodeURIComponent(author)}`,
+            lastModified: latest ? new Date(latest) : new Date(),
+            changeFrequency: 'weekly' as const,
+            priority: 0.5,
+        };
+    });
 
     return [...staticPages, ...blogPages, ...authorPages];
 }

@@ -8,6 +8,8 @@ import { PostRequest, BlogPost } from '@/lib/types';
 import { Calendar, Check, X, LogOut, FileText, Image, Paperclip, Lock, Shield, Settings, Trash2, ChevronLeft, ChevronRight, Activity, Globe, LayoutDashboard, ImagePlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import AdminAnalyticsPanel from '@/components/AdminAnalyticsPanel';
+import BotSettingsPanel from '@/components/BotSettingsPanel';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
@@ -358,6 +360,9 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
+                    <AdminAnalyticsPanel posts={allPosts} requests={requests} />
+                    <BotSettingsPanel canEdit={isAuthenticated} />
+
                     <div className="flex flex-wrap gap-4 mb-8">
                         <button
                             onClick={() => { setActiveTab('requests'); setCurrentPage(1); }}
@@ -379,7 +384,7 @@ export default function AdminDashboard() {
                         </button>
                         <button
                             onClick={() => { setActiveTab('logs'); setCurrentPage(1); }}
-                            className={`px-6 py-3 rounded-xl font-medium transition-all ${activeTab === 'logs' ? 'bg-secondary text-white shadow-sm' : 'bg-[#f9f9f9] text-[#666] hover:bg-[#f0f0f0] hover:text-[#222]'}`}
+                            className={`px-6 py-3 rounded-xl font-medium transition-all ${activeTab === 'logs' ? 'bg-[#1f2937] text-white shadow-sm border border-[#111827]' : 'bg-[#f9f9f9] text-[#666] hover:bg-[#f0f0f0] hover:text-[#222]'}`}
                         >
                             Action Audit ({historyItems.length})
                         </button>

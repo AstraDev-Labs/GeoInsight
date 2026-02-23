@@ -5,9 +5,8 @@ import { BlogPost, PostRequest } from './types';
 
 export const api = {
     getPosts: async () => {
-        const res = await fetch('/api/posts', { cache: 'no-store' });
-        const posts: BlogPost[] = await res.json();
-        return posts.filter(p => p.status === 'published');
+        const res = await fetch('/api/posts?status=published', { cache: 'no-store' });
+        return res.json();
     },
 
     getAllPosts: async () => {

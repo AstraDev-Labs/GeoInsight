@@ -2,26 +2,105 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import DeletePostButton from '@/components/DeletePostButton';
 import EditPostButton from '@/components/EditPostButton';
+import CommentsSection from '@/components/CommentsSection';
 import { dataService } from '@/lib/data-service';
+import type { BlogPost } from '@/lib/types';
 import { Calendar, User, ArrowLeft, Tag, Clock, FileText, ExternalLink, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import type { Metadata } from 'next';
+import { cache } from 'react';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
+type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
+
+const getPublishedPostById = cache(async (id: string): Promise<BlogPostWithLegacyImage | null> => {
+    const posts = await dataService.getPosts();
+    const post = posts.find((entry) => entry.id === id);
+    if (!post || post.status !== 'published') {
+        return null;
+    }
+    return post as BlogPostWithLegacyImage;
+});
+
+const getPrimaryImage = (post: BlogPostWithLegacyImage): string | undefined => {
+    if (post.images && post.images.length > 0) {
+        return post.images[0];
+    }
+    return post.imageUrl;
+};
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
+    const post = await getPublishedPostById(id);
+
+    if (!post) {
+        return {
+            title: 'Post Not Found',
+            robots: { index: false, follow: false },
+        };
+    }
+
+    const canonicalUrl = `${SITE_URL}/blog/${post.id}`;
+    const publishedTime = post.postedAt || post.date;
+    const image = getPrimaryImage(post);
+
+    return {
+        title: post.title,
+        description: post.excerpt,
+        alternates: { canonical: canonicalUrl },
+        openGraph: {
+            title: post.title,
+            description: post.excerpt,
+            type: 'article',
+            url: canonicalUrl,
+            publishedTime,
+            authors: [post.author],
+            images: image ? [{ url: image }] : undefined,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: post.title,
+            description: post.excerpt,
+            images: image ? [image] : undefined,
+        },
+    };
+}
 
 export default async function BlogPostPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const posts = await dataService.getPosts();
-    const post = posts.find(p => p.id === id);
+    const post = await getPublishedPostById(id);
 
-    if (!post || post.status !== 'published') {
+    if (!post) {
         notFound();
     }
 
     const postedDate = post.postedAt ? new Date(post.postedAt) : new Date(post.date);
+    const primaryImage = getPrimaryImage(post);
+    const articleSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: post.title,
+        description: post.excerpt,
+        author: {
+            '@type': 'Person',
+            name: post.author,
+        },
+        datePublished: post.postedAt || post.date,
+        dateModified: post.postedAt || post.date,
+        articleSection: post.category,
+        image: primaryImage ? [primaryImage] : undefined,
+        mainEntityOfPage: `${SITE_URL}/blog/${post.id}`,
+    };
 
     return (
         <main className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-500 font-sans">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+            />
             <div className="bg-background border-b z-20 relative w-full">
                 <Navbar />
             </div>
@@ -36,11 +115,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
 
                 {/* NASA Style Main Image at Top */}
                 <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center font-sans">
-                    {(post.images && post.images.length > 0) || (post as any).imageUrl ? (
+                    {primaryImage ? (
                         <div className="mb-8 w-full">
-                            <a href={post.images && post.images.length > 0 ? post.images[0] : (post as any).imageUrl} target="_blank" rel="noopener noreferrer" className="block outline-none select-none relative group cursor-pointer bg-[#f9f9f9]">
+                            <a href={primaryImage} target="_blank" rel="noopener noreferrer" className="block outline-none select-none relative group cursor-pointer bg-[#f9f9f9]">
                                 <img
-                                    src={post.images && post.images.length > 0 ? post.images[0] : (post as any).imageUrl}
+                                    src={primaryImage}
                                     alt={post.title}
                                     className="w-full h-auto object-cover max-h-[700px] transition-transform duration-300 rounded-none shadow-sm"
                                 />
@@ -146,6 +225,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                                 </div>
                             </div>
                         )}
+
+                        <CommentsSection postId={post.id} />
                     </div>
 
                     {/* Right Sidebar */}

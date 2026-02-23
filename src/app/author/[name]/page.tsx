@@ -1,14 +1,39 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { dataService } from '@/lib/data-service';
+import type { BlogPost } from '@/lib/types';
 import { Calendar, User, Map } from 'lucide-react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
+type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
+
+export async function generateMetadata({ params }: { params: Promise<{ name: string }> }): Promise<Metadata> {
+    const { name } = await params;
+    const decodedName = decodeURIComponent(name);
+    const canonicalUrl = `${SITE_URL}/author/${encodeURIComponent(decodedName)}`;
+
+    return {
+        title: `${decodedName} | Author`,
+        description: `Published findings by ${decodedName} on GeoInsights.`,
+        alternates: {
+            canonical: canonicalUrl,
+        },
+        openGraph: {
+            title: `${decodedName} | GeoInsights Author`,
+            description: `Published findings by ${decodedName}.`,
+            type: 'profile',
+            url: canonicalUrl,
+        },
+    };
+}
 
 export default async function AuthorProfile({ params }: { params: Promise<{ name: string }> }) {
     const { name } = await params;
     const decodedName = decodeURIComponent(name);
 
-    const allPosts = await dataService.getPosts();
+    const allPosts = await dataService.getPosts() as BlogPostWithLegacyImage[];
     const authorPosts = allPosts.filter(p => p.status === 'published' && p.author.toLowerCase() === decodedName.toLowerCase());
 
     return (
@@ -45,10 +70,10 @@ export default async function AuthorProfile({ params }: { params: Promise<{ name
                             {authorPosts.map(post => (
                                 <div key={post.id} className="group border border-[#e5e5e5] bg-white transition-all flex flex-col h-full hover:shadow-md">
                                     <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
-                                        {(post.images && post.images.length > 0) || (post as any).imageUrl ? (
+                                        {(post.images && post.images.length > 0) || post.imageUrl ? (
                                             <div className="relative h-48 overflow-hidden bg-[#f0f0f0]">
                                                 <img
-                                                    src={post.images && post.images.length > 0 ? post.images[0] : (post as any).imageUrl}
+                                                    src={post.images && post.images.length > 0 ? post.images[0] : post.imageUrl}
                                                     alt={post.title}
                                                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                                 />

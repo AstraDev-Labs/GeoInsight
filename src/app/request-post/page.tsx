@@ -7,13 +7,11 @@ import { Send, CheckCircle2, ImagePlus, Paperclip, X, Upload, FileText, Check, A
 import { motion } from 'framer-motion';
 import Footer from '@/components/Footer';
 import dynamic from 'next/dynamic';
-import { useLanguage } from '@/lib/language-context';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 import { RESEARCH_VECTOR_GROUPS } from '@/lib/categories';
 
 export default function RequestPost() {
-    const { t, isRTL } = useLanguage();
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -179,13 +177,13 @@ export default function RequestPost() {
                     className="text-center mb-16"
                 >
                     <div className="flex items-center justify-center gap-3 text-primary font-black uppercase tracking-[0.3em] text-[10px] mb-6">
-                        <Activity size={14} /> {t('intelligenceUplink')}
+                        <Activity size={14} /> Intelligence Uplink
                     </div>
                     <h1 className="text-[3rem] md:text-[4.5rem] font-black tracking-tighter mb-8 text-foreground leading-[0.95]">
-                        {t('logFinding')}
+                        Log Finding
                     </h1>
                     <p className="text-muted-foreground text-lg font-medium leading-relaxed max-w-2xl mx-auto">
-                        {t('uplinkDesc')}
+                        Personnel are requested to upload analytical findings. Once submitted, board review will initiate before publication to the global network.
                     </p>
                 </motion.div>
 
@@ -197,9 +195,9 @@ export default function RequestPost() {
                     >
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -mr-32 -mt-32" />
                         <CheckCircle2 className="text-primary w-24 h-24 mb-8" />
-                        <h2 className="text-[2.5rem] font-black text-foreground mb-4 tracking-tight leading-[1.1]">{t('transmissionReceived')}</h2>
+                        <h2 className="text-[2.5rem] font-black text-foreground mb-4 tracking-tight leading-[1.1]">Transmission Received</h2>
                         <p className="text-muted-foreground mb-10 text-lg max-w-md mx-auto">
-                            {t('transmissionEnqueued')}
+                            Your research data is securely enqueued for mission control review. Confirmation will follow via secure channel.
                         </p>
                         <button
                             onClick={() => {
@@ -211,7 +209,7 @@ export default function RequestPost() {
                             }}
                             className="bg-muted border text-muted-foreground font-black uppercase tracking-[0.2em] text-xs py-5 px-10 rounded-xl transition-all shadow-xl hover:bg-muted/80 hover:text-foreground"
                         >
-                            {t('logAdditionalMission')}
+                            Log Additional Mission
                         </button>
                     </motion.div>
                 ) : (
@@ -227,29 +225,29 @@ export default function RequestPost() {
                         <div className="space-y-10 relative z-10">
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">{t('missionDesignation')}</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Mission Designation (Title)</label>
                                 <input
                                     type="text"
                                     name="title"
                                     required
                                     className="w-full bg-muted/30 border focus:border-primary/50 text-foreground placeholder-muted-foreground/20 px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-primary/5 text-sm font-bold"
-                                    placeholder={t('titlePlaceholder')}
+                                    placeholder="Enter report title..."
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">{t('personnelIdentifier')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Personnel Identifier</label>
                                     <input
                                         type="text"
                                         name="author"
                                         required
                                         className="w-full bg-muted/30 border focus:border-primary/50 text-foreground placeholder-muted-foreground/20 px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-primary/5 text-sm font-bold"
-                                        placeholder={t('fullName')}
+                                        placeholder="Full Name"
                                     />
                                 </div>
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">{t('secureCommsChannel')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Secure Comms Channel (Email)</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -266,8 +264,8 @@ export default function RequestPost() {
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">{t('secureAccessKey')}</label>
-                                <p className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">{t('accessKeyDesc')}</p>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Secure Access Key</label>
+                                <p className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Required for future data retraction or modification requests.</p>
                                 <input
                                     type="password"
                                     name="authorPassword"
@@ -275,12 +273,12 @@ export default function RequestPost() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     className="w-full bg-muted/30 border focus:border-primary/50 text-foreground placeholder-muted-foreground/20 px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-primary/5 text-sm font-bold mb-4"
-                                    placeholder={t('setSecretKey')}
+                                    placeholder="Set secret key..."
                                     autoComplete="new-password"
                                 />
 
                                 <div className="bg-muted/30 p-6 rounded-2xl border">
-                                    <p className="text-[10px] font-black tracking-[0.2em] uppercase text-muted-foreground/40 mb-4">{t('encryptionProtocols')}</p>
+                                    <p className="text-[10px] font-black tracking-[0.2em] uppercase text-muted-foreground/40 mb-4">Encryption Protocols</p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-[11px] font-bold uppercase tracking-widest">
                                         <div className={`flex items-center gap-3 transition-colors ${password.length >= 6 ? 'text-primary' : 'text-muted-foreground/20'}`}>
                                             <div className={`w-1.5 h-1.5 rounded-full ${password.length >= 6 ? 'bg-primary' : 'bg-muted-foreground/10'}`} />
@@ -307,7 +305,7 @@ export default function RequestPost() {
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">{t('intelligenceClass')}</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Intelligence Class (Vectors)</label>
                                 <div className="w-full bg-muted/30 border rounded-2xl p-8 max-h-[350px] overflow-y-auto custom-scrollbar">
                                     {Object.entries(RESEARCH_VECTOR_GROUPS).map(([group, vectors]) => (
                                         <div key={group} className="mb-8 last:mb-0">
@@ -341,14 +339,14 @@ export default function RequestPost() {
                                                 onChange={() => toggleCategory('Other')}
                                                 className="hidden"
                                             />
-                                            <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors ${selectedCategories.includes('Other') ? 'text-foreground' : 'text-muted-foreground/40 group-hover:text-foreground'}`}>{t('customClassification')}</span>
+                                            <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors ${selectedCategories.includes('Other') ? 'text-foreground' : 'text-muted-foreground/40 group-hover:text-foreground'}`}>Custom Classification</span>
                                         </label>
                                         {selectedCategories.includes('Other') && (
                                             <input
                                                 name="customCategory"
                                                 required
                                                 className="w-full bg-background border focus:border-primary/50 text-foreground placeholder-muted-foreground/20 px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-primary/5 mt-4 text-xs font-bold"
-                                                placeholder={t('customPlaceholder')}
+                                                placeholder="Enter custom vector classification..."
                                             />
                                         )}
                                     </div>
@@ -357,32 +355,32 @@ export default function RequestPost() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">{t('sensorOrigin')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Sensor Origin</label>
                                     <input
                                         type="text"
                                         name="satellite"
                                         className="w-full bg-muted/30 border focus:border-primary/50 text-foreground placeholder-muted-foreground/20 px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-primary/5 text-sm font-bold"
-                                        placeholder={t('sensorPlaceholder')}
+                                        placeholder="e.g. Sentinel-2, Landsat 8"
                                     />
                                 </div>
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">{t('geographicTarget')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Geographic Target</label>
                                     <input
                                         type="text"
                                         name="areaOfInterest"
                                         className="w-full bg-muted/30 border focus:border-primary/50 text-foreground placeholder-muted-foreground/20 px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-primary/5 text-sm font-bold"
-                                        placeholder={t('locationPlaceholder')}
+                                        placeholder="Region or Coordinates"
                                         required
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">{t('missionLogs')}</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Mission Logs & Analysis</label>
                                 <RichTextEditor
                                     content={richContent}
                                     onChange={setRichContent}
-                                    placeholder={t('analysisPlaceholder')}
+                                    placeholder="Enter complete technical analysis and report logs..."
                                 />
                             </div>
 
@@ -415,13 +413,13 @@ export default function RequestPost() {
                                     className="flex items-center justify-center gap-3 px-8 py-4 bg-muted/30 border hover:border-primary/50 text-muted-foreground/60 hover:text-primary text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-xl w-full"
                                 >
                                     <Upload size={16} />
-                                    {imagePreviews.length > 0 ? t('addImagery') : t('uploadImagery')}
+                                    {imagePreviews.length > 0 ? "Log Additional Image Data" : "Upload Sensory Imagery"}
                                 </button>
                             </div>
 
                             <div className="space-y-6 pt-6 border-t">
                                 <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-3">
-                                    <Paperclip className="w-4 h-4 text-primary" /> {t('supplementalDatasets')}
+                                    <Paperclip className="w-4 h-4 text-primary" /> Supplemental Datasets
                                 </label>
 
                                 {docFiles.length > 0 && (
@@ -452,7 +450,7 @@ export default function RequestPost() {
                                     className="flex items-center justify-center gap-3 px-8 py-4 bg-muted/30 border hover:border-primary/50 text-muted-foreground/60 hover:text-primary text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-xl w-full"
                                 >
                                     <Upload size={16} />
-                                    {docFiles.length > 0 ? t('addDatasets') : t('uploadDatasets')}
+                                    {docFiles.length > 0 ? "Log Additional Datasets" : "Upload Primary Datasets"}
                                 </button>
                             </div>
 
@@ -464,12 +462,12 @@ export default function RequestPost() {
                                 {loading ? (
                                     <div className="flex items-center gap-2">
                                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        <span>{uploading ? t('uplinkingTelemetry') : t('executingTransmission')}</span>
+                                        <span>{uploading ? "Uplinking Telemetry..." : "Executing Transmission..."}</span>
                                     </div>
                                 ) : (
                                     <>
-                                        <span>{t('initiateUplink')}</span>
-                                        <Send size={18} className={`group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ${isRTL ? 'rotate-180' : ''}`} />
+                                        <span>Initiate Uplink</span>
+                                        <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                                     </>
                                 )}
                             </button>

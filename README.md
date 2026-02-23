@@ -10,6 +10,29 @@ A premium, full-stack collaborative research blog built with **Next.js 16**, **A
 
 ---
 
+## 📌 Release Notes (2026-02-23)
+
+- Removed language switching and kept UI text flow on fixed English translation paths.
+- Implemented roadmap items:
+  - `#8` Analytics dashboard
+  - `#9` Performance improvements
+  - `#10` SEO/discovery upgrades
+  - `#14` Collaboration comments/replies
+- Added threaded comments with recursive reply support (reply to any message depth).
+- Added DB-backed comment auth with signup, email verification, and login by username/email.
+- Added role-aware moderation (`user`/`bot`/`admin`) and AutoMod sanctions (hide/mute/ban).
+- Added Admin Bot Settings panel + `/api/admin/bot-settings` to configure moderation behavior.
+- Improved Bot Settings persistence reliability (AWS + local DB mirror fallback).
+- Added SEO validation tooling (`scripts/seo-check.mjs`) for JSON-LD/canonical/OG/robots checks.
+- Added API performance observability:
+  - response-time headers
+  - cache-hit headers
+  - server-timing
+  - slow-path profiling logs
+- Added list endpoint load testing (`scripts/load-test-list-endpoints.mjs`).
+
+---
+
 ## ✨ Features
 
 ### 📝 Research Publishing
@@ -48,6 +71,63 @@ A premium, full-stack collaborative research blog built with **Next.js 16**, **A
 - **Open Graph & Twitter Cards** — Rich social media previews when sharing links
 - **JSON-LD Structured Data** — Organization and WebSite schemas for enhanced search results
 - **Google & Bing Verification** — Built-in support via environment variables
+
+### 💬 Comment System, Auth & Moderation (New)
+- **Threaded Discussion** — Nested comments/replies on blog posts (reply to any message depth)
+- **Signed-in Commenting** — Only authenticated `user` accounts can post comments/replies
+- **DB-Backed Accounts** — Comment accounts are stored in DB with role (`user`/`bot`/`admin`)
+- **Email Verification** — Signup requires unique email + OTP verification before login
+- **Login by Username or Email** — Sign-in accepts display name or email + password
+- **Role-Aware Moderation** — `bot` and `admin` roles can hide/unhide/delete comments
+- **AutoMod Pipeline** — Automated text moderation for violations/severe violations
+- **Sanctions Engine** — Auto-hide, temporary mute, and severe-ban logic
+- **Stable Identity Enforcement** — Sanctions tied to stable account `userId` (not display name)
+- **Comment Auth APIs**:
+  - `POST /api/comments/auth/signup`
+  - `POST /api/comments/auth/verify-email`
+  - `POST /api/comments/auth/login`
+  - `POST /api/comments/auth/logout`
+  - `GET /api/comments/auth/session`
+
+### 🤖 Bot Controls In Admin (New)
+- **AutoMod Bot Settings Panel** in `/admin`
+- Configurable controls:
+  - Enable/disable auto moderation
+  - Mute duration (hours)
+  - Auto-ban on severe violations
+- Hidden/internal keyword lists remain active but not exposed in UI
+- **Admin Bot Settings API**:
+  - `GET /api/admin/bot-settings`
+  - `PUT /api/admin/bot-settings`
+- Settings persist reliably (AWS + local mirror fallback)
+
+### ⚡ Performance & Observability (New)
+- **List API Instrumentation**
+  - `X-Response-Time-Ms`
+  - `X-Cache-Hit`
+  - `Server-Timing`
+- **Short-TTL In-Memory Caching** on list endpoints:
+  - `GET /api/posts`
+  - `GET /api/requests`
+- **Slow-Path Profiling Logs** in data layer for:
+  - `getPosts`
+  - `getRequests`
+  - `getCommentsForPost`
+- **Load Test Script** for list endpoints:
+  - `scripts/load-test-list-endpoints.mjs`
+  - `npm run perf:load`
+
+### ✅ SEO Follow-up Tooling (New)
+- **SEO Validation Script**:
+  - `scripts/seo-check.mjs`
+  - `npm run seo:check`
+- Validates:
+  - JSON-LD parseability + required schema fields
+  - Canonical presence and URL consistency
+  - OpenGraph canonical consistency (`og:url`)
+  - `robots.txt` sitemap directive
+- **Canonical/OG Consistency Improvement**
+  - Author pages now include explicit `openGraph.url`
 
 ### 🎨 UI/UX Design
 - **Dark Glassmorphic Theme** — Premium aesthetic with backdrop blur, glass cards, and subtle glow effects
@@ -173,7 +253,14 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 # Search Engine Verification (Optional)
 GOOGLE_SITE_VERIFICATION=your-google-code
 BING_SITE_VERIFICATION=your-bing-code
+
+# Comment Auth
+COMMENT_AUTH_SECRET=your-comment-auth-secret
+COMMENT_BOT_PASSWORD=legacy-bot-password-if-still-needed
 ```
+
+> Note: Comment `admin`/`bot` access is DB-backed by role.  
+> `COMMENT_BOT_PASSWORD` is legacy-compatible only; prefer managed role accounts in DB.
 
 ### 4. Run Locally
 ```bash
@@ -219,6 +306,63 @@ Create a bucket named `rs-blog-images` with:
 2. Add your site or import from Google Search Console
 3. Add the code to `BING_SITE_VERIFICATION` in `.env.local`
 4. Submit your sitemap URL
+
+---
+
+## ✅ SEO Validation & Monitoring
+
+### Validate JSON-LD + Canonical/Open Graph Consistency
+Run the SEO checker against local or deployed URL:
+
+```bash
+# Local (requires dev server running)
+npm run seo:check
+
+# Deployed
+npm run seo:check -- https://your-domain.vercel.app
+```
+
+Checks included:
+- JSON-LD script parse validity (`application/ld+json`)
+- Presence of `@context` and `@type`
+- Canonical tag presence and canonical-to-page URL match
+- Canonical/OpenGraph URL consistency (`og:url` vs canonical)
+- `robots.txt` includes `Sitemap` directive
+
+### Search Console Monitoring
+1. Submit `https://your-domain/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+2. Open indexing reports weekly and watch:
+   - crawled, not indexed
+   - duplicate without user-selected canonical
+   - blocked by robots
+3. Re-run `npm run seo:check -- https://your-domain` before/after major releases.
+
+---
+
+## ⚡ Performance Follow-up
+
+### API Observability
+List endpoints include response-time/cache headers:
+- `X-Response-Time-Ms`
+- `X-Cache-Hit` (`1`/`0`)
+- `Server-Timing`
+
+Slow-path profiling logs warnings for key data-service read paths.
+
+### Load Test List Endpoints
+Run a basic load test (requires app running):
+
+```bash
+# default: http://localhost:3000, 20s, concurrency 10
+npm run perf:load
+
+# custom target / duration / concurrency
+npm run perf:load -- https://your-domain.vercel.app 30 20
+```
+
+Tested endpoints:
+- `/api/posts?status=published`
+- `/api/requests?status=pending`
 
 ---
 

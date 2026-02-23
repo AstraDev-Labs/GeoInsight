@@ -237,3 +237,29 @@ export async function sendSubmissionReceivedEmail(authorEmail: string, authorNam
         html,
     });
 }
+
+export async function sendCommentVerificationEmail(email: string, name: string, code: string): Promise<boolean> {
+    const html = wrapTemplate(`
+        <div style="text-align: center; margin-bottom: 24px;">
+            <h2 style="color: #38bdf8; font-size: 26px; font-weight: 700; margin: 0;">Verify Your Comment Account</h2>
+        </div>
+        <p style="color: rgba(255,255,255,0.8); font-size: 16px; line-height: 1.6;">
+            Hello <strong style="color: #38bdf8;">${name}</strong>,
+        </p>
+        <p style="color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.7;">
+            Use the verification code below to activate your comment account.
+        </p>
+        <div style="background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2); border-radius: 12px; padding: 20px; margin: 24px 0; text-align: center;">
+            <p style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: 6px; color: white;">${code}</p>
+        </div>
+        <p style="color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.6;">
+            This code expires in 15 minutes.
+        </p>
+    `);
+
+    return sendEmail({
+        to: email,
+        subject: `Verify your comment account - ${SITE_NAME}`,
+        html,
+    });
+}

@@ -2,44 +2,60 @@
 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Calendar, User, ArrowRight, Activity, Map, Globe2, Search, Filter, Clock } from 'lucide-react';
+import { User, ArrowRight, Activity, Globe2, Search, Filter, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/mock-api';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useMemo, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { BlogPost } from '@/lib/types';
 import { RESEARCH_VECTOR_GROUPS } from '@/lib/categories';
 import { ShieldAlert, X as CloseIcon } from 'lucide-react';
-import { useLanguage } from '@/lib/language-context';
 
 function HomeContent() {
-  const { t, isRTL } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [showAlert, setShowAlert] = useState(false);
+  const [manualCategory, setManualCategory] = useState<string | null>(null);
+  const [dismissedAlertKey, setDismissedAlertKey] = useState<string | null>(null);
   const searchParams = useSearchParams();
+  const searchParamKey = searchParams.toString();
+  const queryCategory = searchParams.get('category') || 'All';
+  const activeCategory = manualCategory ?? queryCategory;
+  const hasAuthError = searchParams.get('auth_error') === 'invalid_access';
+  const showAlert = hasAuthError && dismissedAlertKey !== searchParamKey;
 
   useEffect(() => {
     api.getPosts().then(publishedPosts => {
       setPosts(publishedPosts);
     });
 
-    const categoryParam = searchParams.get('category');
-    if (categoryParam) {
-      setActiveCategory(categoryParam);
-    } else {
-      setActiveCategory('All');
-    }
-
-    if (searchParams.get('auth_error') === 'invalid_access') {
-      setShowAlert(true);
-      // Auto-hide alert after 5 seconds
-      const timer = setTimeout(() => setShowAlert(false), 5000);
-      return () => clearTimeout(timer);
-    }
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!hasAuthError || dismissedAlertKey === searchParamKey) return;
+    const timer = setTimeout(() => setDismissedAlertKey(searchParamKey), 5000);
+    return () => clearTimeout(timer);
+  }, [hasAuthError, dismissedAlertKey, searchParamKey]);
+
+  const filteredPosts = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    const activeCatLower = activeCategory.toLowerCase();
+
+    return posts.filter((post) => {
+      const matchesSearch =
+        post.title.toLowerCase().includes(query) ||
+        post.excerpt.toLowerCase().includes(query) ||
+        (post.areaOfInterest && post.areaOfInterest.toLowerCase().includes(query)) ||
+        (post.satellite && post.satellite.toLowerCase().includes(query));
+
+      const postCategories = post.category
+        ? post.category.split(',').map(c => c.trim().toLowerCase())
+        : [];
+      const matchesCategory = activeCategory === 'All' ||
+        postCategories.some(c => c === activeCatLower || c.includes(activeCatLower) || activeCatLower.includes(c));
+      return matchesSearch && matchesCategory;
+    });
+  }, [posts, searchQuery, activeCategory]);
 
   return (
     <main className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-500">
@@ -65,7 +81,7 @@ function HomeContent() {
                 <p className="text-xs text-red-600">Invalid access attempt detected. Session denied.</p>
               </div>
               <button
-                onClick={() => setShowAlert(false)}
+                onClick={() => setDismissedAlertKey(searchParamKey)}
                 className="p-1 text-slate-500 hover:text-slate-900 transition-colors"
               >
                 <CloseIcon size={18} />
@@ -79,13 +95,13 @@ function HomeContent() {
         {/* Main Header */}
         <div className="mb-16 border-b pb-12">
           <div className="flex items-center gap-3 text-primary font-black uppercase tracking-[0.3em] text-[10px] mb-6">
-            <Activity size={14} /> {t('missionFeed')}
+            <Activity size={14} /> Mission Intelligence Feed
           </div>
           <h1 className="text-[3.5rem] md:text-[5.2rem] font-black tracking-tighter mb-6 text-foreground leading-[0.95]">
-            {t('researchFindings')}
+            Research Findings
           </h1>
           <p className="text-xl text-muted-foreground font-medium leading-relaxed max-w-3xl">
-            {t('collaborationDesc')}
+            A collaborative intelligence space for remote sensing peers to share findings, analyze satellite telemetry, and explore Earth observation research.
           </p>
         </div>
 
@@ -93,31 +109,31 @@ function HomeContent() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16">
           <h2 className="text-xs font-black uppercase tracking-[0.4em] text-muted-foreground flex items-center gap-4">
             <span className="w-8 h-[2px] bg-primary" />
-            {t('telemetryStream')}
+            Telemetry Stream
           </h2>
 
           <div className="flex flex-col sm:flex-row gap-6 items-center w-full lg:w-auto">
             {/* Search Bar */}
             <div className="relative w-full lg:w-96 group">
-              <Search className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors`} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
-                placeholder={t('searchPlaceholder')}
+                placeholder="Search missions, locations, or sensors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full bg-background border rounded-xl ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-muted-foreground/50 text-sm font-medium`}
+                className="w-full bg-background border rounded-xl pl-12 pr-4 py-4 text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-muted-foreground/50 text-sm font-medium"
               />
             </div>
 
             {/* Category Filter */}
             <div className="relative w-full sm:w-64 group">
-              <Filter className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors`} />
+              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <select
                 value={activeCategory}
-                onChange={(e) => setActiveCategory(e.target.value)}
-                className={`w-full bg-background border rounded-xl ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 text-[10px] font-black uppercase tracking-[0.2em] text-foreground focus:outline-none focus:border-primary/50 appearance-none cursor-pointer transition-all`}
+                onChange={(e) => setManualCategory(e.target.value)}
+                className="w-full bg-background border rounded-xl pl-12 pr-4 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-foreground focus:outline-none focus:border-primary/50 appearance-none cursor-pointer transition-all"
               >
-                <option value="All">{t('allIntelligence')}</option>
+                <option value="All">All Intelligence</option>
                 {Object.entries(RESEARCH_VECTOR_GROUPS).map(([group, vectors]) => (
                   <optgroup key={group} label={group} className="bg-background text-muted-foreground font-bold">
                     {vectors.map((v: string) => (
@@ -132,81 +148,68 @@ function HomeContent() {
 
         {posts.length === 0 ? (
           <div className="w-full text-center py-24 px-8 border border-dashed rounded-2xl bg-muted/30">
-            <p className="text-xl font-bold text-foreground mb-3">{t('noMissions')}</p>
-            <p className="text-muted-foreground">{t('beTheFirst')}</p>
+            <p className="text-xl font-bold text-foreground mb-3">No missions reported yet.</p>
+            <p className="text-muted-foreground">Incoming telemetry requested. Be the first to submit a report.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {posts
-              .filter(post => {
-                const query = searchQuery.toLowerCase();
-                const matchesSearch =
-                  post.title.toLowerCase().includes(query) ||
-                  post.excerpt.toLowerCase().includes(query) ||
-                  (post.areaOfInterest && post.areaOfInterest.toLowerCase().includes(query)) ||
-                  (post.satellite && post.satellite.toLowerCase().includes(query));
-
-                const postCategories = post.category
-                  ? post.category.split(',').map(c => c.trim().toLowerCase())
-                  : [];
-                const activeCatLower = activeCategory.toLowerCase();
-                const matchesCategory = activeCategory === 'All' ||
-                  postCategories.some(c => c === activeCatLower || c.includes(activeCatLower) || activeCatLower.includes(c));
-                return matchesSearch && matchesCategory;
-              })
-              .map((post, i) => (
-                <div key={post.id} className="group w-full flex flex-col h-full bg-card border rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] relative">
-                  <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
-                    {/* Image Container */}
-                    {(post.images && post.images.length > 0) || (post as any).imageUrl ? (
-                      <div className="relative h-64 w-full overflow-hidden border-b">
-                        <img
-                          src={post.images && post.images.length > 0 ? post.images[0] : (post as any).imageUrl}
-                          alt={post.title}
-                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
-                      </div>
-                    ) : (
-                      <div className="relative h-64 w-full bg-muted flex items-center justify-center border-b">
-                        <Globe2 className="w-12 h-12 text-muted-foreground/20" />
-                      </div>
-                    )}
-
-                    {/* Content */}
-                    <div className="p-8 flex flex-col flex-1">
-                      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-                        <span className="text-[10px] font-black text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 uppercase tracking-widest rounded-sm truncate max-w-[70%]">
-                          {post.category || 'Science'}
-                        </span>
-                        <div className="flex items-center gap-2 text-muted-foreground text-[10px] font-bold uppercase tracking-widest shrink-0">
-                          <Clock size={12} /> {new Date(post.postedAt || post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            {filteredPosts
+              .map((post) => {
+                const hero = (post as BlogPost & { imageUrl?: string }).images?.[0] || (post as BlogPost & { imageUrl?: string }).imageUrl;
+                return (
+                  <div key={post.id} className="group w-full flex flex-col h-full bg-card border rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] relative">
+                    <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
+                      {/* Image Container */}
+                      {hero ? (
+                        <div className="relative h-64 w-full overflow-hidden border-b">
+                          <img
+                            src={hero}
+                            alt={post.title}
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
                         </div>
-                      </div>
+                      ) : (
+                        <div className="relative h-64 w-full bg-muted flex items-center justify-center border-b">
+                          <Globe2 className="w-12 h-12 text-muted-foreground/20" />
+                        </div>
+                      )}
 
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors mb-4 leading-tight tracking-tight">
-                        {post.title}
-                      </h3>
-
-                      <p className="text-muted-foreground text-[0.9rem] mb-8 line-clamp-3 leading-relaxed flex-1">
-                        {post.excerpt}
-                      </p>
-
-                      <div className="mt-auto pt-6 border-t flex items-center justify-between">
-                        <div className="flex items-center gap-3 text-muted-foreground">
-                          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-                            <User size={12} />
+                      {/* Content */}
+                      <div className="p-8 flex flex-col flex-1">
+                        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                          <span className="text-[10px] font-black text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 uppercase tracking-widest rounded-sm truncate max-w-[70%]">
+                            {post.category || 'Science'}
+                          </span>
+                          <div className="flex items-center gap-2 text-muted-foreground text-[10px] font-bold uppercase tracking-widest shrink-0">
+                            <Clock size={12} /> {new Date(post.postedAt || post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </div>
-                          <span className="text-[10px] font-black uppercase tracking-widest">{post.author}</span>
                         </div>
-                        <span className="text-primary text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                          {t('accessFile')} <ArrowRight size={14} className={isRTL ? 'rotate-180' : ''} />
-                        </span>
+
+                        <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors mb-4 leading-tight tracking-tight">
+                          {post.title}
+                        </h3>
+
+                        <p className="text-muted-foreground text-[0.9rem] mb-8 line-clamp-3 leading-relaxed flex-1">
+                          {post.excerpt}
+                        </p>
+
+                        <div className="mt-auto pt-6 border-t flex items-center justify-between">
+                          <div className="flex items-center gap-3 text-muted-foreground">
+                            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+                              <User size={12} />
+                            </div>
+                            <span className="text-[10px] font-black uppercase tracking-widest">{post.author}</span>
+                          </div>
+                          <span className="text-primary text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                            Access File <ArrowRight size={14} />
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
+                    </Link>
+                  </div>
+                )
+              })}
           </div>
         )}
       </section>
