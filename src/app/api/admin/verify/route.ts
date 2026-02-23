@@ -5,7 +5,7 @@ import { verifyAdminToken } from "@/lib/auth-util";
 export async function GET() {
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;
-    const adminPassword = (process.env.ADMIN_PASSWORD || "Astradevs@2026").trim();
+    const adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
 
     if (!token || !verifyAdminToken(token, adminPassword)) {
         return NextResponse.json({ authenticated: false }, { status: 401 });

@@ -8,7 +8,7 @@ import { verifyAdminToken } from '@/lib/auth-util';
 export async function POST() {
     const cookieStore = await cookies();
     const token = cookieStore.get('admin_token')?.value;
-    const adminPassword = (process.env.ADMIN_PASSWORD || "Astradevs@2026").trim();
+    const adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
     const isAdmin = verifyAdminToken(token, adminPassword);
 
     if (!isAdmin) {

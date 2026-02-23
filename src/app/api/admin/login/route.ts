@@ -6,7 +6,7 @@ export async function POST(request: Request) {
         const { password } = await request.json();
 
         // Admin password stored as env var
-        const adminPassword = (process.env.ADMIN_PASSWORD || "Astradevs@2026").trim();
+        const adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
 
         if (password === adminPassword) {
             // Generate a session token
