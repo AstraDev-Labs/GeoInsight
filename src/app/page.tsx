@@ -11,8 +11,10 @@ import { useSearchParams } from 'next/navigation';
 import type { BlogPost } from '@/lib/types';
 import { RESEARCH_VECTOR_GROUPS } from '@/lib/categories';
 import { ShieldAlert, X as CloseIcon } from 'lucide-react';
+import { useLanguage } from '@/lib/language-context';
 
 function HomeContent() {
+  const { t, isRTL } = useLanguage();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
@@ -77,13 +79,13 @@ function HomeContent() {
         {/* Main Header */}
         <div className="mb-16 border-b pb-12">
           <div className="flex items-center gap-3 text-primary font-black uppercase tracking-[0.3em] text-[10px] mb-6">
-            <Activity size={14} /> Mission Intelligence Feed
+            <Activity size={14} /> {t('missionFeed')}
           </div>
           <h1 className="text-[3.5rem] md:text-[5.2rem] font-black tracking-tighter mb-6 text-foreground leading-[0.95]">
-            Research<br />Findings
+            {t('researchFindings')}
           </h1>
           <p className="text-xl text-muted-foreground font-medium leading-relaxed max-w-3xl">
-            A collaborative intelligence space for remote sensing peers to share findings, analyze satellite telemetry, and explore Earth observation research.
+            {t('collaborationDesc')}
           </p>
         </div>
 
@@ -91,31 +93,31 @@ function HomeContent() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16">
           <h2 className="text-xs font-black uppercase tracking-[0.4em] text-muted-foreground flex items-center gap-4">
             <span className="w-8 h-[2px] bg-primary" />
-            Telemetry Stream
+            {t('telemetryStream')}
           </h2>
 
           <div className="flex flex-col sm:flex-row gap-6 items-center w-full lg:w-auto">
             {/* Search Bar */}
             <div className="relative w-full lg:w-96 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <Search className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors`} />
               <input
                 type="text"
-                placeholder="Search missions, locations, or sensors..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-background border rounded-xl pl-12 pr-4 py-4 text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-muted-foreground/50 text-sm font-medium"
+                className={`w-full bg-background border rounded-xl ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 text-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-muted-foreground/50 text-sm font-medium`}
               />
             </div>
 
             {/* Category Filter */}
             <div className="relative w-full sm:w-64 group">
-              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <Filter className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors`} />
               <select
                 value={activeCategory}
                 onChange={(e) => setActiveCategory(e.target.value)}
-                className="w-full bg-background border rounded-xl pl-12 pr-4 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-foreground focus:outline-none focus:border-primary/50 appearance-none cursor-pointer transition-all"
+                className={`w-full bg-background border rounded-xl ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-4 text-[10px] font-black uppercase tracking-[0.2em] text-foreground focus:outline-none focus:border-primary/50 appearance-none cursor-pointer transition-all`}
               >
-                <option value="All">All Intelligence</option>
+                <option value="All">{t('allIntelligence')}</option>
                 {Object.entries(RESEARCH_VECTOR_GROUPS).map(([group, vectors]) => (
                   <optgroup key={group} label={group} className="bg-background text-muted-foreground font-bold">
                     {vectors.map((v: string) => (
@@ -130,8 +132,8 @@ function HomeContent() {
 
         {posts.length === 0 ? (
           <div className="w-full text-center py-24 px-8 border border-dashed rounded-2xl bg-muted/30">
-            <p className="text-xl font-bold text-foreground mb-3">No missions reported yet.</p>
-            <p className="text-muted-foreground">Incoming telemetry requested. Be the first to submit a report.</p>
+            <p className="text-xl font-bold text-foreground mb-3">{t('noMissions')}</p>
+            <p className="text-muted-foreground">{t('beTheFirst')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -193,7 +195,7 @@ function HomeContent() {
                           <span className="text-[10px] font-black uppercase tracking-widest">{post.author}</span>
                         </div>
                         <span className="text-primary text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                          Access File <ArrowRight size={14} />
+                          {t('accessFile')} <ArrowRight size={14} className={isRTL ? 'rotate-180' : ''} />
                         </span>
                       </div>
                     </div>
