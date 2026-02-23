@@ -3,7 +3,7 @@ import Footer from '@/components/Footer';
 import DeletePostButton from '@/components/DeletePostButton';
 import EditPostButton from '@/components/EditPostButton';
 import { dataService } from '@/lib/data-service';
-import { Calendar, User, ArrowLeft, Tag, Clock, FileText, ExternalLink } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Tag, Clock, FileText, ExternalLink, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
@@ -21,16 +21,16 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
     const postedDate = post.postedAt ? new Date(post.postedAt) : new Date(post.date);
 
     return (
-        <main className="min-h-[100vh] flex flex-col bg-white text-black transition-colors duration-500 font-sans">
-            <div className="bg-[#1a1a1a] shadow-md z-20 relative w-full">
+        <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white transition-colors duration-500 font-sans">
+            <div className="bg-[#111111] border-b border-[#222222] z-20 relative w-full">
                 <Navbar />
             </div>
 
-            <article className="flex-[1] w-full bg-white pb-16">
+            <article className="flex-1 w-full bg-[#0a0a0a] pb-24">
 
-                <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-                    <Link href="/" className="inline-flex items-center gap-2 text-[#006699] hover:text-[#004f7a] text-xs font-bold uppercase tracking-widest mb-6 transition-colors font-sans">
-                        <ArrowLeft size={16} /> Back to Blog Posts
+                <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4">
+                    <Link href="/" className="inline-flex items-center gap-2 text-[#0ea5e9] hover:text-[#38bdf8] text-xs font-bold uppercase tracking-[0.2em] mb-8 transition-all font-sans group">
+                        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Research Terminal
                     </Link>
                 </div>
 
@@ -54,29 +54,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                     ) : null}
 
                     {/* Title and Metadata below image */}
-                    <div className="text-left w-full border-b border-[#e5e5e5] pb-8">
-                        <h1 className="text-[2.5rem] md:text-[3.2rem] font-bold leading-[1.15] mb-6 text-[#222222] tracking-tight">
+                    <div className="text-left w-full border-b border-[#222222] pb-10">
+                        <h1 className="text-[2.5rem] md:text-[3.5rem] font-black leading-[1.1] mb-8 text-white tracking-tight">
                             {post.title}
                         </h1>
 
                         <div className="flex flex-col md:flex-row md:items-start gap-8 mt-6">
                             {/* Standard Metadata */}
-                            <div className="flex flex-col gap-3 min-w-[200px]">
-                                <div className="flex items-center gap-2">
-                                    <span className="font-bold uppercase tracking-widest text-[#888888] text-[10px]">Date</span>
-                                    <span className="font-bold text-[#222222] text-sm">
+                            <div className="flex flex-col gap-4 min-w-[200px]">
+                                <div className="flex items-center gap-3">
+                                    <span className="font-bold uppercase tracking-[0.2em] text-[#555] text-[10px]">Date</span>
+                                    <span className="font-bold text-white text-sm">
                                         {postedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="font-bold uppercase tracking-widest text-[#888888] text-[10px]">Author</span>
-                                    <Link href={`/author/${encodeURIComponent(post.author)}`} className="font-bold text-[#006699] text-sm hover:underline">
+                                <div className="flex items-center gap-3">
+                                    <span className="font-bold uppercase tracking-[0.2em] text-[#555] text-[10px]">Author</span>
+                                    <Link href={`/author/${encodeURIComponent(post.author)}`} className="font-bold text-[#0ea5e9] text-sm hover:text-[#38bdf8] transition-colors">
                                         {post.author}
                                     </Link>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="font-bold uppercase tracking-widest text-[#888888] text-[10px]">Domain</span>
-                                    <span className="font-bold text-[#222222] text-xs bg-[#f0f0f0] px-2 py-0.5 uppercase tracking-wider">
+                                <div className="flex items-center gap-3">
+                                    <span className="font-bold uppercase tracking-[0.2em] text-[#555] text-[10px]">Domain</span>
+                                    <span className="font-black text-[10px] text-[#0ea5e9] bg-[#0ea5e9]/10 border border-[#0ea5e9]/20 px-2 py-0.5 uppercase tracking-widest">
                                         {post.category || 'Earth Sciences'}
                                     </span>
                                 </div>
@@ -84,19 +84,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
 
                             {/* New Tags Metadata */}
                             {(post.satellite || post.areaOfInterest) && (
-                                <div className="flex flex-col gap-3 min-w-[200px] border-l-0 md:border-l md:border-[#e5e5e5] md:pl-8">
+                                <div className="flex flex-col gap-4 min-w-[200px] border-l-0 md:border-l md:border-[#222222] md:pl-10">
                                     {post.areaOfInterest && (
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold uppercase tracking-widest text-[#888888] text-[10px]">Location</span>
-                                            <span className="font-bold text-[#222222] text-sm max-w-[200px] truncate" title={post.areaOfInterest}>
+                                        <div className="flex items-center gap-3">
+                                            <span className="font-bold uppercase tracking-[0.2em] text-[#555] text-[10px]">Location</span>
+                                            <span className="font-bold text-white text-sm max-w-[250px] truncate" title={post.areaOfInterest}>
                                                 {post.areaOfInterest}
                                             </span>
                                         </div>
                                     )}
                                     {post.satellite && (
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold uppercase tracking-widest text-[#888888] text-[10px]">Sensor(s)</span>
-                                            <span className="font-bold text-[#222222] text-sm max-w-[200px] truncate" title={post.satellite}>
+                                        <div className="flex items-center gap-3">
+                                            <span className="font-bold uppercase tracking-[0.2em] text-[#555] text-[10px]">Sensor(s)</span>
+                                            <span className="font-bold text-white text-sm max-w-[250px] truncate" title={post.satellite}>
                                                 {post.satellite}
                                             </span>
                                         </div>
@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                     <div className="w-full lg:w-[68%]">
 
                         {/* Article Content */}
-                        <div className="prose prose-lg max-w-none text-[#222] prose-p:leading-[1.8] prose-p:text-[1.1rem] prose-p:font-[400] prose-p:mb-6 prose-a:text-[#006699] prose-a:font-bold hover:prose-a:underline prose-headings:text-[#111] prose-headings:font-bold prose-headings:mt-10 prose-strong:text-[#000] prose-blockquote:border-l-4 prose-blockquote:border-[#ccc] prose-blockquote:pl-6 prose-blockquote:text-[#555] prose-blockquote:italic prose-img:mt-8 prose-img:mb-4 prose-img:rounded-none">
+                        <div className="prose prose-lg prose-invert max-w-none text-[#cccccc] prose-p:leading-[1.8] prose-p:text-[1.1rem] prose-p:font-[400] prose-p:mb-8 prose-a:text-[#0ea5e9] prose-a:font-bold hover:prose-a:text-[#38bdf8] prose-headings:text-white prose-headings:font-black prose-headings:mt-12 prose-strong:text-white prose-blockquote:border-l-4 prose-blockquote:border-[#333] prose-blockquote:pl-6 prose-blockquote:text-[#888] prose-blockquote:italic prose-img:mt-10 prose-img:mb-6 prose-img:rounded-xl prose-img:border prose-img:border-[#222]">
                             {post.content && post.content.trim().startsWith('<') ? (
                                 <div dangerouslySetInnerHTML={{ __html: post.content }} />
                             ) : (
@@ -126,20 +126,20 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
 
                         {/* Secondary Thumbnail Gallery */}
                         {post.images && post.images.length > 1 && (
-                            <div className="mt-16 pt-8 border-t border-[#e5e5e5]">
-                                <h3 className="text-xl font-bold text-[#111] mb-6 uppercase tracking-wider text-sm flex items-center gap-3">
-                                    Additional Imagery
+                            <div className="mt-20 pt-12 border-t border-[#222222]">
+                                <h3 className="text-white font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-3 mb-8">
+                                    <Activity size={16} className="text-[#0ea5e9]" /> Additional Imagery
                                 </h3>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
                                     {post.images.slice(1).map((img, i) => (
-                                        <a href={img} target="_blank" rel="noopener noreferrer" key={i} className="relative block group bg-[#f0f0f0] aspect-square overflow-hidden cursor-pointer rounded-none border border-[#e5e5e5]">
+                                        <a href={img} target="_blank" rel="noopener noreferrer" key={i} className="relative block group bg-[#111] aspect-video overflow-hidden cursor-pointer rounded-xl border border-[#222] hover:border-[#0ea5e9]/50 transition-all shadow-lg hover:shadow-[#0ea5e9]/10">
                                             <img
                                                 src={img}
                                                 alt={`${post.title} supplementary image ${i + 1}`}
-                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                             />
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <span className="text-white text-xs font-bold uppercase tracking-widest bg-black/50 px-3 py-1 backdrop-blur-sm">View</span>
+                                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                                                <span className="text-white text-[10px] font-black uppercase tracking-[0.2em] bg-[#0ea5e9] px-4 py-2 rounded-lg shadow-lg">Enlarge Findings</span>
                                             </div>
                                         </a>
                                     ))}
@@ -152,45 +152,46 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                     <aside className="w-full lg:w-[32%] sticky top-8">
 
                         {/* Download / References Box */}
-                        <div className="bg-[#f0f0f0] border border-[#d5d5d5] p-6 mb-8 mt-12 lg:mt-0">
-                            <h3 className="text-sm font-bold uppercase tracking-widest text-[#222] mb-4 flex items-center gap-2">
-                                <FileText size={16} className="text-[#006699]" /> Datasets / Downloads
+                        <div className="bg-[#111111] border border-[#222222] p-8 rounded-2xl mb-10 w-full">
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#555] mb-6 flex items-center gap-2">
+                                <FileText size={16} className="text-[#0ea5e9]" /> Datasets / Downloads
                             </h3>
 
                             {post.attachments && post.attachments.length > 0 ? (
-                                <div className="space-y-3">
+                                <div className="space-y-4">
                                     {post.attachments.map((att, i) => (
                                         <a
                                             key={i}
                                             href={att}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="group flex flex-col p-3 bg-white border border-[#d5d5d5] hover:border-[#006699] transition-colors"
+                                            className="group flex flex-col p-4 bg-[#1a1a1a] border border-[#333] hover:border-[#0ea5e9] transition-all rounded-xl shadow-sm hover:shadow-[#0ea5e9]/5"
                                         >
-                                            <span className="text-[#006699] font-bold text-[0.85rem] group-hover:underline flex justify-between items-center break-all">
-                                                Attachment file {i + 1}
-                                                <ExternalLink size={14} className="text-[#888888] shrink-0 ml-2" />
+                                            <span className="text-white font-bold text-[0.85rem] flex justify-between items-center break-all transition-colors group-hover:text-[#0ea5e9]">
+                                                Technical Document {i + 1}
+                                                <ExternalLink size={14} className="text-[#444] shrink-0 ml-2 group-hover:text-[#0ea5e9]" />
                                             </span>
-                                            <span className="text-xs text-[#888888] mt-1 break-all flex items-center gap-1">
-                                                <Tag size={10} /> {att.split('/').pop()?.substring(0, 30) || 'Document file'}...
+                                            <span className="text-[10px] text-[#555] mt-2 break-all flex items-center gap-1 font-bold tracking-widest uppercase">
+                                                <Tag size={10} /> {att.split('/').pop()?.substring(0, 30) || 'DATA_REF'}...
                                             </span>
                                         </a>
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-sm text-[#555] bg-white p-4 border border-[#e5e5e5]">No external datasets or references provided for this abstract.</p>
+                                <p className="text-sm text-[#555] bg-[#1a1a1a]/50 p-6 border border-[#222] border-dashed rounded-xl italic text-center">No supplemental datasets provided.</p>
                             )}
                         </div>
 
                         {/* Author Controls */}
-                        <div className="bg-[#fffdfd] border border-[#ffdddd] p-6">
-                            <h3 className="text-sm font-bold uppercase tracking-widest text-[#990000] mb-2 flex items-center gap-2">
-                                Author Actions
+                        <div className="bg-[#111111] border border-[#ff4d4d]/20 p-8 rounded-2xl relative overflow-hidden group/sidebar">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-full blur-2xl -mr-12 -mt-12" />
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#ff4d4d] mb-4 flex items-center gap-2">
+                                Author Controls
                             </h3>
-                            <p className="text-xs text-[#555] mb-4 leading-relaxed">
-                                If you authored this report and need to retract or modify the data, you may initiate a request here.
+                            <p className="text-xs text-[#777] mb-6 leading-relaxed">
+                                Personnel classified as authors may initiate modification or retraction requests using their secure deletion keys.
                             </p>
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-4">
                                 <EditPostButton post={post} />
                                 <DeletePostButton postId={post.id} postTitle={post.title} />
                             </div>

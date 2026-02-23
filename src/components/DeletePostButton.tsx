@@ -91,126 +91,146 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        background: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: 'var(--radius)',
-                        padding: '2rem',
-                        maxWidth: '420px',
+                        background: '#111111',
+                        border: '1px solid #333333',
+                        borderRadius: '16px',
+                        padding: '2.5rem',
+                        maxWidth: '450px',
                         width: '90%',
-                        zIndex: 1001
+                        zIndex: 1001,
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
                     }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                            <h3 style={{ color: '#ef4444', margin: 0 }}>Delete Post</h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                            <h3 style={{ color: '#ff4d4d', margin: 0, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Delete Research</h3>
                             <button
                                 onClick={() => setShowModal(false)}
-                                style={{ background: 'none', border: 'none', color: 'hsl(var(--muted-foreground))', cursor: 'pointer' }}
+                                style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', padding: '4px', borderRadius: '50%', transition: 'background 0.2s' }}
+                                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                onMouseOut={(e) => e.currentTarget.style.background = 'none'}
                             >
-                                <X size={20} />
+                                <X size={24} />
                             </button>
                         </div>
 
-                        <p style={{ color: 'hsl(var(--foreground))', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                            Are you sure you want to delete <strong>&quot;{postTitle}&quot;</strong>?
+                        <p style={{ color: '#cccccc', fontSize: '1rem', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                            Are you sure you want to permanently remove <strong style={{ color: 'white' }}>&quot;{postTitle}&quot;</strong> from the intelligence database?
                         </p>
 
                         {isAdmin ? (
                             <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '8px',
-                                padding: '0.75rem 1rem',
-                                background: 'rgba(56, 189, 248, 0.08)',
-                                border: '1px solid rgba(56, 189, 248, 0.2)',
-                                borderRadius: 'var(--radius)',
-                                marginBottom: '1rem',
-                                fontSize: '0.85rem'
+                                gap: '12px',
+                                padding: '1rem 1.25rem',
+                                background: 'rgba(14, 165, 233, 0.1)',
+                                border: '1px solid rgba(14, 165, 233, 0.2)',
+                                borderRadius: '12px',
+                                marginBottom: '2rem',
+                                fontSize: '0.9rem',
+                                color: '#bae6fd'
                             }}>
-                                <Shield size={16} color="hsl(var(--primary))" />
-                                <span>Deleting as <strong style={{ color: 'hsl(var(--primary))' }}>Admin</strong> — no email verification needed.</span>
+                                <Shield size={18} color="#0ea5e9" />
+                                <span>Deleting as <strong style={{ color: '#0ea5e9', fontWeight: 700 }}>Admin</strong> — system override active, no verification required.</span>
                             </div>
                         ) : (
                             <>
-                                <p style={{ color: 'hsl(var(--muted-foreground))', fontSize: '0.8rem', marginBottom: '1rem' }}>
-                                    To confirm you are the author, enter the secure credentials you used when submitting this post.
+                                <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+                                    Please verify your authorization to delete this research finding.
                                 </p>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Enter your author email"
+                                    placeholder="Author Email"
                                     style={{
                                         width: '100%',
-                                        padding: '0.8rem 1rem',
-                                        background: 'hsl(var(--input))',
-                                        border: error ? '1px solid #ef4444' : '1px solid hsl(var(--border))',
-                                        borderRadius: 'var(--radius)',
-                                        color: 'hsl(var(--foreground))',
-                                        fontSize: '0.9rem',
+                                        padding: '0.9rem 1.25rem',
+                                        background: '#1a1a1a',
+                                        border: error ? '1px solid #ff4d4d' : '1px solid #333',
+                                        borderRadius: '10px',
+                                        color: 'white',
+                                        fontSize: '0.95rem',
                                         fontFamily: 'inherit',
-                                        marginBottom: '0.75rem',
-                                        outline: 'none'
+                                        marginBottom: '0.85rem',
+                                        outline: 'none',
+                                        transition: 'border-color 0.2s'
                                     }}
+                                    onFocus={(e) => e.currentTarget.style.borderColor = '#0ea5e9'}
+                                    onBlur={(e) => e.currentTarget.style.borderColor = error ? '#ff4d4d' : '#333'}
                                 />
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Enter Author Deletion Password"
+                                    placeholder="Author Deletion Password"
                                     style={{
                                         width: '100%',
-                                        padding: '0.8rem 1rem',
-                                        background: 'hsl(var(--input))',
-                                        border: error ? '1px solid #ef4444' : '1px solid hsl(var(--border))',
-                                        borderRadius: 'var(--radius)',
-                                        color: 'hsl(var(--foreground))',
-                                        fontSize: '0.9rem',
+                                        padding: '0.9rem 1.25rem',
+                                        background: '#1a1a1a',
+                                        border: error ? '1px solid #ff4d4d' : '1px solid #333',
+                                        borderRadius: '10px',
+                                        color: 'white',
+                                        fontSize: '0.95rem',
                                         fontFamily: 'inherit',
-                                        marginBottom: '0.5rem',
-                                        outline: 'none'
+                                        marginBottom: '1rem',
+                                        outline: 'none',
+                                        transition: 'border-color 0.2s'
                                     }}
+                                    onFocus={(e) => e.currentTarget.style.borderColor = '#0ea5e9'}
+                                    onBlur={(e) => e.currentTarget.style.borderColor = error ? '#ff4d4d' : '#333'}
                                 />
                             </>
                         )}
 
                         {error && (
-                            <p style={{ color: '#ef4444', fontSize: '0.8rem', marginBottom: '1rem', fontWeight: 600 }}>
+                            <p style={{ color: '#ff4d4d', fontSize: '0.85rem', marginBottom: '1.5rem', fontWeight: 600, padding: '0.5rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ff4d4d' }} />
                                 {error}
                             </p>
                         )}
 
-                        <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                             <button
                                 onClick={handleDelete}
                                 disabled={deleting}
                                 style={{
-                                    flex: 1,
-                                    padding: '0.8rem',
-                                    background: '#ef4444',
+                                    flex: 2,
+                                    padding: '1rem',
+                                    background: '#ff4d4d',
                                     color: 'white',
                                     border: 'none',
-                                    borderRadius: 'var(--radius)',
-                                    fontSize: '0.9rem',
+                                    borderRadius: '10px',
+                                    fontSize: '0.95rem',
                                     fontWeight: 700,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em',
                                     cursor: deleting ? 'wait' : 'pointer',
                                     fontFamily: 'inherit',
-                                    opacity: deleting ? 0.7 : 1
+                                    transition: 'all 0.2s',
+                                    boxShadow: '0 4px 12px rgba(255, 77, 77, 0.2)'
                                 }}
+                                onMouseOver={(e) => !deleting && (e.currentTarget.style.background = '#ff3333')}
+                                onMouseOut={(e) => !deleting && (e.currentTarget.style.background = '#ff4d4d')}
                             >
-                                {deleting ? 'Deleting...' : 'Confirm Delete'}
+                                {deleting ? 'Processing...' : 'Confirm Deletion'}
                             </button>
                             <button
                                 onClick={() => setShowModal(false)}
                                 style={{
-                                    padding: '0.8rem 1.2rem',
-                                    background: 'hsl(var(--muted))',
-                                    color: 'hsl(var(--foreground))',
-                                    border: '1px solid hsl(var(--border))',
-                                    borderRadius: 'var(--radius)',
-                                    fontSize: '0.9rem',
+                                    flex: 1,
+                                    padding: '1rem',
+                                    background: '#222',
+                                    color: '#aaa',
+                                    border: '1px solid #333',
+                                    borderRadius: '10px',
+                                    fontSize: '0.95rem',
                                     fontWeight: 600,
                                     cursor: 'pointer',
-                                    fontFamily: 'inherit'
+                                    fontFamily: 'inherit',
+                                    transition: 'all 0.2s'
                                 }}
+                                onMouseOver={(e) => { e.currentTarget.style.background = '#333'; e.currentTarget.style.color = 'white'; }}
+                                onMouseOut={(e) => { e.currentTarget.style.background = '#222'; e.currentTarget.style.color = '#aaa'; }}
                             >
                                 Cancel
                             </button>

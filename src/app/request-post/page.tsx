@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import { api } from '@/lib/mock-api';
-import { Send, CheckCircle2, ImagePlus, Paperclip, X, Upload, FileText, Check } from 'lucide-react';
+import { Send, CheckCircle2, ImagePlus, Paperclip, X, Upload, FileText, Check, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Footer from '@/components/Footer';
 import dynamic from 'next/dynamic';
@@ -164,23 +164,26 @@ export default function RequestPost() {
     }
 
     return (
-        <main className="min-h-screen flex flex-col bg-white text-black relative">
-            <div className="bg-[#1a1a1a] shadow-md z-20 relative">
+        <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white relative font-sans">
+            <div className="bg-[#111111] border-b border-[#222222] z-20 relative">
                 <Navbar />
             </div>
 
-            <div className="max-w-3xl mx-auto px-6 relative z-10 flex-1 w-full pt-16 pb-20">
+            <div className="max-w-4xl mx-auto px-6 relative z-10 flex-1 w-full pt-16 pb-24">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="text-center mb-12"
+                    className="text-center mb-16"
                 >
-                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-[#222]">
-                        Contribute <span className="text-[#006699] font-light">Findings</span>
+                    <div className="flex items-center justify-center gap-3 text-[#0ea5e9] font-black uppercase tracking-[0.3em] text-[10px] mb-6">
+                        <Activity size={14} /> Intelligence Uplink
+                    </div>
+                    <h1 className="text-[3rem] md:text-[4.5rem] font-black tracking-tighter mb-8 text-white leading-[0.95]">
+                        Log Finding
                     </h1>
-                    <p className="text-[#555] text-lg font-light leading-relaxed max-w-xl mx-auto">
-                        Share your analytical results. Once submitted, the admin will review your research before publishing it to the entire intelligence network.
+                    <p className="text-[#888] text-lg font-medium leading-relaxed max-w-2xl mx-auto">
+                        Personnel are requested to upload analytical findings. Once submitted, board review will initiate before publication to the global network.
                     </p>
                 </motion.div>
 
@@ -188,12 +191,13 @@ export default function RequestPost() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white border border-[#e5e5e5] shadow-sm p-12 text-center flex flex-col items-center justify-center border-l-4 border-l-[#006699]"
+                        className="bg-[#111111] border border-[#222222] p-16 text-center flex flex-col items-center justify-center rounded-3xl shadow-2xl relative overflow-hidden group"
                     >
-                        <CheckCircle2 className="text-[#006699] w-20 h-20 mb-6" />
-                        <h2 className="text-3xl font-bold text-[#222] mb-3 tracking-tight">Transmission Successful</h2>
-                        <p className="text-[#555] mb-8">
-                            Your research request is securely enqueued for review. You will be notified via email upon processing.
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#0ea5e9]/5 rounded-full blur-[100px] -mr-32 -mt-32" />
+                        <CheckCircle2 className="text-[#0ea5e9] w-24 h-24 mb-8" />
+                        <h2 className="text-[2.5rem] font-black text-white mb-4 tracking-tight leading-[1.1]">Transmission Received</h2>
+                        <p className="text-[#888] mb-10 text-lg max-w-md mx-auto">
+                            Your research data is securely enqueued for mission control review. Confirmation will follow via secure channel.
                         </p>
                         <button
                             onClick={() => {
@@ -203,9 +207,9 @@ export default function RequestPost() {
                                 setDocFiles([]);
                                 setPassword('');
                             }}
-                            className="bg-[#f0f0f0] border border-[#d5d5d5] hover:bg-[#e5e5e5] text-[#222] font-bold py-3 px-8 transition-all"
+                            className="bg-[#1a1a1a] border border-[#333] hover:bg-[#222] hover:text-white text-[#aaa] font-black uppercase tracking-[0.2em] text-xs py-5 px-10 rounded-xl transition-all shadow-xl"
                         >
-                            Submit Additional Analysis
+                            Log Additional Mission
                         </button>
                     </motion.div>
                 ) : (
@@ -213,42 +217,43 @@ export default function RequestPost() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="bg-white border border-[#e5e5e5] shadow-sm p-8 md:p-10 border-t-4 border-t-[#006699]"
+                        className="bg-[#111111] border border-[#222222] shadow-2xl p-8 md:p-12 rounded-3xl relative overflow-hidden"
                         onSubmit={handleSubmit}
                     >
-                        <div className="space-y-8 relative z-10">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#0ea5e9]/5 rounded-full blur-3xl -mr-16 -mt-16" />
 
-                            <div className="space-y-3">
-                                <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Transmission Title</label>
+                        <div className="space-y-10 relative z-10">
+
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444]">Mission Designation (Title)</label>
                                 <input
                                     type="text"
                                     name="title"
                                     required
-                                    className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
-                                    placeholder="e.g. Remote Sensing of Mangrove Degredation"
+                                    className="w-full bg-[#1a1a1a] border border-[#222222] focus:border-[#0ea5e9]/50 text-white placeholder-[#222] px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-[#0ea5e9]/5 text-sm font-bold"
+                                    placeholder="Enter report title..."
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-3">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Author Identifier</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444]">Personnel Identifier</label>
                                     <input
                                         type="text"
                                         name="author"
                                         required
-                                        className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
+                                        className="w-full bg-[#1a1a1a] border border-[#222222] focus:border-[#0ea5e9]/50 text-white placeholder-[#222] px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-[#0ea5e9]/5 text-sm font-bold"
                                         placeholder="Full Name"
                                     />
                                 </div>
-                                <div className="space-y-3">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Secure Email</label>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444]">Secure Comms Channel (Email)</label>
                                     <input
                                         type="email"
                                         name="email"
                                         required
-                                        className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
-                                        placeholder="university.email@edu"
-                                        pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+                                        className="w-full bg-[#1a1a1a] border border-[#222222] focus:border-[#0ea5e9]/50 text-white placeholder-[#222] px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-[#0ea5e9]/5 text-sm font-bold"
+                                        placeholder="name@organization.com"
                                     />
                                 </div>
                             </div>
@@ -258,146 +263,144 @@ export default function RequestPost() {
                                 <input type="text" name="organization" tabIndex={-1} autoComplete="off" />
                             </div>
 
-                            <div className="space-y-3">
-                                <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Author Deletion Password</label>
-                                <p className="text-xs text-[#777]">This password will be strongly encrypted. You can use it later if you need to delete your published transmission.</p>
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444]">Secure Access Key</label>
+                                <p className="text-[10px] text-[#555] font-bold uppercase tracking-widest">Required for future data retraction or modification requests.</p>
                                 <input
                                     type="password"
                                     name="authorPassword"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
-                                    placeholder="Set a secret password..."
+                                    className="w-full bg-[#1a1a1a] border border-[#222222] focus:border-[#0ea5e9]/50 text-white placeholder-[#222] px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-[#0ea5e9]/5 text-sm font-bold mb-4"
+                                    placeholder="Set secret key..."
                                     autoComplete="new-password"
-                                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}"
                                 />
 
-                                <div className="mt-4 bg-[#f4f4f4] p-4 border border-[#e5e5e5]">
-                                    <p className="text-xs font-bold tracking-widest uppercase text-[#333] mb-3">Password Requirements</p>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 text-sm">
-                                        <div className={`flex items-center gap-2 transition-colors ${password.length >= 6 ? 'text-[#006699]' : 'text-[#777]'}`}>
-                                            {password.length >= 6 ? <Check size={16} /> : <X size={16} className={password.length > 0 ? "text-red-500" : ""} />}
-                                            <span className={password.length > 0 && password.length < 6 ? "text-red-500" : ""}>At least 6 characters</span>
+                                <div className="bg-[#151515] p-6 rounded-2xl border border-[#222222]">
+                                    <p className="text-[10px] font-black tracking-[0.2em] uppercase text-[#444] mb-4">Encryption Protocols</p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-[11px] font-bold uppercase tracking-widest">
+                                        <div className={`flex items-center gap-3 transition-colors ${password.length >= 6 ? 'text-[#0ea5e9]' : 'text-[#333]'}`}>
+                                            <div className={`w-1.5 h-1.5 rounded-full ${password.length >= 6 ? 'bg-[#0ea5e9]' : 'bg-[#222]'}`} />
+                                            <span>Min 6 Chars</span>
                                         </div>
-                                        <div className={`flex items-center gap-2 transition-colors ${/[A-Z]/.test(password) ? 'text-[#006699]' : 'text-[#777]'}`}>
-                                            {/[A-Z]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[A-Z]/.test(password) ? "text-red-500" : ""} />}
-                                            <span className={password.length > 0 && !/[A-Z]/.test(password) ? "text-red-500" : ""}>One uppercase letter</span>
+                                        <div className={`flex items-center gap-3 transition-colors ${/[A-Z]/.test(password) ? 'text-[#0ea5e9]' : 'text-[#333]'}`}>
+                                            <div className={`w-1.5 h-1.5 rounded-full ${/[A-Z]/.test(password) ? 'bg-[#0ea5e9]' : 'bg-[#222]'}`} />
+                                            <span>Uppercase</span>
                                         </div>
-                                        <div className={`flex items-center gap-2 transition-colors ${/[a-z]/.test(password) ? 'text-[#006699]' : 'text-[#777]'}`}>
-                                            {/[a-z]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[a-z]/.test(password) ? "text-red-500" : ""} />}
-                                            <span className={password.length > 0 && !/[a-z]/.test(password) ? "text-red-500" : ""}>One lowercase letter</span>
+                                        <div className={`flex items-center gap-3 transition-colors ${/[a-z]/.test(password) ? 'text-[#0ea5e9]' : 'text-[#333]'}`}>
+                                            <div className={`w-1.5 h-1.5 rounded-full ${/[a-z]/.test(password) ? 'bg-[#0ea5e9]' : 'bg-[#222]'}`} />
+                                            <span>Lowercase</span>
                                         </div>
-                                        <div className={`flex items-center gap-2 transition-colors ${/\d/.test(password) ? 'text-[#006699]' : 'text-[#777]'}`}>
-                                            {/\d/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/\d/.test(password) ? "text-red-500" : ""} />}
-                                            <span className={password.length > 0 && !/\d/.test(password) ? "text-red-500" : ""}>One number</span>
+                                        <div className={`flex items-center gap-3 transition-colors ${/\d/.test(password) ? 'text-[#0ea5e9]' : 'text-[#333]'}`}>
+                                            <div className={`w-1.5 h-1.5 rounded-full ${/\d/.test(password) ? 'bg-[#0ea5e9]' : 'bg-[#222]'}`} />
+                                            <span>Numeric</span>
                                         </div>
-                                        <div className={`flex items-center gap-2 transition-colors ${/[^a-zA-Z0-9]/.test(password) ? 'text-[#006699]' : 'text-[#777]'}`}>
-                                            {/[^a-zA-Z0-9]/.test(password) ? <Check size={16} /> : <X size={16} className={password.length > 0 && !/[^a-zA-Z0-9]/.test(password) ? "text-red-500" : ""} />}
-                                            <span className={password.length > 0 && !/[^a-zA-Z0-9]/.test(password) ? "text-red-500" : ""}>One symbol</span>
+                                        <div className={`flex items-center gap-3 transition-colors ${/[^a-zA-Z0-9]/.test(password) ? 'text-[#0ea5e9]' : 'text-[#333]'}`}>
+                                            <div className={`w-1.5 h-1.5 rounded-full ${/[^a-zA-Z0-9]/.test(password) ? 'bg-[#0ea5e9]' : 'bg-[#222]'}`} />
+                                            <span>Special</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="space-y-3">
-                                <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Research Vector(s)</label>
-                                <div className="w-full bg-[#f9f9f9] border border-[#d5d5d5] p-5 max-h-[300px] overflow-y-auto custom-scrollbar">
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444]">Intelligence Class (Vectors)</label>
+                                <div className="w-full bg-[#151515] border border-[#222222] rounded-2xl p-8 max-h-[350px] overflow-y-auto custom-scrollbar">
                                     {Object.entries(RESEARCH_VECTOR_GROUPS).map(([group, vectors]) => (
-                                        <div key={group} className="mb-4 last:mb-0">
-                                            <span className="text-[#888] font-bold uppercase text-xs mb-2 block">{group}</span>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        <div key={group} className="mb-8 last:mb-0">
+                                            <span className="text-[#333] font-black uppercase text-[10px] tracking-[0.2em] mb-4 block">{group}</span>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 {vectors.map((v: string) => (
-                                                    <label key={v} className="flex items-start gap-3 cursor-pointer group">
+                                                    <label key={v} className="flex items-center gap-3 cursor-pointer group">
+                                                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${selectedCategories.includes(v) ? 'bg-[#0ea5e9] border-[#0ea5e9]' : 'border-[#333] group-hover:border-[#444]'}`}>
+                                                            {selectedCategories.includes(v) && <Check size={10} className="text-white" />}
+                                                        </div>
                                                         <input
                                                             type="checkbox"
                                                             checked={selectedCategories.includes(v)}
                                                             onChange={() => toggleCategory(v)}
-                                                            className="mt-1 w-4 h-4 text-[#006699] border-[#d5d5d5] rounded focus:ring-[#006699]"
+                                                            className="hidden"
                                                         />
-                                                        <span className="text-[#333] text-sm group-hover:text-[#006699] transition-colors">{v}</span>
+                                                        <span className={`text-[11px] font-bold uppercase tracking-wider transition-colors ${selectedCategories.includes(v) ? 'text-white' : 'text-[#555] group-hover:text-white'}`}>{v}</span>
                                                     </label>
                                                 ))}
                                             </div>
                                         </div>
                                     ))}
-                                    <div className="mt-4 pt-4 border-t border-[#d5d5d5]">
-                                        <label className="flex items-start gap-3 cursor-pointer group">
+                                    <div className="mt-6 pt-6 border-t border-[#222222]">
+                                        <label className="flex items-center gap-3 cursor-pointer group">
+                                            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${selectedCategories.includes('Other') ? 'bg-[#0ea5e9] border-[#0ea5e9]' : 'border-[#333] group-hover:border-[#444]'}`}>
+                                                {selectedCategories.includes('Other') && <Check size={10} className="text-white" />}
+                                            </div>
                                             <input
                                                 type="checkbox"
                                                 checked={selectedCategories.includes('Other')}
                                                 onChange={() => toggleCategory('Other')}
-                                                className="mt-1 w-4 h-4 text-[#006699] border-[#d5d5d5] rounded focus:ring-[#006699]"
+                                                className="hidden"
                                             />
-                                            <span className="text-[#333] text-sm group-hover:text-[#006699] transition-colors font-bold">Other / Custom Vector</span>
+                                            <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors ${selectedCategories.includes('Other') ? 'text-white' : 'text-[#444] group-hover:text-white'}`}>Custom Classification</span>
                                         </label>
                                         {selectedCategories.includes('Other') && (
                                             <input
                                                 name="customCategory"
                                                 required
-                                                className="w-full bg-white border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-4 py-2 outline-none transition-all focus:ring-1 focus:ring-[#006699] mt-3 text-sm"
-                                                placeholder="Type your custom research domain..."
+                                                className="w-full bg-[#111] border border-[#333] focus:border-[#0ea5e9]/50 text-white placeholder-[#222] px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-[#0ea5e9]/5 mt-4 text-xs font-bold"
+                                                placeholder="Enter custom vector classification..."
                                             />
                                         )}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                                <div className="space-y-3">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Satellite / Sensor Tag</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444]">Sensor Origin</label>
                                     <input
                                         type="text"
                                         name="satellite"
-                                        className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
+                                        className="w-full bg-[#1a1a1a] border border-[#222222] focus:border-[#0ea5e9]/50 text-white placeholder-[#222] px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-[#0ea5e9]/5 text-sm font-bold"
                                         placeholder="e.g. Sentinel-2, Landsat 8"
                                     />
                                 </div>
-                                <div className="space-y-3">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Area of Interest</label>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444]">Geographic Target</label>
                                     <input
                                         type="text"
                                         name="areaOfInterest"
-                                        className="w-full bg-[#f9f9f9] border border-[#d5d5d5] focus:border-[#006699] text-[#222] placeholder-[#888] px-5 py-3 outline-none transition-all focus:ring-1 focus:ring-[#006699]"
-                                        placeholder="Target location coords or Region"
+                                        className="w-full bg-[#1a1a1a] border border-[#222222] focus:border-[#0ea5e9]/50 text-white placeholder-[#222] px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-[#0ea5e9]/5 text-sm font-bold"
+                                        placeholder="Region or Coordinates"
                                         required
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-3">
-                                <div className="flex items-baseline justify-between">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[#555]">Full Intelligence Report</label>
-                                    <span className="text-xs text-[#006699] hidden sm:block">Rich Text Editor</span>
-                                </div>
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444]">Mission Logs & Analysis</label>
                                 <RichTextEditor
                                     content={richContent}
                                     onChange={setRichContent}
-                                    placeholder="Write your complete blog post here. Use the toolbar above to format headings, lists, quotes, and more..."
+                                    placeholder="Enter complete technical analysis and report logs..."
                                 />
                             </div>
 
-                            <div className="space-y-4 pt-4 border-t border-[#e5e5e5]">
-                                <div className="flex items-center gap-2">
-                                    <ImagePlus className="w-5 h-5 text-[#006699]" />
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[#222]">Visual Evidence (Imagery)</label>
-                                </div>
+                            <div className="space-y-6 pt-6 border-t border-[#222222]">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444] flex items-center gap-3">
+                                    <ImagePlus className="w-4 h-4 text-[#0ea5e9]" /> Satellite Imagery
+                                </label>
 
                                 {imagePreviews.length > 0 && (
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                                         {imagePreviews.map((preview, index) => (
-                                            <div key={index} className="relative group overflow-hidden border border-[#d5d5d5] bg-[#f9f9f9]">
-                                                <img src={preview} alt={`Preview ${index}`} className="w-full h-24 object-cover" />
+                                            <div key={index} className="relative group overflow-hidden border border-[#222222] bg-[#1a1a1a] rounded-xl aspect-square">
+                                                <img src={preview} alt={`Preview ${index}`} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                                                 <button
                                                     type="button"
                                                     onClick={() => removeImage(index)}
-                                                    className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                                                 >
                                                     <X size={14} />
                                                 </button>
-                                                <div className="absolute bottom-0 inset-x-0 bg-white/90 text-[10px] text-[#222] font-bold px-2 py-1 truncate">
-                                                    {imageFiles[index]?.name}
-                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -407,30 +410,31 @@ export default function RequestPost() {
                                 <button
                                     type="button"
                                     onClick={() => imageInputRef.current?.click()}
-                                    className="flex items-center justify-center gap-2 px-5 py-3 bg-[#f0f0f0] border border-[#d5d5d5] hover:bg-[#e5e5e5] text-[#222] text-sm font-bold uppercase tracking-widest transition-all w-full md:w-auto"
+                                    className="flex items-center justify-center gap-3 px-8 py-4 bg-[#1a1a1a] border border-[#333] hover:border-[#0ea5e9]/50 text-[#aaa] hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-xl w-full"
                                 >
                                     <Upload size={16} />
-                                    {imagePreviews.length > 0 ? 'Attach Additional Imagery' : 'Select Imagery'}
+                                    {imagePreviews.length > 0 ? 'Log Additional Image Data' : 'Upload Sensory Imagery'}
                                 </button>
                             </div>
 
-                            <div className="space-y-4 pt-4 border-t border-[#e5e5e5]">
-                                <div className="flex items-center gap-2">
-                                    <Paperclip className="w-5 h-5 text-[#006699]" />
-                                    <label className="text-xs font-bold uppercase tracking-widest text-[#222]">Supporting Documents</label>
-                                </div>
+                            <div className="space-y-6 pt-6 border-t border-[#222222]">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-[#444] flex items-center gap-3">
+                                    <Paperclip className="w-4 h-4 text-[#0ea5e9]" /> Supplemental Datasets
+                                </label>
 
                                 {docFiles.length > 0 && (
-                                    <div className="space-y-2 mb-4">
+                                    <div className="space-y-3">
                                         {docFiles.map((file, index) => (
-                                            <div key={index} className="flex items-center gap-3 bg-[#f9f9f9] border border-[#d5d5d5] px-4 py-3 group relative">
-                                                <FileText className="w-4 h-4 text-[#006699] flex-shrink-0" />
-                                                <span className="text-sm text-[#333] font-medium truncate flex-1">{file.name}</span>
-                                                <span className="text-xs text-[#888] flex-shrink-0">{(file.size / 1024).toFixed(0)} KB</span>
+                                            <div key={index} className="flex items-center gap-4 bg-[#1a1a1a] border border-[#222222] px-6 py-4 rounded-xl group">
+                                                <FileText className="w-5 h-5 text-[#0ea5e9]" />
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-[11px] font-bold text-white truncate">{file.name}</p>
+                                                    <p className="text-[10px] text-[#444] font-black">{(file.size / 1024).toFixed(1)} KB</p>
+                                                </div>
                                                 <button
                                                     type="button"
                                                     onClick={() => removeDoc(index)}
-                                                    className="text-red-500 opacity-50 hover:opacity-100 transition-opacity p-1"
+                                                    className="text-red-500 opacity-20 group-hover:opacity-100 transition-opacity p-2"
                                                 >
                                                     <X size={16} />
                                                 </button>
@@ -443,27 +447,27 @@ export default function RequestPost() {
                                 <button
                                     type="button"
                                     onClick={() => docInputRef.current?.click()}
-                                    className="flex items-center justify-center gap-2 px-5 py-3 bg-[#f0f0f0] border border-[#d5d5d5] hover:bg-[#e5e5e5] text-[#222] text-sm font-bold uppercase tracking-widest transition-all w-full md:w-auto"
+                                    className="flex items-center justify-center gap-3 px-8 py-4 bg-[#1a1a1a] border border-[#333] hover:border-[#0ea5e9]/50 text-[#aaa] hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-xl w-full"
                                 >
                                     <Upload size={16} />
-                                    {docFiles.length > 0 ? 'Attach Additional Documents' : 'Select Documents'}
+                                    {docFiles.length > 0 ? 'Log Additional Datasets' : 'Upload Primary Datasets'}
                                 </button>
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full mt-8 py-4 bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-bold tracking-widest uppercase flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden text-sm"
+                                className="w-full mt-12 py-5 bg-[#0ea5e9] hover:bg-[#38bdf8] text-white font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all disabled:opacity-50 shadow-xl hover:shadow-[#0ea5e9]/40 rounded-2xl relative overflow-hidden text-xs"
                             >
                                 {loading ? (
                                     <div className="flex items-center gap-2">
                                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        <span>{uploading ? 'Uploading Files...' : 'Submitting Data...'}</span>
+                                        <span>{uploading ? 'Uplinking Telemetry...' : 'Executing Transmission...'}</span>
                                     </div>
                                 ) : (
                                     <>
-                                        <span>Submit Data Finding</span>
-                                        <Send size={18} className="group-hover:translate-x-1 transition-transform" />
+                                        <span>Initiate Uplink</span>
+                                        <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                                     </>
                                 )}
                             </button>

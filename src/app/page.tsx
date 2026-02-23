@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Calendar, User, ArrowRight, Activity, Map, Globe2, Search, Filter } from 'lucide-react';
+import { Calendar, User, ArrowRight, Activity, Map, Globe2, Search, Filter, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/mock-api';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -40,8 +40,8 @@ function HomeContent() {
   }, [searchParams]);
 
   return (
-    <main className="min-h-screen flex flex-col bg-white text-slate-900 transition-colors duration-500">
-      <div className="w-full bg-[#1a1a1a] shadow-md z-20 relative">
+    <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white transition-colors duration-500">
+      <div className="w-full bg-[#111111] border-b border-[#222222] z-20 relative">
         <Navbar />
       </div>
 
@@ -73,65 +73,68 @@ function HomeContent() {
         )}
       </AnimatePresence>
 
-      <section className="relative z-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto pb-24 pt-8 w-full">
+      <section className="relative z-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto pb-24 pt-16 w-full">
         {/* Main Header */}
-        <div className="mb-12 border-b border-slate-200 pb-8">
-          <h1 className="text-[3rem] md:text-[4rem] font-bold tracking-tight mb-4 text-[#222] leading-[1.1]">
-            GIS Blog Posts
+        <div className="mb-16 border-b border-[#222222] pb-12">
+          <div className="flex items-center gap-3 text-[#0ea5e9] font-black uppercase tracking-[0.3em] text-[10px] mb-6">
+            <Activity size={14} /> Mission Intelligence Feed
+          </div>
+          <h1 className="text-[3.5rem] md:text-[5.2rem] font-black tracking-tighter mb-6 text-white leading-[0.95]">
+            Research<br />Findings
           </h1>
-          <p className="text-xl text-slate-600 font-light leading-relaxed max-w-3xl">
-            This is a collaborative intelligence space for remote sensing peers.
+          <p className="text-xl text-[#888888] font-medium leading-relaxed max-w-3xl">
+            A collaborative intelligence space for remote sensing peers to share findings, analyze satellite telemetry, and explore Earth observation research.
           </p>
         </div>
 
         {/* Filter & Search Row */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-4">
-          <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-800">
-            <span className="w-6 h-1 bg-[#0ea5e9] rounded-full" />
-            Latest Publications
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16">
+          <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#444] flex items-center gap-4">
+            <span className="w-8 h-[2px] bg-[#0ea5e9]" />
+            Telemetry Stream
           </h2>
 
-          <div className="flex flex-col sm:flex-row gap-4 items-center w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row gap-6 items-center w-full lg:w-auto">
             {/* Search Bar */}
-            <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <div className="relative w-full lg:w-96 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#444] group-focus-within:text-[#0ea5e9] transition-colors" />
               <input
                 type="text"
-                placeholder="Search research, area of interest, or satellite..."
+                placeholder="Search missions, locations, or sensors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-md pl-10 pr-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#0ea5e9] focus:ring-1 focus:ring-[#0ea5e9] transition-all"
+                className="w-full bg-[#111111] border border-[#222222] rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-[#0ea5e9]/50 focus:ring-4 focus:ring-[#0ea5e9]/10 transition-all placeholder:text-[#333] text-sm font-medium"
               />
             </div>
+
             {/* Category Filter */}
-            <div className="relative w-full sm:w-64 flex items-center gap-2">
-              <Filter className="w-4 h-4 text-slate-400 absolute left-3 z-10" />
+            <div className="relative w-full sm:w-64 group">
+              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#444] group-focus-within:text-[#0ea5e9] transition-colors" />
               <select
                 value={activeCategory}
                 onChange={(e) => setActiveCategory(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-md pl-10 pr-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#0ea5e9] focus:ring-1 focus:ring-[#0ea5e9] appearance-none cursor-pointer transition-all font-medium"
+                className="w-full bg-[#111111] border border-[#222222] rounded-xl pl-12 pr-4 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-white focus:outline-none focus:border-[#0ea5e9]/50 appearance-none cursor-pointer transition-all"
               >
-                <option value="All">All Categories</option>
+                <option value="All">All Intelligence</option>
                 {Object.entries(RESEARCH_VECTOR_GROUPS).map(([group, vectors]) => (
-                  <optgroup key={group} label={group} className="text-slate-500 font-semibold bg-white">
+                  <optgroup key={group} label={group} className="bg-[#0a0a0a] text-[#444] font-bold">
                     {vectors.map((v: string) => (
-                      <option key={v} value={v} className="text-slate-900 font-normal">{v}</option>
+                      <option key={v} value={v} className="text-white bg-[#0a0a0a]">{v}</option>
                     ))}
                   </optgroup>
                 ))}
-                <option value="Other">Other</option>
               </select>
             </div>
           </div>
         </div>
 
         {posts.length === 0 ? (
-          <div className="w-full text-center py-24 px-8 border border-dashed border-slate-300 rounded-lg bg-slate-50">
-            <p className="text-xl font-medium text-slate-700 mb-3">No research findings published yet.</p>
-            <p className="text-slate-500">Be the first to share your data by requesting a post!</p>
+          <div className="w-full text-center py-24 px-8 border border-dashed border-[#222222] rounded-2xl bg-[#111111]/50">
+            <p className="text-xl font-bold text-white mb-3">No missions reported yet.</p>
+            <p className="text-[#555]">Incoming telemetry requested. Be the first to submit a report.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {posts
               .filter(post => {
                 const query = searchQuery.toLowerCase();
@@ -145,41 +148,52 @@ function HomeContent() {
                 return matchesSearch && matchesCategory;
               })
               .map((post, i) => (
-                <div key={post.id} className="group w-full flex flex-col h-full bg-white rounded-none">
-                  <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col hover:no-underline">
+                <div key={post.id} className="group w-full flex flex-col h-full bg-[#111111] border border-[#222222] rounded-2xl overflow-hidden hover:border-[#0ea5e9]/30 transition-all hover:shadow-[0_20px_40px_-15px_rgba(14,165,233,0.15)] relative">
+                  <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
                     {/* Image Container */}
                     {post.images && post.images.length > 0 ? (
-                      <div className="relative h-56 w-full mb-4 overflow-hidden border border-slate-200">
+                      <div className="relative h-64 w-full overflow-hidden border-b border-[#222222]">
                         <img
                           src={post.images[0]}
                           alt={post.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-80" />
                       </div>
                     ) : (
-                      <div className="relative h-56 w-full mb-4 bg-slate-100 flex items-center justify-center border border-slate-200">
-                        <Map className="w-12 h-12 text-slate-300" />
+                      <div className="relative h-64 w-full bg-[#151515] flex items-center justify-center border-b border-[#222222]">
+                        <Globe2 className="w-12 h-12 text-[#222]" />
                       </div>
                     )}
 
                     {/* Content */}
-                    <div className="flex flex-col flex-1 px-1">
-                      <div className="text-xs font-bold uppercase tracking-wider text-[#0ea5e9] mb-2">
-                        {post.category}
+                    <div className="p-8 flex flex-col flex-1">
+                      <div className="flex items-center justify-between mb-6">
+                        <span className="text-[10px] font-black text-[#0ea5e9] bg-[#0ea5e9]/10 border border-[#0ea5e9]/20 px-2 py-0.5 uppercase tracking-widest rounded-sm">
+                          {post.category || 'Science'}
+                        </span>
+                        <div className="flex items-center gap-2 text-[#555] text-[10px] font-bold uppercase tracking-widest">
+                          <Clock size={12} /> {new Date(post.postedAt || post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </div>
                       </div>
 
-                      <h3 className="text-xl font-bold mb-3 leading-snug text-slate-900 group-hover:text-[#0ea5e9] transition-colors">
+                      <h3 className="text-xl font-bold text-white group-hover:text-[#0ea5e9] transition-colors mb-4 leading-tight tracking-tight">
                         {post.title}
                       </h3>
 
-                      <p className="text-slate-600 text-[0.95rem] mb-6 line-clamp-3 leading-relaxed flex-1">
+                      <p className="text-[#888] text-[0.9rem] mb-8 line-clamp-3 leading-relaxed flex-1">
                         {post.excerpt}
                       </p>
 
-                      <div className="text-xs font-medium text-slate-500 pt-4 border-t border-slate-200 mt-auto flex items-center justify-between">
-                        <span className="truncate max-w-[150px] uppercase tracking-wider">{post.author}</span>
-                        <span className="uppercase tracking-wider">
-                          {post.postedAt ? new Date(post.postedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : post.date}
+                      <div className="mt-auto pt-6 border-t border-[#222222] flex items-center justify-between">
+                        <div className="flex items-center gap-3 text-[#555]">
+                          <div className="w-6 h-6 rounded-full bg-[#222] flex items-center justify-center">
+                            <User size={12} />
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest">{post.author}</span>
+                        </div>
+                        <span className="text-[#0ea5e9] text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                          Access File <ArrowRight size={14} />
                         </span>
                       </div>
                     </div>
