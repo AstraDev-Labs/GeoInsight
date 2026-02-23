@@ -225,19 +225,19 @@ export default function RequestPost() {
                         <div className="space-y-10 relative z-10">
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Mission Designation (Title)</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Mission Designation (Title)</label>
                                 <input
                                     type="text"
                                     name="title"
                                     required
-                                    className="w-full bg-muted/30 border focus:border-primary/50 text-foreground placeholder-muted-foreground/20 px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-primary/5 text-sm font-bold"
+                                    className="w-full bg-muted/30 border focus:border-primary/50 text-foreground placeholder-foreground/30 px-6 py-4 rounded-xl outline-none transition-all focus:ring-4 focus:ring-primary/5 text-sm font-bold"
                                     placeholder="Enter report title..."
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Personnel Identifier</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Personnel Identifier</label>
                                     <input
                                         type="text"
                                         name="author"
@@ -247,7 +247,7 @@ export default function RequestPost() {
                                     />
                                 </div>
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Secure Comms Channel (Email)</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Secure Comms Channel (Email)</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -264,7 +264,7 @@ export default function RequestPost() {
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Secure Access Key</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Secure Access Key</label>
                                 <p className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Required for future data retraction or modification requests.</p>
                                 <input
                                     type="password"
@@ -278,7 +278,7 @@ export default function RequestPost() {
                                 />
 
                                 <div className="bg-muted/30 p-6 rounded-2xl border">
-                                    <p className="text-[10px] font-black tracking-[0.2em] uppercase text-muted-foreground/40 mb-4">Encryption Protocols</p>
+                                    <p className="text-[10px] font-black tracking-[0.2em] uppercase text-foreground/50 mb-4">Encryption Protocols</p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-[11px] font-bold uppercase tracking-widest">
                                         <div className={`flex items-center gap-3 transition-colors ${password.length >= 6 ? 'text-primary' : 'text-muted-foreground/20'}`}>
                                             <div className={`w-1.5 h-1.5 rounded-full ${password.length >= 6 ? 'bg-primary' : 'bg-muted-foreground/10'}`} />
@@ -305,11 +305,11 @@ export default function RequestPost() {
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Intelligence Class (Vectors)</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Intelligence Class (Vectors)</label>
                                 <div className="w-full bg-muted/30 border rounded-2xl p-8 max-h-[350px] overflow-y-auto custom-scrollbar">
                                     {Object.entries(RESEARCH_VECTOR_GROUPS).map(([group, vectors]) => (
                                         <div key={group} className="mb-8 last:mb-0">
-                                            <span className="text-muted-foreground/40 font-black uppercase text-[10px] tracking-[0.2em] mb-4 block">{group}</span>
+                                            <span className="text-foreground/50 font-black uppercase text-[10px] tracking-[0.2em] mb-4 block">{group}</span>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 {vectors.map((v: string) => (
                                                     <label key={v} className="flex items-center gap-3 cursor-pointer group">
@@ -322,7 +322,7 @@ export default function RequestPost() {
                                                             onChange={() => toggleCategory(v)}
                                                             className="hidden"
                                                         />
-                                                        <span className={`text-[11px] font-bold uppercase tracking-wider transition-colors ${selectedCategories.includes(v) ? 'text-foreground' : 'text-muted-foreground/40 group-hover:text-foreground'}`}>{v}</span>
+                                                        <span className={`text-[11px] font-bold uppercase tracking-wider transition-colors ${selectedCategories.includes(v) ? 'text-foreground' : 'text-foreground/40 group-hover:text-foreground'}`}>{v}</span>
                                                     </label>
                                                 ))}
                                             </div>
@@ -339,7 +339,7 @@ export default function RequestPost() {
                                                 onChange={() => toggleCategory('Other')}
                                                 className="hidden"
                                             />
-                                            <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors ${selectedCategories.includes('Other') ? 'text-foreground' : 'text-muted-foreground/40 group-hover:text-foreground'}`}>Custom Classification</span>
+                                            <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors ${selectedCategories.includes('Other') ? 'text-foreground' : 'text-foreground/40 group-hover:text-foreground'}`}>Custom Classification</span>
                                         </label>
                                         {selectedCategories.includes('Other') && (
                                             <input
@@ -355,7 +355,7 @@ export default function RequestPost() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Sensor Origin</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Sensor Origin</label>
                                     <input
                                         type="text"
                                         name="satellite"
@@ -364,7 +364,7 @@ export default function RequestPost() {
                                     />
                                 </div>
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Geographic Target</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Geographic Target</label>
                                     <input
                                         type="text"
                                         name="areaOfInterest"
@@ -376,7 +376,7 @@ export default function RequestPost() {
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Mission Logs & Analysis</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Mission Logs & Analysis</label>
                                 <RichTextEditor
                                     content={richContent}
                                     onChange={setRichContent}
@@ -385,7 +385,7 @@ export default function RequestPost() {
                             </div>
 
                             <div className="space-y-6 pt-6 border-t">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-3">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60 flex items-center gap-3">
                                     <ImagePlus className="w-4 h-4 text-primary" /> Satellite Imagery
                                 </label>
 
@@ -418,7 +418,7 @@ export default function RequestPost() {
                             </div>
 
                             <div className="space-y-6 pt-6 border-t">
-                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-3">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60 flex items-center gap-3">
                                     <Paperclip className="w-4 h-4 text-primary" /> Supplemental Datasets
                                 </label>
 
@@ -429,7 +429,7 @@ export default function RequestPost() {
                                                 <FileText className="w-5 h-5 text-primary" />
                                                 <div className="flex-1 min-w-0">
                                                     <p className="text-[11px] font-bold text-foreground truncate">{file.name}</p>
-                                                    <p className="text-[10px] text-muted-foreground/40 font-black">{(file.size / 1024).toFixed(1)} KB</p>
+                                                    <p className="text-[10px] text-foreground/40 font-black">{(file.size / 1024).toFixed(1)} KB</p>
                                                 </div>
                                                 <button
                                                     type="button"
