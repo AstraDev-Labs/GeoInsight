@@ -3,10 +3,10 @@ import { Globe, PlusCircle, LayoutDashboard, Home, Tag } from 'lucide-react';
 
 export default function Navbar() {
     return (
-        <nav className="w-full bg-[#1a1a1a] shadow-md flex items-center justify-between px-6 lg:px-12 py-4">
+        <nav className="w-full bg-background border-b shadow-sm flex items-center justify-between px-6 lg:px-12 py-4">
             <Link href="/" className="flex items-center gap-3 group">
-                <Globe className="text-[#0ea5e9] transition-transform duration-300 group-hover:rotate-180 w-6 h-6" />
-                <span className="text-white font-semibold text-xl tracking-tight">
+                <Globe className="text-primary transition-transform duration-300 group-hover:rotate-180 w-6 h-6" />
+                <span className="text-foreground font-semibold text-xl tracking-tight">
                     GeoInsights
                 </span>
             </Link>
@@ -20,7 +20,7 @@ export default function Navbar() {
 
             <Link
                 href="/request-post"
-                className="hidden md:flex items-center justify-center px-6 py-2 bg-[#0ea5e9] text-white text-sm font-bold uppercase tracking-widest hover:bg-[#0284c7] transition-colors"
+                className="hidden md:flex items-center justify-center px-6 py-2 bg-primary text-primary-foreground text-sm font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors rounded-lg shadow-sm"
             >
                 Submit Data Finding
             </Link>
@@ -32,7 +32,7 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
     return (
         <Link
             href={href}
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-300 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
         >
             {icon} {label}
         </Link>

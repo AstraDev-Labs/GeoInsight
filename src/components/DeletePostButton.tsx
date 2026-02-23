@@ -91,29 +91,29 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        background: '#111111',
-                        border: '1px solid #333333',
+                        background: '#ffffff',
+                        border: '1px solid #e5e7eb',
                         borderRadius: '16px',
                         padding: '2.5rem',
                         maxWidth: '450px',
                         width: '90%',
                         zIndex: 1001,
-                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)'
                     }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h3 style={{ color: '#ff4d4d', margin: 0, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Delete Research</h3>
+                            <h3 style={{ color: '#ef4444', margin: 0, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Delete Research</h3>
                             <button
                                 onClick={() => setShowModal(false)}
-                                style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', padding: '4px', borderRadius: '50%', transition: 'background 0.2s' }}
-                                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', padding: '4px', borderRadius: '50%', transition: 'background 0.2s' }}
+                                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
                                 onMouseOut={(e) => e.currentTarget.style.background = 'none'}
                             >
                                 <X size={24} />
                             </button>
                         </div>
 
-                        <p style={{ color: '#cccccc', fontSize: '1rem', marginBottom: '1.5rem', lineHeight: '1.6' }}>
-                            Are you sure you want to permanently remove <strong style={{ color: 'white' }}>&quot;{postTitle}&quot;</strong> from the intelligence database?
+                        <p style={{ color: '#4b5563', fontSize: '1rem', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                            Are you sure you want to permanently remove <strong style={{ color: '#111827' }}>&quot;{postTitle}&quot;</strong> from the intelligence database?
                         </p>
 
                         {isAdmin ? (
@@ -122,19 +122,19 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                 alignItems: 'center',
                                 gap: '12px',
                                 padding: '1rem 1.25rem',
-                                background: 'rgba(14, 165, 233, 0.1)',
-                                border: '1px solid rgba(14, 165, 233, 0.2)',
+                                background: 'rgba(14, 165, 233, 0.05)',
+                                border: '1px solid rgba(14, 165, 233, 0.1)',
                                 borderRadius: '12px',
                                 marginBottom: '2rem',
                                 fontSize: '0.9rem',
-                                color: '#bae6fd'
+                                color: '#0369a1'
                             }}>
                                 <Shield size={18} color="#0ea5e9" />
                                 <span>Deleting as <strong style={{ color: '#0ea5e9', fontWeight: 700 }}>Admin</strong> — system override active, no verification required.</span>
                             </div>
                         ) : (
                             <>
-                                <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+                                <p style={{ color: '#6b7280', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
                                     Please verify your authorization to delete this research finding.
                                 </p>
                                 <input
@@ -145,10 +145,10 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                     style={{
                                         width: '100%',
                                         padding: '0.9rem 1.25rem',
-                                        background: '#1a1a1a',
-                                        border: error ? '1px solid #ff4d4d' : '1px solid #333',
+                                        background: '#f9fafb',
+                                        border: error ? '1px solid #ef4444' : '1px solid #e5e7eb',
                                         borderRadius: '10px',
-                                        color: 'white',
+                                        color: '#111827',
                                         fontSize: '0.95rem',
                                         fontFamily: 'inherit',
                                         marginBottom: '0.85rem',
@@ -156,7 +156,7 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                         transition: 'border-color 0.2s'
                                     }}
                                     onFocus={(e) => e.currentTarget.style.borderColor = '#0ea5e9'}
-                                    onBlur={(e) => e.currentTarget.style.borderColor = error ? '#ff4d4d' : '#333'}
+                                    onBlur={(e) => e.currentTarget.style.borderColor = error ? '#ef4444' : '#e5e7eb'}
                                 />
                                 <input
                                     type="password"
@@ -166,10 +166,10 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                     style={{
                                         width: '100%',
                                         padding: '0.9rem 1.25rem',
-                                        background: '#1a1a1a',
-                                        border: error ? '1px solid #ff4d4d' : '1px solid #333',
+                                        background: '#f9fafb',
+                                        border: error ? '1px solid #ef4444' : '1px solid #e5e7eb',
                                         borderRadius: '10px',
-                                        color: 'white',
+                                        color: '#111827',
                                         fontSize: '0.95rem',
                                         fontFamily: 'inherit',
                                         marginBottom: '1rem',
@@ -177,14 +177,14 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                         transition: 'border-color 0.2s'
                                     }}
                                     onFocus={(e) => e.currentTarget.style.borderColor = '#0ea5e9'}
-                                    onBlur={(e) => e.currentTarget.style.borderColor = error ? '#ff4d4d' : '#333'}
+                                    onBlur={(e) => e.currentTarget.style.borderColor = error ? '#ef4444' : '#e5e7eb'}
                                 />
                             </>
                         )}
 
                         {error && (
-                            <p style={{ color: '#ff4d4d', fontSize: '0.85rem', marginBottom: '1.5rem', fontWeight: 600, padding: '0.5rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ff4d4d' }} />
+                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1.5rem', fontWeight: 600, padding: '0.5rem 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ef4444' }} />
                                 {error}
                             </p>
                         )}
@@ -196,7 +196,7 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                 style={{
                                     flex: 2,
                                     padding: '1rem',
-                                    background: '#ff4d4d',
+                                    background: '#ef4444',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '10px',
@@ -207,10 +207,10 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                     cursor: deleting ? 'wait' : 'pointer',
                                     fontFamily: 'inherit',
                                     transition: 'all 0.2s',
-                                    boxShadow: '0 4px 12px rgba(255, 77, 77, 0.2)'
+                                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)'
                                 }}
-                                onMouseOver={(e) => !deleting && (e.currentTarget.style.background = '#ff3333')}
-                                onMouseOut={(e) => !deleting && (e.currentTarget.style.background = '#ff4d4d')}
+                                onMouseOver={(e) => !deleting && (e.currentTarget.style.background = '#dc2626')}
+                                onMouseOut={(e) => !deleting && (e.currentTarget.style.background = '#ef4444')}
                             >
                                 {deleting ? 'Processing...' : 'Confirm Deletion'}
                             </button>
@@ -219,9 +219,9 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                 style={{
                                     flex: 1,
                                     padding: '1rem',
-                                    background: '#222',
-                                    color: '#aaa',
-                                    border: '1px solid #333',
+                                    background: '#f3f4f6',
+                                    color: '#4b5563',
+                                    border: '1px solid #e5e7eb',
                                     borderRadius: '10px',
                                     fontSize: '0.95rem',
                                     fontWeight: 600,
@@ -229,8 +229,8 @@ export default function DeletePostButton({ postId, postTitle }: { postId: string
                                     fontFamily: 'inherit',
                                     transition: 'all 0.2s'
                                 }}
-                                onMouseOver={(e) => { e.currentTarget.style.background = '#333'; e.currentTarget.style.color = 'white'; }}
-                                onMouseOut={(e) => { e.currentTarget.style.background = '#222'; e.currentTarget.style.color = '#aaa'; }}
+                                onMouseOver={(e) => { e.currentTarget.style.background = '#e5e7eb'; e.currentTarget.style.color = '#111827'; }}
+                                onMouseOut={(e) => { e.currentTarget.style.background = '#f3f4f6'; e.currentTarget.style.color = '#4b5563'; }}
                             >
                                 Cancel
                             </button>
