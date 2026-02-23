@@ -416,3 +416,4 @@ This project is licensed under the **MIT License**. See [LICENSE](./LICENSE) for
   Built with ❤️ by the GeoInsights Team<br/>
   <strong>Next.js • AWS • Framer Motion • TipTap</strong>
 </p>
+ 
