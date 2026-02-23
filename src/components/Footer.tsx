@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import { Globe, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';

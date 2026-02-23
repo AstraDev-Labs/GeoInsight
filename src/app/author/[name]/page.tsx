@@ -1,4 +1,5 @@
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { dataService } from '@/lib/data-service';
 import { Calendar, User, Map } from 'lucide-react';
 import Link from 'next/link';
@@ -83,15 +84,7 @@ export default async function AuthorProfile({ params }: { params: Promise<{ name
                 </div>
             </div>
 
-            <footer className="border-t border-[#e5e5e5] bg-[#f9f9f9] py-12 text-center text-[#666666] font-sans text-sm mt-auto">
-                <p>
-                    © {new Date().getFullYear()} Remote Sensing & GIS Team. Data Integrity & Scientific Excellence.
-                </p>
-                <div className="flex justify-center gap-6 mt-4">
-                    <Link href="/privacy" className="hover:text-[#006699] uppercase tracking-wider text-xs font-bold transition-colors">Privacy Policy</Link>
-                    <Link href="/support" className="hover:text-[#006699] uppercase tracking-wider text-xs font-bold transition-colors">Support</Link>
-                </div>
-            </footer>
+            <Footer />
         </main>
-    )
+    );
 }

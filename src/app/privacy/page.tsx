@@ -1,4 +1,5 @@
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Shield, Mail } from 'lucide-react';
 
 export const metadata = {
@@ -13,7 +14,7 @@ export default function PrivacyPolicy() {
                 <Navbar />
             </div>
 
-            
+
 
             <article className="pt-36 pb-16 px-6 md:px-12 max-w-4xl mx-auto relative z-10 flex-1">
                 <div className="flex items-center gap-3 mb-8">
@@ -104,11 +105,7 @@ export default function PrivacyPolicy() {
                 </div>
             </article>
 
-            <footer className="border-t border-[#e5e5e5] bg-[#f9f9f9] py-12 text-center text-[#666] font-sans text-sm mt-auto">
-                <p className="font-medium text-sm">
-                    © {new Date().getFullYear()} Remote Sensing & GIS Intelligence. Data Integrity & Scientific Excellence.
-                </p>
-            </footer>
+            <Footer />
         </main>
     );
 }
