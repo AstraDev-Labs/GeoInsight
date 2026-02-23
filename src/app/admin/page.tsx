@@ -7,6 +7,9 @@ import { api } from '@/lib/mock-api';
 import { PostRequest, BlogPost } from '@/lib/types';
 import { Calendar, Check, X, LogOut, FileText, Image, Paperclip, Lock, Shield, Settings, Trash2, ChevronLeft, ChevronRight, Activity, Globe, LayoutDashboard, ImagePlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
+
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
 export default function AdminDashboard() {
     // Auth state
@@ -643,17 +646,14 @@ export default function AdminDashboard() {
                                         </div>
                                     </div>
 
-                                    {/* Full Content */}
                                     <div>
                                         <h3 className="text-sm font-semibold uppercase tracking-wide text-[#444] mb-3 flex items-center gap-2">
                                             <FileText size={16} className="text-[#006699]" /> Document Analysis Content
                                         </h3>
-                                        <textarea
-                                            value={formContent}
-                                            onChange={(e) => setFormContent(e.target.value)}
-                                            className="w-full h-80 bg-white border border-[#d5d5d5] focus:border-[#006699] text-[#222] font-mono text-sm px-5 py-4 outline-none transition-all focus:ring-1 focus:ring-[#006699] resize-none"
-                                            placeholder="Review and edit the full transmission text in markdown..."
-                                            spellCheck={false}
+                                        <RichTextEditor
+                                            content={formContent}
+                                            onChange={setFormContent}
+                                            placeholder="Review and edit the full transmission text..."
                                         />
                                     </div>
 

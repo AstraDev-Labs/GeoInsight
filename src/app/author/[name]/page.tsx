@@ -44,9 +44,13 @@ export default async function AuthorProfile({ params }: { params: Promise<{ name
                             {authorPosts.map(post => (
                                 <div key={post.id} className="group border border-[#e5e5e5] bg-white transition-all flex flex-col h-full hover:shadow-md">
                                     <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
-                                        {post.images && post.images.length > 0 ? (
+                                        {(post.images && post.images.length > 0) || (post as any).imageUrl ? (
                                             <div className="relative h-48 overflow-hidden bg-[#f0f0f0]">
-                                                <img src={post.images[0]} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                                                <img
+                                                    src={post.images && post.images.length > 0 ? post.images[0] : (post as any).imageUrl}
+                                                    alt={post.title}
+                                                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                                />
                                                 <div className="absolute top-4 left-4 bg-[#006699] text-white text-xs font-bold px-3 py-1 uppercase tracking-widest shadow-sm">
                                                     {post.category}
                                                 </div>
@@ -59,7 +63,6 @@ export default async function AuthorProfile({ params }: { params: Promise<{ name
                                                 <Map className="w-16 h-16 text-[#ccc]" />
                                             </div>
                                         )}
-
                                         <div className="p-6 flex-1 flex flex-col">
                                             <h3 className="text-[1.3rem] font-bold mb-3 leading-[1.3] text-[#222] group-hover:text-[#006699] transition-colors font-serif line-clamp-2">
                                                 {post.title}

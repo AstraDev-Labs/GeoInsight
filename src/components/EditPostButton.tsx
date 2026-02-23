@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { Edit3, Shield, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
 export default function EditPostButton({ post }: { post: any }) {
     const [showModal, setShowModal] = useState(false);
@@ -107,13 +110,12 @@ export default function EditPostButton({ post }: { post: any }) {
                                 />
                             </div>
 
-                            <div className="space-y-3">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Raw Intelligence (Markdown)</label>
-                                <textarea
-                                    value={content}
-                                    onChange={setContent as any}
-                                    className="w-full px-6 py-4 bg-muted/30 border text-foreground font-mono text-xs outline-none focus:border-primary/50 rounded-xl min-h-[400px] resize-y leading-loose whitespace-pre-wrap custom-scrollbar"
-                                    spellCheck={false}
+                            <div className="space-y-4">
+                                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Raw Intelligence (Transmission Content)</label>
+                                <RichTextEditor
+                                    content={content}
+                                    onChange={setContent}
+                                    placeholder="Update the mission findings..."
                                 />
                             </div>
                         </div>

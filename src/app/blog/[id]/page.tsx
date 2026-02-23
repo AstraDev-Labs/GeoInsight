@@ -36,11 +36,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
 
                 {/* NASA Style Main Image at Top */}
                 <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center font-sans">
-                    {post.images && post.images.length > 0 ? (
+                    {(post.images && post.images.length > 0) || (post as any).imageUrl ? (
                         <div className="mb-8 w-full">
-                            <a href={post.images[0]} target="_blank" rel="noopener noreferrer" className="block outline-none select-none relative group cursor-pointer bg-[#f9f9f9]">
+                            <a href={post.images && post.images.length > 0 ? post.images[0] : (post as any).imageUrl} target="_blank" rel="noopener noreferrer" className="block outline-none select-none relative group cursor-pointer bg-[#f9f9f9]">
                                 <img
-                                    src={post.images[0]}
+                                    src={post.images && post.images.length > 0 ? post.images[0] : (post as any).imageUrl}
                                     alt={post.title}
                                     className="w-full h-auto object-cover max-h-[700px] transition-transform duration-300 rounded-none shadow-sm"
                                 />

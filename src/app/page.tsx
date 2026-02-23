@@ -146,17 +146,22 @@ function HomeContent() {
                   (post.areaOfInterest && post.areaOfInterest.toLowerCase().includes(query)) ||
                   (post.satellite && post.satellite.toLowerCase().includes(query));
 
-                const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
+                const postCategories = post.category
+                  ? post.category.split(',').map(c => c.trim().toLowerCase())
+                  : [];
+                const activeCatLower = activeCategory.toLowerCase();
+                const matchesCategory = activeCategory === 'All' ||
+                  postCategories.some(c => c === activeCatLower || c.includes(activeCatLower) || activeCatLower.includes(c));
                 return matchesSearch && matchesCategory;
               })
               .map((post, i) => (
                 <div key={post.id} className="group w-full flex flex-col h-full bg-card border rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] relative">
                   <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
                     {/* Image Container */}
-                    {post.images && post.images.length > 0 ? (
+                    {(post.images && post.images.length > 0) || (post as any).imageUrl ? (
                       <div className="relative h-64 w-full overflow-hidden border-b">
                         <img
-                          src={post.images[0]}
+                          src={post.images && post.images.length > 0 ? post.images[0] : (post as any).imageUrl}
                           alt={post.title}
                           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                         />
@@ -170,11 +175,11 @@ function HomeContent() {
 
                     {/* Content */}
                     <div className="p-8 flex flex-col flex-1">
-                      <div className="flex items-center justify-between mb-6">
-                        <span className="text-[10px] font-black text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 uppercase tracking-widest rounded-sm">
+                      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                        <span className="text-[10px] font-black text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 uppercase tracking-widest rounded-sm truncate max-w-[70%]">
                           {post.category || 'Science'}
                         </span>
-                        <div className="flex items-center gap-2 text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
+                        <div className="flex items-center gap-2 text-muted-foreground text-[10px] font-bold uppercase tracking-widest shrink-0">
                           <Clock size={12} /> {new Date(post.postedAt || post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </div>
                       </div>
