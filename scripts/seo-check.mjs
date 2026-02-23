@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const baseUrl = (process.argv[2] || process.env.SITE_URL || 'http://localhost:3000').replace(/\/$/, '');
+const baseUrl = (process.argv[2] || process.env.SITE_URL || 'https://geo-insight-seven.vercel.app').replace(/\/$/, '');
 
 const fetchText = async (url) => {
   const res = await fetch(url, { redirect: 'follow' });
@@ -138,7 +138,7 @@ const main = async () => {
   }
 
   if (failures > 0) {
-    console.log(`\nSEO checks completed with ${failures} failure(s).`);
+    console.log(`\nSEO checks completed with ${failures} failure(s). Target: ${baseUrl}`);
     process.exitCode = 1;
     return;
   }

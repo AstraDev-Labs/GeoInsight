@@ -315,11 +315,11 @@ Create a bucket named `rs-blog-images` with:
 Run the SEO checker against local or deployed URL:
 
 ```bash
-# Local (requires dev server running)
+# default: https://geo-insight-seven.vercel.app
 npm run seo:check
 
 # Deployed
-npm run seo:check -- https://your-domain.vercel.app
+npm run seo:check -- https://geo-insight-seven.vercel.app
 ```
 
 Checks included:
@@ -353,11 +353,11 @@ Slow-path profiling logs warnings for key data-service read paths.
 Run a basic load test (requires app running):
 
 ```bash
-# default: http://localhost:3000, 20s, concurrency 10
+# default: https://geo-insight-seven.vercel.app, 20s, concurrency 10
 npm run perf:load
 
 # custom target / duration / concurrency
-npm run perf:load -- https://your-domain.vercel.app 30 20
+npm run perf:load -- https://geo-insight-seven.vercel.app 30 20
 ```
 
 Tested endpoints:
