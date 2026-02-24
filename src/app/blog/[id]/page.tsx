@@ -12,7 +12,7 @@ import remarkGfm from 'remark-gfm';
 import type { Metadata } from 'next';
 import { cache } from 'react';
 
-const SITE_URL = 'https://geo-insight-seven.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
 type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
 
 const getPublishedPostById = cache(async (id: string): Promise<BlogPostWithLegacyImage | null> => {
@@ -42,19 +42,20 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         };
     }
 
-    const canonicalUrl = `${SITE_URL}/blog/${post.id}`;
+    const canonicalPath = `/blog/${post.id}`;
+    const fullCanonicalUrl = `${SITE_URL}${canonicalPath}`;
     const publishedTime = post.postedAt || post.date;
     const image = getPrimaryImage(post);
 
     return {
         title: post.title,
         description: post.excerpt,
-        alternates: { canonical: canonicalUrl },
+        alternates: { canonical: canonicalPath },
         openGraph: {
             title: post.title,
             description: post.excerpt,
             type: 'article',
-            url: canonicalUrl,
+            url: fullCanonicalUrl,
             publishedTime,
             authors: [post.author],
             images: image ? [{ url: image }] : undefined,

@@ -18,9 +18,9 @@ export async function generateMetadata({ params }: { params: Promise<{ name: str
 
     return {
         title: `${decodedName} | Author`,
-        description: `Published findings by ${decodedName} on GeoInsights.`,
+        description: `Research profile and published findings of ${decodedName} on GeoInsights.`,
         alternates: {
-            canonical: fullCanonicalUrl,
+            canonical: canonicalPath,
         },
         openGraph: {
             title: `${decodedName} | GeoInsights Author`,

@@ -96,8 +96,20 @@ const main = async () => {
       }
 
       if (canonical && normalizedCanonical !== normalizedPage) {
-        failures += 1;
-        console.log(`FAIL canonical mismatch: ${url} -> ${canonical}`);
+        // Special case: if we are on a test domain (localhost/127) but canonical points to production,
+        // it's acceptable if the paths match.
+        const isTestDomain = url.includes('127.0.0.1') || url.includes('localhost');
+        const isProdCanonical = canonical.includes('geo-insight-seven.vercel.app');
+
+        const pathPage = new URL(url, baseUrl).pathname.replace(/\/$/, '') || '/';
+        const pathCanonical = new URL(canonical, baseUrl).pathname.replace(/\/$/, '') || '/';
+
+        if (isTestDomain && isProdCanonical && pathPage === pathCanonical) {
+          // This is fine, staging can point to prod canonical
+        } else {
+          failures += 1;
+          console.log(`FAIL canonical mismatch: ${url} -> ${canonical}`);
+        }
       }
 
       if (ogUrl && canonical && normalizedOg !== normalizedCanonical) {

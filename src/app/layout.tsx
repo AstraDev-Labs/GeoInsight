@@ -143,9 +143,6 @@ export const metadata: Metadata = {
     description: "Explore cutting-edge GIS research, satellite analysis, and environmental intelligence.",
     images: ["/og-image.png"],
   },
-  alternates: {
-    canonical: '/',
-  },
   verification: {
     // Add your verification codes here after registering:
     // Google Search Console: https://search.google.com/search-console
