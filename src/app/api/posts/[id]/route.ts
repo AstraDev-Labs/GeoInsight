@@ -6,6 +6,8 @@ import { BlogPost } from '@/lib/types';
 import { cookies } from 'next/headers';
 import bcrypt from 'bcryptjs';
 import { verifyAdminToken } from '@/lib/auth-util';
+import { submitToIndexNow } from '@/lib/index-now';
+import { SITE_URL } from '@/lib/constants';
 
 export async function PATCH(
     request: Request,
@@ -60,6 +62,13 @@ export async function PATCH(
 
     const updatedPost = { ...post, ...updates };
     await dataService.savePost(updatedPost);
+
+    // Notify IndexNow if published
+    if (updatedPost.status === 'published') {
+        const postUrl = `${SITE_URL}/blog/${id}`;
+        submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on update:', err));
+    }
+
     return NextResponse.json(updatedPost);
 }
 
@@ -85,6 +94,11 @@ export async function DELETE(
     if (isAdmin) {
         // Admin can delete any post
         await dataService.deletePost(id);
+
+        // Notify IndexNow about deletion
+        const postUrl = `${SITE_URL}/blog/${id}`;
+        submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on delete:', err));
+
         return NextResponse.json({ success: true, message: 'Post deleted by admin' });
     }
 
@@ -140,5 +154,10 @@ export async function DELETE(
     }
 
     await dataService.deletePost(id);
+
+    // Notify IndexNow about deletion
+    const postUrl = `${SITE_URL}/blog/${id}`;
+    submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on author delete:', err));
+
     return NextResponse.json({ success: true, message: 'Post deleted by author' });
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-const baseUrl = (process.env.BASE_URL || process.argv[2] || 'https://geo-insight-seven.vercel.app').replace(/\/$/, '');
+const defaultBaseUrl = process.env.BASE_URL || process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://127.0.0.1:3000';
+const baseUrl = (process.argv[2] || defaultBaseUrl).replace(/\/$/, '');
 const durationSec = Number(process.env.DURATION_SEC || process.argv[3] || 20);
 const concurrency = Number(process.env.CONCURRENCY || process.argv[4] || 10);
 

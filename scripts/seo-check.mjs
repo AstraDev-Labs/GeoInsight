@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 
-const baseUrl = (process.argv[2] || process.env.SITE_URL || 'https://geo-insight-seven.vercel.app').replace(/\/$/, '');
+const defaultSiteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://127.0.0.1:3000';
+const baseUrl = (process.argv[2] || defaultSiteUrl).replace(/\/$/, '');
+const configuredSiteHost = (() => {
+  try {
+    return new URL(defaultSiteUrl).host;
+  } catch {
+    return '';
+  }
+})();
 
 const fetchText = async (url) => {
   const res = await fetch(url, { redirect: 'follow' });
@@ -99,7 +107,7 @@ const main = async () => {
         // Special case: if we are on a test domain (localhost/127) but canonical points to production,
         // it's acceptable if the paths match.
         const isTestDomain = url.includes('127.0.0.1') || url.includes('localhost');
-        const isProdCanonical = canonical.includes('geo-insight-seven.vercel.app');
+        const isProdCanonical = configuredSiteHost ? canonical.includes(configuredSiteHost) : false;
 
         const pathPage = new URL(url, baseUrl).pathname.replace(/\/$/, '') || '/';
         const pathCanonical = new URL(canonical, baseUrl).pathname.replace(/\/$/, '') || '/';
@@ -119,7 +127,7 @@ const main = async () => {
         // Special case: if we are on a test domain (localhost/127) but ogUrl points to production,
         // it's acceptable if the paths match canonical.
         const isTestDomain = url.includes('127.0.0.1') || url.includes('localhost');
-        const isProdOg = ogUrl.includes('geo-insight-seven.vercel.app');
+        const isProdOg = configuredSiteHost ? ogUrl.includes(configuredSiteHost) : false;
 
 
         const pathCanonical = new URL(canonical, baseUrl).pathname.replace(/\/$/, '') || '/';

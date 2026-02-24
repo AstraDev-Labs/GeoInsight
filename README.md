@@ -253,6 +253,7 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 # Search Engine Verification (Optional)
 GOOGLE_SITE_VERIFICATION=your-google-code
 BING_SITE_VERIFICATION=your-bing-code
+INDEX_NOW_KEY=your-indexnow-key
 
 # Comment Auth
 COMMENT_AUTH_SECRET=your-comment-auth-secret
@@ -266,7 +267,7 @@ COMMENT_BOT_PASSWORD=legacy-bot-password-if-still-needed
 ```bash
 npm run dev
 ```
-Open [https://geo-insight-seven.vercel.app](https://geo-insight-seven.vercel.app)
+Open [https://your-domain.vercel.app](https://your-domain.vercel.app)
 
 ### 5. Deploy to Vercel
 ```bash
@@ -307,6 +308,11 @@ Create a bucket named `rs-blog-images` with:
 3. Add the code to `BING_SITE_VERIFICATION` in `.env.local`
 4. Submit your sitemap URL
 
+### IndexNow (Bing/Yandex)
+1. Set `INDEX_NOW_KEY` in `.env.local` and in your deployment environment.
+2. GeoInsights serves the key dynamically at `/api/indexnow/key` from environment variables.
+3. Published/deleted blog URLs are auto-submitted to `https://api.indexnow.org/IndexNow` using `keyLocation=<your-domain>/api/indexnow/key`.
+
 ---
 
 ## ✅ SEO Validation & Monitoring
@@ -315,11 +321,11 @@ Create a bucket named `rs-blog-images` with:
 Run the SEO checker against local or deployed URL:
 
 ```bash
-# default: https://geo-insight-seven.vercel.app
+# default: NEXT_PUBLIC_SITE_URL (or http://127.0.0.1:3000 if unset)
 npm run seo:check
 
 # Deployed
-npm run seo:check -- https://geo-insight-seven.vercel.app
+npm run seo:check -- https://your-domain.vercel.app
 ```
 
 Checks included:
@@ -353,11 +359,11 @@ Slow-path profiling logs warnings for key data-service read paths.
 Run a basic load test (requires app running):
 
 ```bash
-# default: https://geo-insight-seven.vercel.app, 20s, concurrency 10
+# default: NEXT_PUBLIC_SITE_URL (or http://127.0.0.1:3000), 20s, concurrency 10
 npm run perf:load
 
 # custom target / duration / concurrency
-npm run perf:load -- https://geo-insight-seven.vercel.app 30 20
+npm run perf:load -- https://your-domain.vercel.app 30 20
 ```
 
 Tested endpoints:

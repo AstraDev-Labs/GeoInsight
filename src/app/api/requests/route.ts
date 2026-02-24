@@ -74,11 +74,20 @@ export async function POST(request: Request) {
 
     await dataService.addRequest(newRequest);
 
-    // Send confirmation email (non-blocking)
+    // Send confirmation email and wait for completion.
+    // In serverless runtimes, fire-and-forget can be terminated before SMTP finishes.
     if (data.email && data.author && data.title) {
-        sendSubmissionReceivedEmail(data.email, data.author, data.title).catch(err => {
+        try {
+            const sent = await sendSubmissionReceivedEmail(data.email, data.author, data.title);
+            if (!sent) {
+                console.warn('Submission confirmation email was not sent (SMTP skipped or failed).', {
+                    to: data.email,
+                    title: data.title,
+                });
+            }
+        } catch (err) {
             console.error('Failed to send submission confirmation email:', err);
-        });
+        }
     }
 
     return NextResponse.json(newRequest);
