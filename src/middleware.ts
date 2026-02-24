@@ -8,12 +8,9 @@ export function middleware(request: NextRequest) {
     // List of common bot signatures
     const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(userAgent);
 
-    // Redirect humans trying to access robots.txt or sitemap.xml
-    if ((pathname === '/robots.txt' || pathname === '/sitemap.xml') && !isBot) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/';
-        url.searchParams.set('auth_error', 'invalid_access');
-        return NextResponse.redirect(url);
+    // Let search engines and users access robots.txt or sitemap.xml freely
+    if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
+        return NextResponse.next();
     }
 
     // Protect all /admin routes
