@@ -124,7 +124,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: SITE_URL,
     siteName: "GeoInsights",
     title: "GeoInsights | Remote Sensing & GIS Intelligence Platform",
     description: "A collaborative intelligence platform for sharing spatial findings, environmental insights, and GIS research.",

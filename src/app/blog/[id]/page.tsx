@@ -4,7 +4,7 @@ import DeletePostButton from '@/components/DeletePostButton';
 import EditPostButton from '@/components/EditPostButton';
 import { dataService } from '@/lib/data-service';
 import type { BlogPost } from '@/lib/types';
-import { Calendar, User, ArrowLeft, Tag, Clock, FileText, ExternalLink, Activity } from 'lucide-react';
+import { ArrowLeft, Tag, FileText, ExternalLink, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
@@ -118,6 +118,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                     {primaryImage ? (
                         <div className="mb-8 w-full">
                             <a href={primaryImage} target="_blank" rel="noopener noreferrer" className="block outline-none select-none relative group cursor-pointer bg-[#f9f9f9]">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                     src={primaryImage}
                                     alt={post.title}
@@ -212,6 +213,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
                                     {post.images.slice(1).map((img, i) => (
                                         <a href={img} target="_blank" rel="noopener noreferrer" key={i} className="relative block group bg-muted aspect-video overflow-hidden cursor-pointer rounded-xl border border-border hover:border-primary/50 transition-all shadow-lg hover:shadow-primary/10">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img
                                                 src={img}
                                                 alt={`${post.title} supplementary image ${i + 1}`}

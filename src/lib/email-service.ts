@@ -49,11 +49,12 @@ async function sendEmail(options: EmailOptions): Promise<boolean> {
             subject: options.subject
         });
         return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const err = error as { message?: string, code?: string, command?: string };
         console.error('❌ SMTP SEND ERROR:', {
-            error: error.message,
-            code: error.code,
-            command: error.command,
+            error: err.message || String(error),
+            code: err.code,
+            command: err.command,
             to: options.to,
             subject: options.subject
         });

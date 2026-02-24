@@ -35,7 +35,7 @@ export default function TermsPage() {
                             1. Agreement to Terms
                         </h2>
                         <p className="text-slate-600 leading-relaxed">
-                            By accessing or using the GeoInsights Research Platform ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you are prohibited from using the Platform. These terms govern the contribution of data, peer-review processes, and the consumption of Earth observation intelligence provided by GeoInsights.
+                            By accessing or using the GeoInsights Research Platform (&quot;the Platform&quot;), you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you are prohibited from using the Platform. These terms govern the contribution of data, peer-review processes, and the consumption of Earth observation intelligence provided by GeoInsights.
                         </p>
                     </section>
 

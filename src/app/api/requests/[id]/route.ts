@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 import { dataService } from '@/lib/data-service';
-import { BlogPost, PostRequest } from '@/lib/types';
+import { BlogPost } from '@/lib/types';
 import { cookies } from 'next/headers';
 import { verifyAdminToken } from '@/lib/auth-util';
 

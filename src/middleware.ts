@@ -5,8 +5,8 @@ export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const userAgent = request.headers.get('user-agent') || '';
 
-    // List of common bot signatures
-    const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(userAgent);
+    // Protected routes configuration
+    // (Bots can still be detected here if needed in the future)
 
     // ✅ Skip sitemap and robots
     if (

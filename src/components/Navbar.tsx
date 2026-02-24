@@ -1,11 +1,12 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { Globe, PlusCircle, LayoutDashboard, Home, Tag } from 'lucide-react';
+import { PlusCircle, LayoutDashboard, Home, Tag } from 'lucide-react';
 export default function Navbar() {
     return (
         <nav className="w-full bg-[#0a0a0a] border-b border-white/5 shadow-sm flex items-center justify-between px-6 lg:px-12 py-4">
             <Link href="/" className="flex items-center gap-3 group">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo.svg" alt="GeoInsight Logo" className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
                 <span className="text-white font-semibold text-xl tracking-tight">
                     GeoInsights

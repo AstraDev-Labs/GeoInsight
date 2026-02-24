@@ -74,6 +74,7 @@ export default async function AuthorProfile({ params }: { params: Promise<{ name
                                     <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
                                         {(post.images && post.images.length > 0) || post.imageUrl ? (
                                             <div className="relative h-48 overflow-hidden bg-[#f0f0f0]">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img
                                                     src={post.images && post.images.length > 0 ? post.images[0] : post.imageUrl}
                                                     alt={post.title}

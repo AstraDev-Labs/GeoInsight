@@ -7,7 +7,7 @@ import remarkGfm from 'remark-gfm';
 import EditPostButton from '@/components/EditPostButton';
 import DeletePostButton from '@/components/DeletePostButton';
 import { BlogPost } from '@/lib/types';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 interface BlogPostModalProps {
     post: BlogPost;
@@ -38,7 +38,7 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '2rem'
-        }} className="animate-in fade-in duration-300" onClick={(e) => {
+        }} className="animate-in fade-in duration-300" onClick={() => {
             onClose();
         }}>
 
@@ -152,6 +152,7 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                     style={{ cursor: 'context-menu', position: 'relative', display: 'block' }}
                                     className="group"
                                 >
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src={images[0]}
                                         alt={post.title}
@@ -210,6 +211,7 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
                                                     style={{ position: 'relative', cursor: 'context-menu', display: 'block' }}
                                                     className="group"
                                                 >
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img
                                                         src={img}
                                                         alt={`${post.title} evidence ${i + 2}`}
@@ -239,7 +241,7 @@ export default function BlogPostModal({ post, onClose }: BlogPostModalProps) {
 
                     <div className="prose prose-invert prose-lg max-w-none prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-headings:text-white prose-strong:text-white prose-code:text-primary mb-12">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {post.content || (post as any).abstract || post.excerpt || "Full findings are being finalized by the administration team."}
+                            {post.content || (post as { abstract?: string }).abstract || post.excerpt || "Full findings are being finalized by the administration team."}
                         </ReactMarkdown>
                     </div>
 

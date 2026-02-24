@@ -18,8 +18,9 @@ export async function POST() {
     try {
         await dataService.clearHistory();
         return NextResponse.json({ success: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to clear history internally';
         console.error("API Error in clear-history:", err);
-        return NextResponse.json({ success: false, error: err.message || 'Failed to clear history internally' }, { status: 500 });
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
     }
 }

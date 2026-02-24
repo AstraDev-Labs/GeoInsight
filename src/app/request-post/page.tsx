@@ -393,6 +393,7 @@ export default function RequestPost() {
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                                         {imagePreviews.map((preview, index) => (
                                             <div key={index} className="relative group overflow-hidden border bg-muted/30 rounded-xl aspect-square">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img src={preview} alt={`Preview ${index}`} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                                                 <button
                                                     type="button"

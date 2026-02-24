@@ -312,8 +312,8 @@ export const dataService = {
                 return ((result.Items as PostComment[]) || [])
                     .map(normalizeComment)
                     .sort(
-                    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-                );
+                        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+                    );
             } catch (error) {
                 console.error("AWS DynamoDB getCommentsForPost failed, falling back to local DB:", error);
                 return readDb()
@@ -448,7 +448,7 @@ export const dataService = {
 
                 const item = result.Items?.[0] as (CommentSanction & { id?: string }) | undefined;
                 if (!item) return null;
-                const { id, ...sanction } = item;
+                const { id: _, ...sanction } = item;
                 return normalizeCommentSanction(sanction);
             } catch (error) {
                 console.error("AWS DynamoDB getCommentSanction failed, falling back to local DB:", error);
@@ -534,7 +534,7 @@ export const dataService = {
 
                 const item = result.Items?.[0] as (CommentUser & { id?: string }) | undefined;
                 if (!item) return null;
-                const { id, ...user } = item;
+                const { id: _, ...user } = item;
                 return normalizeCommentUser(user);
             } catch (error) {
                 console.error("AWS DynamoDB getCommentUserByName failed, falling back to local DB:", error);
@@ -563,7 +563,7 @@ export const dataService = {
 
                 const item = result.Items?.[0] as (CommentUser & { id?: string }) | undefined;
                 if (!item) return null;
-                const { id, ...user } = item;
+                const { id: _, ...user } = item;
                 return normalizeCommentUser(user);
             } catch (error) {
                 console.error("AWS DynamoDB getCommentUserByEmail failed, falling back to local DB:", error);
@@ -659,7 +659,7 @@ export const dataService = {
 
                 const item = result.Item as ({ id?: string } & Partial<BotSettings>) | undefined;
                 if (item) {
-                    const { id, ...settings } = item;
+                    const { id: _, ...settings } = item;
                     return normalizeBotSettings(settings);
                 }
             } catch (error) {

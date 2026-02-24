@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { LifeBuoy, Mail, MessageSquare, FileText, ExternalLink, Send } from 'lucide-react';
+import { LifeBuoy, Mail, MessageSquare, FileText, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Link from 'next/link';

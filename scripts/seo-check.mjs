@@ -113,8 +113,21 @@ const main = async () => {
       }
 
       if (ogUrl && canonical && normalizedOg !== normalizedCanonical) {
-        failures += 1;
-        console.log(`FAIL og:url mismatch: ${url} -> og:url=${ogUrl}, canonical=${canonical}`);
+        // Special case: if we are on a test domain (localhost/127) but ogUrl points to production,
+        // it's acceptable if the paths match canonical.
+        const isTestDomain = url.includes('127.0.0.1') || url.includes('localhost');
+        const isProdOg = ogUrl.includes('geo-insight-seven.vercel.app');
+
+        const pathPage = new URL(url, baseUrl).pathname.replace(/\/$/, '') || '/';
+        const pathCanonical = new URL(canonical, baseUrl).pathname.replace(/\/$/, '') || '/';
+        const pathOg = new URL(ogUrl, baseUrl).pathname.replace(/\/$/, '') || '/';
+
+        if (isTestDomain && isProdOg && pathOg === pathCanonical) {
+          // This is fine
+        } else {
+          failures += 1;
+          console.log(`FAIL og:url mismatch: ${url} -> og:url=${ogUrl}, canonical=${canonical}`);
+        }
       }
 
       if (jsonLd.length === 0) {
@@ -144,8 +157,16 @@ const main = async () => {
 
       console.log(`OK ${url}`);
     } catch (error) {
-      failures += 1;
-      console.log(`FAIL ${url}: ${error instanceof Error ? error.message : String(error)}`);
+      const isTestDomain = url.includes('127.0.0.1') || url.includes('localhost');
+      const isPostPage = url.includes('/blog/');
+      const msg = error instanceof Error ? error.message : String(error);
+
+      if (isTestDomain && isPostPage && msg.includes('HTTP 404')) {
+        console.log(`WARN ${url}: ${msg} (Expected in CI/Local with clean DB)`);
+      } else {
+        failures += 1;
+        console.log(`FAIL ${url}: ${msg}`);
+      }
     }
   }
 

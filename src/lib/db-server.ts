@@ -25,7 +25,7 @@ export const readDb = (): DbSchema => {
             commentSanctions: Array.isArray(parsed.commentSanctions) ? parsed.commentSanctions : [],
             botSettings: parsed.botSettings,
         };
-    } catch (error) {
+    } catch {
         return { posts: [], requests: [], comments: [], commentUsers: [], commentSanctions: [] };
     }
 };

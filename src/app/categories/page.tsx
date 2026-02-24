@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { RESEARCH_VECTOR_GROUPS } from '@/lib/categories';
 import { motion } from 'framer-motion';
-import { Tag, ChevronRight, Globe } from 'lucide-react';
+import { Tag, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CategoriesPage() {
@@ -65,7 +65,7 @@ export default function CategoriesPage() {
                         <div className="text-center lg:text-left">
                             <h2 className="text-[2.5rem] font-black mb-6 tracking-tight leading-[1.1]">Contribute to Global Intelligence</h2>
                             <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed font-medium">
-                                Join the mission to map our planet's future. Submit your satellite findings, environmental analysis, and geospatial datasets to the board.
+                                Join the mission to map our planet&apos;s future. Submit your satellite findings, environmental analysis, and geospatial datasets to the board.
                             </p>
                         </div>
                         <Link

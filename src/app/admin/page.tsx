@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { api } from '@/lib/mock-api';
 import { PostRequest, BlogPost } from '@/lib/types';
-import { Calendar, Check, X, LogOut, FileText, Image, Paperclip, Lock, Shield, Settings, Trash2, ChevronLeft, ChevronRight, Activity, Globe, LayoutDashboard, ImagePlus } from 'lucide-react';
+import { Check, X, LogOut, FileText, Paperclip, Lock, Shield, Trash2, ChevronLeft, ChevronRight, Activity, Globe, LayoutDashboard, ImagePlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import AdminAnalyticsPanel from '@/components/AdminAnalyticsPanel';
@@ -37,12 +37,17 @@ export default function AdminDashboard() {
     const [existingAttachments, setExistingAttachments] = useState<string[]>([]);
     const [publishing, setPublishing] = useState(false);
 
-    // Check auth on mount
-    useEffect(() => {
-        checkAuth();
+    const fetchData = useCallback(async () => {
+        const [reqs, posts] = await Promise.all([
+            api.getRequests(),
+            api.getAllPosts()
+        ]);
+        setRequests(reqs);
+        setAllPosts(posts);
+        setLoading(false);
     }, []);
 
-    const checkAuth = async () => {
+    const checkAuth = useCallback(async () => {
         try {
             const res = await fetch('/api/admin/verify');
             if (res.ok) {
@@ -54,7 +59,12 @@ export default function AdminDashboard() {
         } finally {
             setAuthLoading(false);
         }
-    };
+    }, [fetchData]);
+
+    // Check auth on mount
+    useEffect(() => {
+        checkAuth();
+    }, [checkAuth]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -91,15 +101,7 @@ export default function AdminDashboard() {
         setAllPosts([]);
     };
 
-    const fetchData = async () => {
-        const [reqs, posts] = await Promise.all([
-            api.getRequests(),
-            api.getAllPosts()
-        ]);
-        setRequests(reqs);
-        setAllPosts(posts);
-        setLoading(false);
-    };
+
 
     const handleAction = async (id: string, status: 'accepted' | 'denied') => {
         await api.updateRequestStatus(id, status);
@@ -122,7 +124,7 @@ export default function AdminDashboard() {
                 } else {
                     fetchData();
                 }
-            } catch (err) {
+            } catch {
                 alert('Connection error while clearing history.');
             }
         }
@@ -670,6 +672,7 @@ export default function AdminDashboard() {
                                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                                 {existingImages.map((url, i) => (
                                                     <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="block relative group overflow-hidden rounded-xl border border-[#e5e5e5] bg-[#f9f9f9]">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                                         <img src={url} alt={`Evidence ${i + 1}`} className="w-full h-24 object-cover group-hover:scale-110 transition-transform duration-500" />
                                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-[#f4f4f4] transition-colors flex items-center justify-center">
                                                             <span className="opacity-0 group-hover:opacity-100 text-[#222] text-xs font-semibold px-2 py-1 bg-black/60 rounded backdrop-blur-sm transition-opacity">View Full</span>

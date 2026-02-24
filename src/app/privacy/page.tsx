@@ -1,6 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Shield, Mail } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 export const metadata = {
     title: 'Privacy Policy | GeoInsights',
