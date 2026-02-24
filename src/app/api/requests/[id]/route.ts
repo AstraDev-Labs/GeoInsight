@@ -5,6 +5,8 @@ import { dataService } from '@/lib/data-service';
 import { BlogPost } from '@/lib/types';
 import { cookies } from 'next/headers';
 import { verifyAdminToken } from '@/lib/auth-util';
+import { invalidatePostsCache, invalidateRequestsCache } from '@/lib/api-cache';
+import { sendDeclinedEmail } from '@/lib/email-service';
 
 export async function PATCH(
     request: Request,
@@ -19,6 +21,7 @@ export async function PATCH(
     if (req) {
         req.status = status;
         await dataService.updateRequest(req);
+        invalidateRequestsCache();
 
         if (status === 'accepted') {
             const newPost: BlogPost = {
@@ -39,6 +42,23 @@ export async function PATCH(
                 areaOfInterest: req.areaOfInterest
             };
             await dataService.savePost(newPost);
+            invalidatePostsCache();
+        } else if (status === 'denied' && req.email) {
+            try {
+                const sent = await sendDeclinedEmail(
+                    req.email,
+                    req.author,
+                    req.title
+                );
+                if (!sent) {
+                    console.warn('Request denial email was not sent.', {
+                        to: req.email,
+                        requestId: req.id,
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to send request denial email:', error);
+            }
         }
 
         return NextResponse.json(req);
@@ -64,5 +84,6 @@ export async function DELETE(
     }
 
     await dataService.deleteRequest(id);
+    invalidateRequestsCache();
     return NextResponse.json({ success: true, message: 'Request deleted' });
 }

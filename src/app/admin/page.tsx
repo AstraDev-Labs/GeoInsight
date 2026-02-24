@@ -143,12 +143,17 @@ export default function AdminDashboard() {
         setPublishing(true);
 
         try {
-            await api.publishPost(
+            const res = await api.publishPost(
                 publishingPost.id,
                 formContent,
                 existingImages,
                 existingAttachments
             );
+
+            if (res.error) {
+                alert('Failed to publish: ' + res.error);
+                return;
+            }
 
             setIsPublishing(false);
             setPublishingPost(null);
@@ -430,7 +435,7 @@ export default function AdminDashboard() {
                                                     <td className="p-4 font-semibold text-[#222]">{item.author}</td>
                                                     <td className="p-4 text-sm text-[#444]">{item.title}</td>
                                                     <td className="p-4">
-                                                        <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${item.status === 'accepted' || item.status === 'published' ? 'text-secondary bg-secondary/10' : 'text-destructive bg-destructive/10'}`}>
+                                                        <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase border ${item.status === 'accepted' || item.status === 'published' ? 'text-[#0f5132] bg-[#d1e7dd] border-[#a3cfbb]' : 'text-destructive bg-destructive/10 border-destructive/20'}`}>
                                                             {item.status}
                                                         </span>
                                                     </td>
@@ -489,7 +494,7 @@ export default function AdminDashboard() {
                                                         <td className="p-5 text-center">
                                                             {req.status === 'pending' ? (
                                                                 <div className="flex items-center justify-center gap-2">
-                                                                    <button onClick={() => handleAction(req.id, 'accepted')} className="p-2 bg-secondary/10 hover:bg-secondary/20 text-secondary rounded-lg transition-colors border border-secondary/20" title="Accept Request">
+                                                                    <button onClick={() => handleAction(req.id, 'accepted')} className="p-2 bg-[#d1e7dd] hover:bg-[#c3e0d3] text-[#0f5132] rounded-lg transition-colors border border-[#a3cfbb]" title="Accept Request">
                                                                         <Check size={18} />
                                                                     </button>
                                                                     <button onClick={() => handleAction(req.id, 'denied')} className="p-2 bg-destructive/10 hover:bg-destructive/20 text-destructive rounded-lg transition-colors border border-destructive/20" title="Deny Request">
@@ -500,7 +505,7 @@ export default function AdminDashboard() {
                                                                     </button>
                                                                 </div>
                                                             ) : (
-                                                                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${req.status === 'accepted' ? 'text-secondary bg-secondary/10 border border-secondary/20' : 'text-destructive bg-destructive/10 border border-destructive/20'}`}>
+                                                                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${req.status === 'accepted' ? 'text-[#0f5132] bg-[#d1e7dd] border border-[#a3cfbb]' : 'text-destructive bg-destructive/10 border border-destructive/20'}`}>
                                                                     {req.status}
                                                                 </span>
                                                             )}

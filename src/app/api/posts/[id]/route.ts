@@ -9,6 +9,7 @@ import { verifyAdminToken } from '@/lib/auth-util';
 import { submitToIndexNow } from '@/lib/index-now';
 import { SITE_URL } from '@/lib/constants';
 import { sendPublishedEmail, sendDeclinedEmail } from '@/lib/email-service';
+import { invalidatePostsCache } from '@/lib/api-cache';
 
 export async function PATCH(
     request: Request,
@@ -63,34 +64,43 @@ export async function PATCH(
 
     const updatedPost = { ...post, ...updates };
     await dataService.savePost(updatedPost);
+    invalidatePostsCache();
+
+    // Resolve email defensively for older records that may miss authorEmail.
+    let notificationEmail = updatedPost.authorEmail;
+    if (isAdmin && !notificationEmail) {
+        const requests = await dataService.getRequests();
+        const matchingRequest = requests.find((r) => r.title === updatedPost.title && r.author === updatedPost.author);
+        notificationEmail = matchingRequest?.email;
+    }
 
     // Send status notification email from server-side for reliability.
     // This avoids client-side fire-and-forget requests getting dropped.
-    if (isAdmin && updatedPost.authorEmail) {
+    if (isAdmin && notificationEmail) {
         try {
             if (updatedPost.status === 'published') {
                 const sent = await sendPublishedEmail(
-                    updatedPost.authorEmail,
+                    notificationEmail,
                     updatedPost.author,
                     updatedPost.title,
                     updatedPost.id
                 );
                 if (!sent) {
                     console.warn('Publish notification email was not sent.', {
-                        to: updatedPost.authorEmail,
+                        to: notificationEmail,
                         postId: updatedPost.id,
                     });
                 }
             } else if (updatedPost.status === 'rejected') {
                 const sent = await sendDeclinedEmail(
-                    updatedPost.authorEmail,
+                    notificationEmail,
                     updatedPost.author,
                     updatedPost.title,
                     updatedPost.reviewerNotes
                 );
                 if (!sent) {
                     console.warn('Decline notification email was not sent.', {
-                        to: updatedPost.authorEmail,
+                        to: notificationEmail,
                         postId: updatedPost.id,
                     });
                 }
@@ -131,6 +141,7 @@ export async function DELETE(
     if (isAdmin) {
         // Admin can delete any post
         await dataService.deletePost(id);
+        invalidatePostsCache();
 
         // Notify IndexNow about deletion
         const postUrl = `${SITE_URL}/blog/${id}`;
@@ -171,6 +182,7 @@ export async function DELETE(
         }
 
         await dataService.deletePost(id);
+        invalidatePostsCache();
         return NextResponse.json({ success: true, message: 'Post deleted by author (legacy req check)' });
     }
 
@@ -191,6 +203,7 @@ export async function DELETE(
     }
 
     await dataService.deletePost(id);
+    invalidatePostsCache();
 
     // Notify IndexNow about deletion
     const postUrl = `${SITE_URL}/blog/${id}`;

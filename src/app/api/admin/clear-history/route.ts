@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { dataService } from '@/lib/data-service';
 import { cookies } from 'next/headers';
 import { verifyAdminToken } from '@/lib/auth-util';
+import { invalidatePostsCache, invalidateRequestsCache } from '@/lib/api-cache';
 
 export async function POST() {
     const cookieStore = await cookies();
@@ -17,6 +18,8 @@ export async function POST() {
 
     try {
         await dataService.clearHistory();
+        invalidatePostsCache();
+        invalidateRequestsCache();
         return NextResponse.json({ success: true });
     } catch (err: unknown) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to clear history internally';

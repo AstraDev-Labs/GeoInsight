@@ -5,14 +5,9 @@ import { dataService } from '@/lib/data-service';
 import { PostRequest } from '@/lib/types';
 import bcrypt from 'bcryptjs';
 import { sendSubmissionReceivedEmail } from '@/lib/email-service';
-
-type CacheEntry = {
-    data: unknown;
-    expiresAt: number;
-};
+import { getApiCache, invalidateRequestsCache, setApiCache } from '@/lib/api-cache';
 
 const REQUESTS_CACHE_TTL_MS = 15_000;
-const requestsCache = new Map<string, CacheEntry>();
 
 export async function GET(request: Request) {
     const startTime = Date.now();
@@ -21,7 +16,7 @@ export async function GET(request: Request) {
     const cacheKey = `requests:${status || 'all'}`;
     const now = Date.now();
 
-    const cached = requestsCache.get(cacheKey);
+    const cached = getApiCache(cacheKey);
     if (cached && cached.expiresAt > now) {
         const response = NextResponse.json(cached.data);
         const totalMs = Date.now() - startTime;
@@ -36,10 +31,7 @@ export async function GET(request: Request) {
     const requests = await dataService.getRequests();
     const dbMs = Date.now() - dbStart;
     const filteredRequests = status ? requests.filter((entry) => entry.status === status) : requests;
-    requestsCache.set(cacheKey, {
-        data: filteredRequests,
-        expiresAt: now + REQUESTS_CACHE_TTL_MS,
-    });
+    setApiCache(cacheKey, filteredRequests, REQUESTS_CACHE_TTL_MS);
 
     const response = NextResponse.json(filteredRequests);
     const totalMs = Date.now() - startTime;
@@ -73,6 +65,7 @@ export async function POST(request: Request) {
     }
 
     await dataService.addRequest(newRequest);
+    invalidateRequestsCache();
 
     // Send confirmation email and wait for completion.
     // In serverless runtimes, fire-and-forget can be terminated before SMTP finishes.

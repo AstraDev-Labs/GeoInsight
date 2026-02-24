@@ -2,14 +2,9 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 import { dataService } from '@/lib/data-service';
-
-type CacheEntry = {
-    data: unknown;
-    expiresAt: number;
-};
+import { getApiCache, setApiCache } from '@/lib/api-cache';
 
 const POSTS_CACHE_TTL_MS = 30_000;
-const postsCache = new Map<string, CacheEntry>();
 
 export async function GET(request: Request) {
     const startTime = Date.now();
@@ -18,7 +13,7 @@ export async function GET(request: Request) {
     const cacheKey = `posts:${status || 'all'}`;
     const now = Date.now();
 
-    const cached = postsCache.get(cacheKey);
+    const cached = getApiCache(cacheKey);
     if (cached && cached.expiresAt > now) {
         const response = NextResponse.json(cached.data);
         const totalMs = Date.now() - startTime;
@@ -33,10 +28,7 @@ export async function GET(request: Request) {
     const posts = await dataService.getPosts();
     const dbMs = Date.now() - dbStart;
     const filteredPosts = status ? posts.filter((post) => post.status === status) : posts;
-    postsCache.set(cacheKey, {
-        data: filteredPosts,
-        expiresAt: now + POSTS_CACHE_TTL_MS,
-    });
+    setApiCache(cacheKey, filteredPosts, POSTS_CACHE_TTL_MS);
 
     const response = NextResponse.json(filteredPosts);
     const totalMs = Date.now() - startTime;
