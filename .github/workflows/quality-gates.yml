@@ -1,0 +1,63 @@
+name: Quality Gates
+
+on:
+  pull_request:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      USE_AWS: "false"
+      NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+      ADMIN_PASSWORD: ci-admin-password
+      COMMENT_AUTH_SECRET: ci-comment-auth-secret
+      COMMENT_BOT_PASSWORD: ci-comment-bot-password
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (informational baseline)
+        continue-on-error: true
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Start app
+        run: |
+          nohup npm run start -- --hostname 127.0.0.1 --port 3000 > app.log 2>&1 &
+          for i in {1..60}; do
+            if curl -sf http://127.0.0.1:3000 >/dev/null; then
+              echo "App is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "App failed to start"
+          cat app.log
+          exit 1
+
+      - name: SEO checks
+        run: npm run seo:check -- http://127.0.0.1:3000
+
+      - name: Performance smoke test
+        run: npm run perf:load -- http://127.0.0.1:3000 10 6
+
+      - name: Upload app log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-log
+          path: app.log

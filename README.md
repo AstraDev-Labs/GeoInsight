@@ -366,6 +366,33 @@ Tested endpoints:
 
 ---
 
+## 🧪 CI Quality Gates (New)
+
+GitHub Actions workflow: `.github/workflows/quality-gates.yml`
+
+Blocking checks on PR/push:
+1. `npm run build`
+2. `npm run seo:check -- http://127.0.0.1:3000`
+3. `npm run perf:load -- http://127.0.0.1:3000 10 6`
+
+Additional baseline signal:
+- `npm run lint` runs as informational (`continue-on-error`) until existing lint debt is fully resolved.
+
+Local gate runner script:
+- `scripts/quality_gate.py`
+- Writes markdown report: `quality-gate-report.md`
+
+Run locally:
+```bash
+# Run default gates (build + seo + load smoke)
+npm run quality:gate
+
+# Include lint in local gate execution
+npm run quality:gate:lint
+```
+
+---
+
 ## 📬 Email Configuration
 
 ### Gmail (Recommended for Dev)

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seo:check": "node scripts/seo-check.mjs",
-    "perf:load": "node scripts/load-test-list-endpoints.mjs"
+    "perf:load": "node scripts/load-test-list-endpoints.mjs",
+    "quality:gate": "python scripts/quality_gate.py",
+    "quality:gate:lint": "python scripts/quality_gate.py --with-lint"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.995.0",

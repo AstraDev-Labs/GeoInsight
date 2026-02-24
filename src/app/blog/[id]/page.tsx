@@ -12,7 +12,7 @@ import remarkGfm from 'remark-gfm';
 import type { Metadata } from 'next';
 import { cache } from 'react';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
+const SITE_URL = 'https://geo-insight-seven.vercel.app';
 type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
 
 const getPublishedPostById = cache(async (id: string): Promise<BlogPostWithLegacyImage | null> => {
