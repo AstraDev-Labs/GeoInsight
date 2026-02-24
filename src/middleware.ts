@@ -8,8 +8,11 @@ export function middleware(request: NextRequest) {
     // List of common bot signatures
     const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(userAgent);
 
-    // Let search engines and users access robots.txt or sitemap.xml freely
-    if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
+    // ✅ Skip sitemap and robots
+    if (
+        pathname.startsWith('/sitemap.xml') ||
+        pathname.startsWith('/robots.txt')
+    ) {
         return NextResponse.next();
     }
 

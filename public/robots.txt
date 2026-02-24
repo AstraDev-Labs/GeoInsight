@@ -1,0 +1,13 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+
+User-Agent: Googlebot
+Allow: /
+Disallow: /api/
+
+User-Agent: Bingbot
+Allow: /
+Disallow: /api/
+
+Sitemap: https://geo-insight-seven.vercel.app/sitemap.xml
