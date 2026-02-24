@@ -449,7 +449,7 @@ export const dataService = {
                 const item = result.Items?.[0] as (CommentSanction & { id?: string }) | undefined;
                 if (!item) return null;
                 const sanction = { ...item };
-                delete (sanction as any).id;
+                delete (sanction as { id?: string }).id;
                 return normalizeCommentSanction(sanction);
             } catch (error) {
                 console.error("AWS DynamoDB getCommentSanction failed, falling back to local DB:", error);
@@ -536,7 +536,7 @@ export const dataService = {
                 const item = result.Items?.[0] as (CommentUser & { id?: string }) | undefined;
                 if (!item) return null;
                 const user = { ...item };
-                delete (user as any).id;
+                delete (user as { id?: string }).id;
                 return normalizeCommentUser(user);
             } catch (error) {
                 console.error("AWS DynamoDB getCommentUserByName failed, falling back to local DB:", error);
@@ -566,7 +566,7 @@ export const dataService = {
                 const item = result.Items?.[0] as (CommentUser & { id?: string }) | undefined;
                 if (!item) return null;
                 const user = { ...item };
-                delete (user as any).id;
+                delete (user as { id?: string }).id;
                 return normalizeCommentUser(user);
             } catch (error) {
                 console.error("AWS DynamoDB getCommentUserByEmail failed, falling back to local DB:", error);
@@ -663,7 +663,7 @@ export const dataService = {
                 const item = result.Item as ({ id?: string } & Partial<BotSettings>) | undefined;
                 if (item) {
                     const settings = { ...item };
-                    delete (settings as any).id;
+                    delete (settings as { id?: string }).id;
                     return normalizeBotSettings(settings);
                 }
             } catch (error) {
