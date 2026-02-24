@@ -9,7 +9,7 @@ import { Calendar, Check, X, LogOut, FileText, Image, Paperclip, Lock, Shield, S
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import AdminAnalyticsPanel from '@/components/AdminAnalyticsPanel';
-import BotSettingsPanel from '@/components/BotSettingsPanel';
+// import BotSettingsPanel from '@/components/BotSettingsPanel';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
@@ -361,7 +361,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <AdminAnalyticsPanel posts={allPosts} requests={requests} />
-                    <BotSettingsPanel canEdit={isAuthenticated} />
+                    {/* <BotSettingsPanel canEdit={isAuthenticated} /> */}
 
                     <div className="flex flex-wrap gap-4 mb-8">
                         <button

@@ -2,7 +2,6 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import DeletePostButton from '@/components/DeletePostButton';
 import EditPostButton from '@/components/EditPostButton';
-import CommentsSection from '@/components/CommentsSection';
 import { dataService } from '@/lib/data-service';
 import type { BlogPost } from '@/lib/types';
 import { Calendar, User, ArrowLeft, Tag, Clock, FileText, ExternalLink, Activity } from 'lucide-react';
@@ -226,7 +225,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                             </div>
                         )}
 
-                        <CommentsSection postId={post.id} />
                     </div>
 
                     {/* Right Sidebar */}
