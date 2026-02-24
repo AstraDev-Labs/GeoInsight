@@ -118,7 +118,7 @@ const main = async () => {
         const isTestDomain = url.includes('127.0.0.1') || url.includes('localhost');
         const isProdOg = ogUrl.includes('geo-insight-seven.vercel.app');
 
-        const pathPage = new URL(url, baseUrl).pathname.replace(/\/$/, '') || '/';
+
         const pathCanonical = new URL(canonical, baseUrl).pathname.replace(/\/$/, '') || '/';
         const pathOg = new URL(ogUrl, baseUrl).pathname.replace(/\/$/, '') || '/';
 

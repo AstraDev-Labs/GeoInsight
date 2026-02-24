@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const userAgent = request.headers.get('user-agent') || '';
+
 
     // Protected routes configuration
     // (Bots can still be detected here if needed in the future)
