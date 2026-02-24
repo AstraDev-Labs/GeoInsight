@@ -60,10 +60,24 @@ const main = async () => {
   let failures = 0;
 
   const sitemapUrls = await getSitemapUrls();
-  const probeUrls = [baseUrl, ...sitemapUrls].slice(0, 12);
+
+  // If we are testing a non-production baseUrl, map sitemap URLs to the test domain
+  const mappedSitemapUrls = sitemapUrls.map(url => {
+    try {
+      const u = new URL(url);
+      if (u.origin !== new URL(baseUrl).origin) {
+        return new URL(u.pathname + u.search + u.hash, baseUrl).toString();
+      }
+    } catch {
+      // Not a valid absolute URL, return as is
+    }
+    return url;
+  });
+
+  const probeUrls = [baseUrl, ...mappedSitemapUrls].slice(0, 15);
 
   console.log(`SEO check target: ${baseUrl}`);
-  console.log(`Checking ${probeUrls.length} pages from sitemap/canonical sources...`);
+  console.log(`Checking ${probeUrls.length} pages (mapped from sitemap)...`);
 
   for (const url of probeUrls) {
     try {
