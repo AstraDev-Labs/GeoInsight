@@ -28,7 +28,8 @@ jobs:
         run: |
           node -v
           npm -v
-          npm ci
+          ls -la
+          npm install
 
       - name: Lint (informational baseline)
         continue-on-error: true
