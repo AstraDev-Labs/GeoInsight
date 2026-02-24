@@ -150,21 +150,6 @@ export default function AdminDashboard() {
                 existingAttachments
             );
 
-            // Send email notification (non-blocking)
-            if (publishingPost.authorEmail) {
-                fetch('/api/admin/notify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        type: 'published',
-                        authorEmail: publishingPost.authorEmail,
-                        authorName: publishingPost.author,
-                        postTitle: publishingPost.title,
-                        postId: publishingPost.id,
-                    })
-                }).catch(err => console.error('Notification failed:', err));
-            }
-
             setIsPublishing(false);
             setPublishingPost(null);
             fetchData();
@@ -186,20 +171,6 @@ export default function AdminDashboard() {
             if (res.error) {
                 alert('Failed to decline: ' + res.error);
                 return;
-            }
-
-            // Send email notification (non-blocking)
-            if (publishingPost.authorEmail) {
-                fetch('/api/admin/notify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        type: 'declined',
-                        authorEmail: publishingPost.authorEmail,
-                        authorName: publishingPost.author,
-                        postTitle: publishingPost.title,
-                    })
-                }).catch(err => console.error('Notification failed:', err));
             }
 
             setIsPublishing(false);

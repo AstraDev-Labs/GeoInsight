@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 import { verifyAdminToken } from '@/lib/auth-util';
 import { submitToIndexNow } from '@/lib/index-now';
 import { SITE_URL } from '@/lib/constants';
+import { sendPublishedEmail, sendDeclinedEmail } from '@/lib/email-service';
 
 export async function PATCH(
     request: Request,
@@ -62,6 +63,42 @@ export async function PATCH(
 
     const updatedPost = { ...post, ...updates };
     await dataService.savePost(updatedPost);
+
+    // Send status notification email from server-side for reliability.
+    // This avoids client-side fire-and-forget requests getting dropped.
+    if (isAdmin && updatedPost.authorEmail) {
+        try {
+            if (updatedPost.status === 'published') {
+                const sent = await sendPublishedEmail(
+                    updatedPost.authorEmail,
+                    updatedPost.author,
+                    updatedPost.title,
+                    updatedPost.id
+                );
+                if (!sent) {
+                    console.warn('Publish notification email was not sent.', {
+                        to: updatedPost.authorEmail,
+                        postId: updatedPost.id,
+                    });
+                }
+            } else if (updatedPost.status === 'rejected') {
+                const sent = await sendDeclinedEmail(
+                    updatedPost.authorEmail,
+                    updatedPost.author,
+                    updatedPost.title,
+                    updatedPost.reviewerNotes
+                );
+                if (!sent) {
+                    console.warn('Decline notification email was not sent.', {
+                        to: updatedPost.authorEmail,
+                        postId: updatedPost.id,
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Failed to send post status notification email:', error);
+        }
+    }
 
     // Notify IndexNow if published
     if (updatedPost.status === 'published') {
