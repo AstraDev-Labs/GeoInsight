@@ -15,35 +15,54 @@ export async function PATCH(
     const { id } = await params;
     const { status }: { status: 'accepted' | 'denied' } = await request.json();
 
+    // Only admin can process request decisions
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    const adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
+    const isAdmin = verifyAdminToken(token, adminPassword);
+
+    if (!isAdmin) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const requests = await dataService.getRequests();
     const req = requests.find(r => r.id === id);
 
     if (req) {
-        req.status = status;
-        await dataService.updateRequest(req);
-        invalidateRequestsCache();
-
         if (status === 'accepted') {
-            const newPost: BlogPost = {
-                id: 'post-' + Math.random().toString(36).substr(2, 9),
+            // Upsert post by requestId to avoid duplicate pending entries
+            // when "Accept" is clicked multiple times.
+            const existingPosts = await dataService.getPosts();
+            const existing = existingPosts.find((post) => post.requestId === req.id);
+
+            const postRecord: BlogPost = {
+                id: existing?.id || 'post-' + Math.random().toString(36).substr(2, 9),
+                requestId: req.id,
                 title: req.title,
-                excerpt: req.abstract || '',
-                content: req.content || '',
+                excerpt: req.abstract || existing?.excerpt || '',
+                content: req.content || existing?.content || '',
                 author: req.author,
                 category: req.category,
-                date: new Date().toLocaleDateString(),
-                postedAt: new Date().toISOString(),
-                images: req.images || [],
-                attachments: req.attachments || [],
-                status: 'pending',
-                authorPassword: req.authorPassword,
-                authorEmail: req.email,
-                satellite: req.satellite,
-                areaOfInterest: req.areaOfInterest
+                date: existing?.date || new Date().toLocaleDateString(),
+                postedAt: existing?.postedAt || new Date().toISOString(),
+                images: req.images || existing?.images || [],
+                attachments: req.attachments || existing?.attachments || [],
+                status: existing?.status === 'published' ? 'published' : 'pending',
+                authorPassword: req.authorPassword || existing?.authorPassword,
+                authorEmail: req.email || existing?.authorEmail,
+                satellite: req.satellite || existing?.satellite,
+                areaOfInterest: req.areaOfInterest || existing?.areaOfInterest
             };
-            await dataService.savePost(newPost);
+
+            await dataService.savePost(postRecord);
             invalidatePostsCache();
+            req.status = 'accepted';
+            await dataService.updateRequest(req);
+            invalidateRequestsCache();
         } else if (status === 'denied' && req.email) {
+            req.status = 'denied';
+            await dataService.updateRequest(req);
+            invalidateRequestsCache();
             try {
                 const sent = await sendDeclinedEmail(
                     req.email,
@@ -59,6 +78,10 @@ export async function PATCH(
             } catch (error) {
                 console.error('Failed to send request denial email:', error);
             }
+        } else {
+            req.status = 'denied';
+            await dataService.updateRequest(req);
+            invalidateRequestsCache();
         }
 
         return NextResponse.json(req);

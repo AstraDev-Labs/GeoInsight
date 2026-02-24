@@ -4,6 +4,14 @@ import { BlogPost, PostRequest } from './types';
 // which interact with a shared DB (db.json simulating AWS)
 
 export const api = {
+    _jsonOrError: async (res: Response) => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            return { error: data?.error || `Request failed (${res.status})`, ...data };
+        }
+        return data;
+    },
+
     getPosts: async () => {
         const res = await fetch('/api/posts?status=published', { cache: 'no-store' });
         return res.json();
@@ -27,7 +35,7 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request)
         });
-        return res.json();
+        return api._jsonOrError(res);
     },
 
     getRequests: async () => {
@@ -41,7 +49,7 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status })
         });
-        return res.json();
+        return api._jsonOrError(res);
     },
 
     publishPost: async (id: string, finalContent: string, images: string[], attachments: string[]) => {
@@ -56,7 +64,7 @@ export const api = {
                 postedAt: new Date().toISOString()
             })
         });
-        return res.json();
+        return api._jsonOrError(res);
     },
 
     updatePostStatus: async (id: string, status: BlogPost['status']) => {
@@ -65,7 +73,7 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status })
         });
-        return res.json();
+        return api._jsonOrError(res);
     },
 
     deletePost: async (id: string, email?: string) => {
@@ -74,20 +82,20 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: email ? JSON.stringify({ email }) : undefined
         });
-        return res.json();
+        return api._jsonOrError(res);
     },
 
     deleteRequest: async (id: string) => {
         const res = await fetch(`/api/requests/${id}`, {
             method: 'DELETE',
         });
-        return res.json();
+        return api._jsonOrError(res);
     },
 
     clearHistory: async () => {
         const res = await fetch('/api/admin/clear-history', {
             method: 'POST'
         });
-        return res.json();
+        return api._jsonOrError(res);
     }
 };

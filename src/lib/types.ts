@@ -2,6 +2,7 @@ export type PostStatus = 'pending' | 'approved' | 'rejected' | 'published';
 
 export interface BlogPost {
     id: string;
+    requestId?: string;
     title: string;
     excerpt: string;
     content: string;

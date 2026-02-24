@@ -104,7 +104,11 @@ export default function AdminDashboard() {
 
 
     const handleAction = async (id: string, status: 'accepted' | 'denied') => {
-        await api.updateRequestStatus(id, status);
+        const res = await api.updateRequestStatus(id, status);
+        if (res?.error) {
+            alert(`Failed to ${status} request: ${res.error}`);
+            return;
+        }
         fetchData();
     };
 

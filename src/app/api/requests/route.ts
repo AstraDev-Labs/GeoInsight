@@ -5,37 +5,21 @@ import { dataService } from '@/lib/data-service';
 import { PostRequest } from '@/lib/types';
 import bcrypt from 'bcryptjs';
 import { sendSubmissionReceivedEmail } from '@/lib/email-service';
-import { getApiCache, invalidateRequestsCache, setApiCache } from '@/lib/api-cache';
-
-const REQUESTS_CACHE_TTL_MS = 15_000;
+import { invalidateRequestsCache } from '@/lib/api-cache';
 
 export async function GET(request: Request) {
     const startTime = Date.now();
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
-    const cacheKey = `requests:${status || 'all'}`;
-    const now = Date.now();
-
-    const cached = getApiCache(cacheKey);
-    if (cached && cached.expiresAt > now) {
-        const response = NextResponse.json(cached.data);
-        const totalMs = Date.now() - startTime;
-        response.headers.set('Cache-Control', 'private, max-age=15, stale-while-revalidate=60');
-        response.headers.set('X-Cache-Hit', '1');
-        response.headers.set('X-Response-Time-Ms', String(totalMs));
-        response.headers.set('Server-Timing', `total;dur=${totalMs}`);
-        return response;
-    }
 
     const dbStart = Date.now();
     const requests = await dataService.getRequests();
     const dbMs = Date.now() - dbStart;
     const filteredRequests = status ? requests.filter((entry) => entry.status === status) : requests;
-    setApiCache(cacheKey, filteredRequests, REQUESTS_CACHE_TTL_MS);
 
     const response = NextResponse.json(filteredRequests);
     const totalMs = Date.now() - startTime;
-    response.headers.set('Cache-Control', 'private, max-age=15, stale-while-revalidate=60');
+    response.headers.set('Cache-Control', 'no-store');
     response.headers.set('X-Cache-Hit', '0');
     response.headers.set('X-Response-Time-Ms', String(totalMs));
     response.headers.set('Server-Timing', `total;dur=${totalMs},db;dur=${dbMs}`);

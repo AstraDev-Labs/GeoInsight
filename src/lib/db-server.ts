@@ -35,10 +35,9 @@ export const writeDb = (data: DbSchema) => {
         fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
     } catch (error: unknown) {
         if ((error as { code?: string }).code === 'EROFS') {
-            console.warn("Local DB write skipped: Vercel Read-Only Filesystem.");
-        } else {
-            const message = error instanceof Error ? error.message : 'Unknown error';
-            console.warn("Failed to write to local DB:", message);
+            throw new Error("Local DB write failed: Read-only filesystem.");
         }
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        throw new Error(`Failed to write to local DB: ${message}`);
     }
 };
