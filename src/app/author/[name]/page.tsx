@@ -12,19 +12,21 @@ type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
 export async function generateMetadata({ params }: { params: Promise<{ name: string }> }): Promise<Metadata> {
     const { name } = await params;
     const decodedName = decodeURIComponent(name);
-    const canonicalUrl = `${SITE_URL}/author/${encodeURIComponent(decodedName)}`;
+    // Use relative path for canonical, Next.js will use metadataBase from layout.tsx
+    const canonicalPath = `/author/${encodeURIComponent(decodedName)}`;
+    const fullCanonicalUrl = `${SITE_URL}${canonicalPath}`;
 
     return {
         title: `${decodedName} | Author`,
         description: `Published findings by ${decodedName} on GeoInsights.`,
         alternates: {
-            canonical: canonicalUrl,
+            canonical: fullCanonicalUrl,
         },
         openGraph: {
             title: `${decodedName} | GeoInsights Author`,
             description: `Published findings by ${decodedName}.`,
             type: 'profile',
-            url: canonicalUrl,
+            url: fullCanonicalUrl,
         },
     };
 }

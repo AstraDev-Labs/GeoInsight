@@ -1,6 +1,15 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Shield, FileText, Scale, Lock } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Terms of Service | GeoInsights',
+    description: 'Terms of Service for the GeoInsights Research Platform. Guidelines for research contribution, intellectual property, and data privacy.',
+    alternates: {
+        canonical: '/terms',
+    },
+};
 
 export default function TermsPage() {
     return (

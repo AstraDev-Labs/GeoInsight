@@ -5,6 +5,9 @@ import { Shield, Mail } from 'lucide-react';
 export const metadata = {
     title: 'Privacy Policy | GeoInsights',
     description: 'Privacy Policy for the GeoInsights Remote Sensing & GIS Intelligence platform. Learn how we collect, use, and protect your data.',
+    alternates: {
+        canonical: '/privacy',
+    },
 };
 
 export default function PrivacyPolicy() {
