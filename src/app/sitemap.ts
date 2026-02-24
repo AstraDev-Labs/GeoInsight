@@ -3,6 +3,8 @@ import { MetadataRoute } from 'next';
 
 const SITE_URL = 'https://geo-insight-seven.vercel.app';
 
+export const revalidate = 0;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Static pages
     const staticPages: MetadataRoute.Sitemap = [
