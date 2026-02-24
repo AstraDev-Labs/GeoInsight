@@ -3,44 +3,46 @@ import { MetadataRoute } from 'next';
 
 const SITE_URL = 'https://geo-insight-seven.vercel.app';
 
-export const revalidate = 0;
+// Set a longer revalidate period for stability
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const now = new Date().toISOString().split('T')[0];
     // Static pages
     const staticPages: MetadataRoute.Sitemap = [
         {
             url: SITE_URL,
-            lastModified: new Date(),
+            lastModified: now,
             changeFrequency: 'daily',
             priority: 1.0,
         },
         {
             url: `${SITE_URL}/request-post`,
-            lastModified: new Date(),
+            lastModified: now,
             changeFrequency: 'monthly',
             priority: 0.7,
         },
         {
             url: `${SITE_URL}/privacy`,
-            lastModified: new Date(),
+            lastModified: now,
             changeFrequency: 'yearly',
             priority: 0.3,
         },
         {
             url: `${SITE_URL}/support`,
-            lastModified: new Date(),
+            lastModified: now,
             changeFrequency: 'yearly',
             priority: 0.4,
         },
         {
             url: `${SITE_URL}/categories`,
-            lastModified: new Date(),
+            lastModified: now,
             changeFrequency: 'weekly',
             priority: 0.7,
         },
         {
             url: `${SITE_URL}/terms`,
-            lastModified: new Date(),
+            lastModified: now,
             changeFrequency: 'yearly',
             priority: 0.3,
         },
@@ -52,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const blogPages: MetadataRoute.Sitemap = publishedPosts.map(post => ({
         url: `${SITE_URL}/blog/${post.id}`,
-        lastModified: post.postedAt ? new Date(post.postedAt) : new Date(post.date),
+        lastModified: (post.postedAt ? new Date(post.postedAt) : new Date(post.date)).toISOString().split('T')[0],
         changeFrequency: 'weekly' as const,
         priority: 0.8,
     }));
@@ -67,7 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             .sort((a, b) => b - a)[0];
         return {
             url: `${SITE_URL}/author/${encodeURIComponent(author)}`,
-            lastModified: latest ? new Date(latest) : new Date(),
+            lastModified: latest ? new Date(latest).toISOString().split('T')[0] : now,
             changeFrequency: 'weekly' as const,
             priority: 0.5,
         };
