@@ -108,7 +108,10 @@ const main = async () => {
           // This is fine, staging can point to prod canonical
         } else {
           failures += 1;
-          console.log(`FAIL canonical mismatch: ${url} -> ${canonical}`);
+          const hint = (canonical.includes('localhost') || canonical.includes('127.0.0.1')) && !baseUrl.includes('localhost') && !baseUrl.includes('127.0.0.1')
+            ? ' (🚨 ACTION REQUIRED: Your production build is hardcoding "localhost" as the site URL. Check NEXT_PUBLIC_SITE_URL in your Vercel Project Settings!)'
+            : '';
+          console.log(`FAIL canonical mismatch: ${url} -> ${canonical}${hint}`);
         }
       }
 

@@ -13,8 +13,8 @@ const transporter = nodemailer.createTransport({
 });
 
 const FROM_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@geoinsights.com';
+import { SITE_URL } from "@/lib/constants";
 const SITE_NAME = 'GeoInsights';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
 
 interface EmailOptions {
     to: string;

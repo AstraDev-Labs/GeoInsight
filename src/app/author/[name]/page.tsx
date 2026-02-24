@@ -6,7 +6,7 @@ import { Calendar, User, Map } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://geo-insight-seven.vercel.app';
+import { SITE_URL } from "@/lib/constants";
 type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
 
 export async function generateMetadata({ params }: { params: Promise<{ name: string }> }): Promise<Metadata> {
