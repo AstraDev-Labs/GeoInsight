@@ -6,7 +6,7 @@ export default function Navbar() {
     return (
         <nav className="w-full bg-[#0a0a0a] border-b border-white/5 shadow-sm flex items-center justify-between px-6 lg:px-12 py-4">
             <Link href="/" className="flex items-center gap-3 group">
-                <Globe className="text-primary transition-transform duration-300 group-hover:rotate-180 w-6 h-6" />
+                <img src="/logo.svg" alt="GeoInsight Logo" className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
                 <span className="text-white font-semibold text-xl tracking-tight">
                     GeoInsights
                 </span>

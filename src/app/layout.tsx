@@ -13,6 +13,11 @@ const SITE_URL = 'https://geo-insight-seven.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: '/logo.svg',
+    shortcut: '/logo.svg',
+    apple: '/logo.svg',
+  },
   title: {
     default: "GeoInsights | Remote Sensing & GIS Intelligence Platform",
     template: "%s | GeoInsights",
