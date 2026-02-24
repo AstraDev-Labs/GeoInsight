@@ -22,6 +22,7 @@ export async function PATCH(
     const isAdmin = verifyAdminToken(token, adminPassword);
 
     const updates: Partial<BlogPost> & { email?: string; password?: string } = await request.json();
+    const isAuthorEditAttempt = Boolean(updates.email || updates.password);
 
     const posts = await dataService.getPosts();
     const index = posts.findIndex(p => p.id === id);
@@ -32,7 +33,7 @@ export async function PATCH(
 
     const post = posts[index];
 
-    if (!isAdmin) {
+    if (!isAdmin || isAuthorEditAttempt) {
         // Author self-edit: verify by email and password
         const { email, password } = updates;
 
