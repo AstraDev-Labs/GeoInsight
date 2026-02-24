@@ -10,7 +10,6 @@ import type { BlogPost, EditPostResponse } from '@/lib/types';
 export default function EditPostButton({ post }: { post: BlogPost }) {
     const [showModal, setShowModal] = useState(false);
     const [title, setTitle] = useState(post.title || '');
-    const [abstract, setAbstract] = useState(post.excerpt || ''); // Changed from .abstract to .excerpt
     const [content, setContent] = useState(post.content || '');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -32,7 +31,7 @@ export default function EditPostButton({ post }: { post: BlogPost }) {
             const res = await fetch(`/api/posts/${post.id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, excerpt: abstract, content, email, password, status: 'pending' })
+                body: JSON.stringify({ title, content, email, password, status: 'pending' })
             });
 
             const data = await res.json() as EditPostResponse;
@@ -97,15 +96,6 @@ export default function EditPostButton({ post }: { post: BlogPost }) {
                                     value={title}
                                     onChange={e => setTitle(e.target.value)}
                                     className="w-full px-6 py-4 bg-muted/30 border focus:border-primary/50 text-foreground outline-none rounded-xl font-bold text-sm"
-                                />
-                            </div>
-
-                            <div className="space-y-3">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">Data Abstract</label>
-                                <textarea
-                                    value={abstract}
-                                    onChange={e => setAbstract(e.target.value)}
-                                    className="w-full px-6 py-4 bg-muted/30 border text-muted-foreground outline-none focus:border-primary/50 rounded-xl min-h-[120px] resize-y text-sm font-medium leading-relaxed"
                                 />
                             </div>
 

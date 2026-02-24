@@ -60,9 +60,94 @@ export async function PATCH(
         }
         delete updates.authorPassword;
         delete updates.authorEmail;
+
+        // Author edit requests should not unpublish the live article.
+        // Create or update a separate pending review copy linked to the original post.
+        if (updates.status === 'pending') {
+            const existingPendingEdit = posts.find((entry) =>
+                entry.editOfId === post.id &&
+                entry.status === 'pending' &&
+                entry.author === post.author
+            );
+
+            const pendingEditPost: BlogPost = {
+                ...post,
+                ...updates,
+                id: existingPendingEdit?.id || ('post-' + Math.random().toString(36).substr(2, 9)),
+                editOfId: post.id,
+                status: 'pending',
+                authorEmail: post.authorEmail,
+                authorPassword: post.authorPassword,
+            };
+
+            await dataService.savePost(pendingEditPost);
+            invalidatePostsCache();
+            return NextResponse.json(pendingEditPost);
+        }
     }
 
     const updatedPost = { ...post, ...updates };
+
+    // Admin publishing a pending edit request: merge changes into the original
+    // published record and remove the temporary pending-edit copy.
+    if (isAdmin && post.editOfId && updates.status === 'published') {
+        const original = posts.find((entry) => entry.id === post.editOfId);
+        if (!original) {
+            return NextResponse.json({ error: 'Original post for edit request not found' }, { status: 404 });
+        }
+
+        const mergedPost: BlogPost = {
+            ...original,
+            title: updatedPost.title,
+            excerpt: updatedPost.excerpt,
+            content: updatedPost.content,
+            category: updatedPost.category,
+            images: updatedPost.images,
+            attachments: updatedPost.attachments,
+            satellite: updatedPost.satellite,
+            areaOfInterest: updatedPost.areaOfInterest,
+            reviewerNotes: updatedPost.reviewerNotes,
+            status: 'published',
+            postedAt: new Date().toISOString(),
+        };
+
+        await dataService.savePost(mergedPost);
+        await dataService.deletePost(post.id);
+        invalidatePostsCache();
+
+        // Resolve email defensively for older records that may miss authorEmail.
+        let notificationEmail = mergedPost.authorEmail;
+        if (!notificationEmail) {
+            const requests = await dataService.getRequests();
+            const matchingRequest = requests.find((r) => r.title === mergedPost.title && r.author === mergedPost.author);
+            notificationEmail = matchingRequest?.email;
+        }
+
+        if (notificationEmail) {
+            try {
+                const sent = await sendPublishedEmail(
+                    notificationEmail,
+                    mergedPost.author,
+                    mergedPost.title,
+                    mergedPost.id
+                );
+                if (!sent) {
+                    console.warn('Publish notification email was not sent.', {
+                        to: notificationEmail,
+                        postId: mergedPost.id,
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to send post status notification email:', error);
+            }
+        }
+
+        const postUrl = `${SITE_URL}/blog/${mergedPost.id}`;
+        submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on update:', err));
+
+        return NextResponse.json(mergedPost);
+    }
+
     await dataService.savePost(updatedPost);
     invalidatePostsCache();
 
