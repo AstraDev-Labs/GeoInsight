@@ -9,21 +9,22 @@ export const metrics = {
      * Increments a counter by a given value.
      */
     increment: (name: string, value: number = 1, tags?: Record<string, string>) => {
-        Sentry.metrics.increment(name, value, { tags });
+        // Cast to any to bypass a known typing issue in @sentry/nextjs v10
+        (Sentry.metrics as any).increment(name, value, { tags });
     },
 
     /**
      * Records a distribution (averages, percentiles). Useful for timing or sizes.
      */
     distribution: (name: string, value: number, tags?: Record<string, string>) => {
-        Sentry.metrics.distribution(name, value, { tags });
+        (Sentry.metrics as any).distribution(name, value, { tags });
     },
 
     /**
      * Records a gauge (current value). Useful for memory or queue sizes.
      */
     gauge: (name: string, value: number, tags?: Record<string, string>) => {
-        Sentry.metrics.gauge(name, value, { tags });
+        (Sentry.metrics as any).gauge(name, value, { tags });
     },
 };
 
