@@ -3,22 +3,25 @@ import * as Sentry from "@sentry/nextjs";
 Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
-    // Add optional integrations for additional features
     integrations: [
-        Sentry.replayIntegration(),
+        // Replay allows you to see a video-like reproduction of errors
+        Sentry.replayIntegration({
+            maskAllText: true,
+            blockAllMedia: true,
+        }),
+        // Browser Profiling allows you to see deep performance bottlenecks in the browser
+        Sentry.browserProfilingIntegration(),
     ],
 
-    // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-    tracesSampleRate: 1,
+    // Performance Monitoring
+    tracesSampleRate: 1.0,
 
-    // Define how likely Replay events are sampled.
-    // This sets the sample rate to be 10%. You may want this to be 100% while
-    // in development and sample at a lower rate in production
+    // Profiling sample rate is relative to tracesSampleRate
+    profilesSampleRate: 1.0,
+
+    // Session Replay
     replaysSessionSampleRate: 0.1,
-
-    // Define how likely Replay events are sampled when an error occurs.
     replaysOnErrorSampleRate: 1.0,
 
-    // Setting this option to true will print useful information to the console while you're setting up Sentry.
     debug: false,
 });
