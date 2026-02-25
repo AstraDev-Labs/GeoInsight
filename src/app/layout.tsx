@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { AxiomWebVitals } from 'next-axiom';
 import { SITE_URL } from "@/lib/constants";
 
 const inter = Inter({
@@ -200,6 +201,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans antialiased min-h-screen flex flex-col`}>
         {children}
+        <AxiomWebVitals />
         <SpeedInsights />
         <Analytics />
       </body>

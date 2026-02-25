@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withAxiom } from "next-axiom";
 
 const nextConfig: NextConfig = {
   // Allow serving uploaded images
@@ -22,4 +23,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withAxiom(nextConfig);
