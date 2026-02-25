@@ -171,8 +171,6 @@ src/
 │   ├── page.tsx                    # Home page — hero, blog feed, search/filter
 │   ├── layout.tsx                  # Root layout with SEO metadata & structured data
 │   ├── globals.css                 # Global styles, theme variables, TipTap styles
-│   ├── sitemap.ts                  # Dynamic sitemap generation
-│   ├── robots.ts                   # Search engine crawler rules
 │   ├── admin/page.tsx              # Admin dashboard
 │   ├── blog/[id]/page.tsx          # Individual blog post page
 │   ├── author/[name]/page.tsx      # Author profile page
