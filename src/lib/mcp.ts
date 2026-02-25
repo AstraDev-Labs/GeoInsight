@@ -6,6 +6,10 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import * as Sentry from "@sentry/nextjs";
 
+// Handle potential ESM/CJS interop issues for the wrapper function
+const wrapMcpWithSentry = (Sentry as any).wrapMcpServerWithSentry ||
+    (Sentry as any).default?.wrapMcpServerWithSentry;
+
 // Initialize Sentry for the standalone process
 Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -60,8 +64,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 // WRAP the server with Sentry for monitoring!
-// This satisfies the "MCP" requirement in your Sentry dashboard.
-Sentry.wrapMcpServerWithSentry(server);
+if (typeof wrapMcpWithSentry === "function") {
+    wrapMcpWithSentry(server);
+} else {
+    console.error("Warning: Sentry.wrapMcpServerWithSentry not found in current environment");
+}
 
 async function main() {
     const transport = new StdioServerTransport();

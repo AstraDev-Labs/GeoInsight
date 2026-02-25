@@ -8,8 +8,15 @@ export const metrics = {
     /**
      * Increments a counter by a given value.
      */
-    increment: (name: string, value: number = 1, tags?: Record<string, string>) => {
+    count: (name: string, value: number = 1, tags?: Record<string, string>) => {
         // Cast to any to bypass a known typing issue in @sentry/nextjs v10
+        (Sentry.metrics as any).count(name, value, { tags });
+    },
+
+    /**
+     * Alias for count, as used in previous versions or other SDKs.
+     */
+    increment: (name: string, value: number = 1, tags?: Record<string, string>) => {
         (Sentry.metrics as any).increment(name, value, { tags });
     },
 
