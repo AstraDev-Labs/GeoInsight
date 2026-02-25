@@ -18,12 +18,16 @@ const fetchText = async (url) => {
   return res.text();
 };
 
-const decodeXml = (value) => value
-  .replaceAll('&amp;', '&')
-  .replaceAll('&lt;', '<')
-  .replaceAll('&gt;', '>')
-  .replaceAll('&quot;', '"')
-  .replaceAll('&#39;', "'");
+const decodeXml = (value) => {
+  const map = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#39;': "'"
+  };
+  return value.replace(/&amp;|&lt;|&gt;|&quot;|&#39;/g, (m) => map[m]);
+};
 
 const getSitemapUrls = async () => {
   const xml = await fetchText(`${baseUrl}/sitemap.xml`);

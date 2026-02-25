@@ -16,6 +16,15 @@ const FROM_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@ge
 import { SITE_URL } from "@/lib/constants";
 const SITE_NAME = 'GeoInsights';
 
+function escapeHtml(unsafe: string): string {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 interface EmailOptions {
     to: string;
     subject: string;
@@ -134,14 +143,14 @@ export async function sendPublishedEmail(authorEmail: string, authorName: string
             <h2 style="color: #10b981; font-size: 28px; font-weight: 700; margin: 0;">Publication Approved!</h2>
         </div>
         <p style="color: rgba(255,255,255,0.8); font-size: 16px; line-height: 1.6;">
-            Hello <strong style="color: #38bdf8;">${authorName}</strong>,
+            Hello <strong style="color: #38bdf8;">${escapeHtml(authorName)}</strong>,
         </p>
         <p style="color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.7;">
             Great news! Your research submission has been reviewed and <strong style="color: #10b981;">approved for publication</strong> on ${SITE_NAME}.
         </p>
         <div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; padding: 20px; margin: 24px 0;">
             <p style="margin: 0 0 4px; font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px;">Publication Title</p>
-            <p style="margin: 0; font-size: 18px; font-weight: 700; color: white;">${postTitle}</p>
+            <p style="margin: 0; font-size: 18px; font-weight: 700; color: white;">${escapeHtml(postTitle)}</p>
         </div>
         <div style="text-align: center; margin: 32px 0;">
             <a href="${postUrl}" style="display: inline-block; background: #38bdf8; color: #0f172a; font-weight: 700; font-size: 14px; padding: 14px 32px; border-radius: 12px; text-decoration: none;">
@@ -173,19 +182,19 @@ export async function sendDeclinedEmail(authorEmail: string, authorName: string,
             <h2 style="color: #f59e0b; font-size: 28px; font-weight: 700; margin: 0;">Submission Update</h2>
         </div>
         <p style="color: rgba(255,255,255,0.8); font-size: 16px; line-height: 1.6;">
-            Hello <strong style="color: #38bdf8;">${authorName}</strong>,
+            Hello <strong style="color: #38bdf8;">${escapeHtml(authorName)}</strong>,
         </p>
         <p style="color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.7;">
             After careful review, your research submission was <strong style="color: #f59e0b;">not approved</strong> for publication at this time.
         </p>
         <div style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 20px; margin: 24px 0;">
             <p style="margin: 0 0 4px; font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px;">Submission Title</p>
-            <p style="margin: 0; font-size: 18px; font-weight: 700; color: white;">${postTitle}</p>
+            <p style="margin: 0; font-size: 18px; font-weight: 700; color: white;">${escapeHtml(postTitle)}</p>
         </div>
         ${reason ? `
         <div style="background: rgba(255,255,255,0.03); border-left: 3px solid #f59e0b; padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0;">
             <p style="margin: 0 0 4px; font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px;">Reviewer Notes</p>
-            <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6;">${reason}</p>
+            <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6;">${escapeHtml(reason)}</p>
         </div>
         ` : ''}
         <p style="color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.6;">
@@ -218,14 +227,14 @@ export async function sendSubmissionReceivedEmail(authorEmail: string, authorNam
             <h2 style="color: #38bdf8; font-size: 28px; font-weight: 700; margin: 0;">Submission Received</h2>
         </div>
         <p style="color: rgba(255,255,255,0.8); font-size: 16px; line-height: 1.6;">
-            Hello <strong style="color: #38bdf8;">${authorName}</strong>,
+            Hello <strong style="color: #38bdf8;">${escapeHtml(authorName)}</strong>,
         </p>
         <p style="color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.7;">
             Your research submission has been securely received and is now <strong style="color: #38bdf8;">queued for review</strong> by our administration team.
         </p>
         <div style="background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2); border-radius: 12px; padding: 20px; margin: 24px 0;">
             <p style="margin: 0 0 4px; font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px;">Submission Title</p>
-            <p style="margin: 0; font-size: 18px; font-weight: 700; color: white;">${postTitle}</p>
+            <p style="margin: 0; font-size: 18px; font-weight: 700; color: white;">${escapeHtml(postTitle)}</p>
         </div>
         <p style="color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.6;">
             You will receive another email once your submission has been reviewed. This process typically takes 24-48 hours.
@@ -245,7 +254,7 @@ export async function sendCommentVerificationEmail(email: string, name: string, 
             <h2 style="color: #38bdf8; font-size: 26px; font-weight: 700; margin: 0;">Verify Your Comment Account</h2>
         </div>
         <p style="color: rgba(255,255,255,0.8); font-size: 16px; line-height: 1.6;">
-            Hello <strong style="color: #38bdf8;">${name}</strong>,
+            Hello <strong style="color: #38bdf8;">${escapeHtml(name)}</strong>,
         </p>
         <p style="color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.7;">
             Use the verification code below to activate your comment account.

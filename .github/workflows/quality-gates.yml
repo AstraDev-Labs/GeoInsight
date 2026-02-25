@@ -8,6 +8,8 @@ on:
 jobs:
   quality-gates:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 25
     env:
       USE_AWS: "false"

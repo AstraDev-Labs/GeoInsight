@@ -11,7 +11,6 @@ const salt = bcrypt.genSaltSync(10);
 const hash = bcrypt.hashSync(password, salt);
 
 console.log('\n--- BCRYPT HASH GENERATOR ---');
-console.log('Password:', password);
 console.log('Hashed Password (copy this to Vercel/ENV):');
 console.log(hash);
 console.log('-----------------------------\n');

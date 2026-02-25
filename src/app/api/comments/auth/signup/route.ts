@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { dataService } from '@/lib/data-service';
 import { sendCommentVerificationEmail } from '@/lib/email-service';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const VERIFICATION_TTL_MS = 15 * 60 * 1000;
 
 const generateVerificationCode = (): string => {
