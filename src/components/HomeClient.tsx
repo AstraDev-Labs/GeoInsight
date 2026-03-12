@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { User, ArrowRight, Activity, Globe2, Search, Filter, Clock, ShieldAlert, X as CloseIcon } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { api } from '@/lib/mock-api';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
@@ -159,7 +160,7 @@ export default function HomeClient() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         {filteredPosts
-                            .map((post) => {
+                            .map((post, index) => {
                                 const hero = (post as BlogPost & { imageUrl?: string }).images?.[0] || (post as BlogPost & { imageUrl?: string }).imageUrl;
                                 return (
                                     <div key={post.id} className="group w-full flex flex-col h-full bg-card border rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] relative">
@@ -167,11 +168,13 @@ export default function HomeClient() {
                                             {/* Image Container */}
                                             {hero ? (
                                                 <div className="relative h-64 w-full overflow-hidden border-b">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img
+                                                    <Image
                                                         src={hero}
                                                         alt={post.title}
-                                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                                        fill
+                                                        priority={index < 2}
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                        className="object-cover transition-transform duration-1000 group-hover:scale-110"
                                                     />
                                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
                                                 </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -21,8 +22,8 @@ export const metadata: Metadata = {
     apple: '/logo.svg',
   },
   title: {
-    default: "GeoInsights | Remote Sensing & GIS Intelligence Platform",
-    template: "%s | GeoInsights",
+    default: "GeoForesight | Remote Sensing & GIS Intelligence Platform",
+    template: "%s | GeoForesight",
   },
   description: "A collaborative intelligence platform for Remote Sensing and GIS professionals. Publish and discover research on satellite imagery, land cover change, hydrology, urban GIS, LiDAR, SAR, NDVI, precision agriculture, flood mapping, disaster management, and 70+ geospatial research domains.",
   keywords: [
@@ -109,9 +110,9 @@ export const metadata: Metadata = {
     "remote sensing blog",
     "GIS research platform",
   ],
-  authors: [{ name: "GeoInsights Team" }],
-  creator: "GeoInsights",
-  publisher: "GeoInsights",
+  authors: [{ name: "GeoForesight Team" }],
+  creator: "GeoForesight",
+  publisher: "GeoForesight",
   robots: {
     index: true,
     follow: true,
@@ -126,21 +127,21 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "GeoInsights",
-    title: "GeoInsights | Remote Sensing & GIS Intelligence Platform",
+    siteName: "GeoForesight",
+    title: "GeoForesight | Remote Sensing & GIS Intelligence Platform",
     description: "A collaborative intelligence platform for sharing spatial findings, environmental insights, and GIS research.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "GeoInsights - Remote Sensing & GIS Intelligence",
+        alt: "GeoForesight - Remote Sensing & GIS Intelligence",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GeoInsights | Remote Sensing & GIS Intelligence",
+    title: "GeoForesight | Remote Sensing & GIS Intelligence",
     description: "Explore cutting-edge GIS research, satellite analysis, and environmental intelligence.",
     images: ["/og-image.png"],
   },
@@ -172,7 +173,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "GeoInsights",
+              name: "GeoForesight",
               url: SITE_URL,
               description: "A collaborative intelligence platform for Remote Sensing and GIS research.",
               sameAs: [],
@@ -186,7 +187,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "GeoInsights",
+              name: "GeoForesight",
               url: SITE_URL,
               potentialAction: {
                 "@type": "SearchAction",
@@ -203,12 +204,15 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased min-h-screen flex flex-col`}>
         {children}
         <AxiomWebVitals />
-        <SpeedInsights />
-        <Analytics />
+        <Suspense fallback={null}>
+          <SpeedInsights />
+          <Analytics />
+        </Suspense>
         {/* Cloudflare Web Analytics */}
-        <Script src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}' strategy="afterInteractive" />
+        <Script src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}' strategy="lazyOnload" />
         {/* End Cloudflare Web Analytics */}
       </body>
     </html>
   );
 }
+

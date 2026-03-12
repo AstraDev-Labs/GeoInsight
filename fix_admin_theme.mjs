@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const p = 'c:\\Users\\Tharu\\OneDrive\\Documents\\GeoInsight\\src\\app\\admin\\page.tsx';
+const p = 'c:\\Users\\Tharu\\OneDrive\\Documents\\GeoForesight\\src\\app\\admin\\page.tsx';
 let content = fs.readFileSync(p, 'utf-8');
 
 // Replace dark mode utilities with NASA white theme styling
@@ -40,3 +40,4 @@ content = content.replace(/border-primary/g, 'border-[#006699]');
 
 fs.writeFileSync(p, content, 'utf-8');
 console.log('Admin page theme updated successfully.');
+

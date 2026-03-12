@@ -1,8 +1,8 @@
 import fs from 'fs';
 
 const files = [
-    'c:\\Users\\Tharu\\OneDrive\\Documents\\GeoInsight\\src\\app\\privacy\\page.tsx',
-    'c:\\Users\\Tharu\\OneDrive\\Documents\\GeoInsight\\src\\app\\support\\page.tsx'
+    'c:\\Users\\Tharu\\OneDrive\\Documents\\GeoForesight\\src\\app\\privacy\\page.tsx',
+    'c:\\Users\\Tharu\\OneDrive\\Documents\\GeoForesight\\src\\app\\support\\page.tsx'
 ];
 
 files.forEach(p => {
@@ -62,3 +62,4 @@ files.forEach(p => {
     fs.writeFileSync(p, content, 'utf-8');
 });
 console.log('Privacy and Support themes updated successfully.');
+

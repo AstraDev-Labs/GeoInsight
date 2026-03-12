@@ -31,7 +31,7 @@ const sentryConfig = {
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
   org: "astradevs",
-  project: "geoinsight",
+  project: "GeoForesight",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
@@ -40,7 +40,8 @@ const sentryConfig = {
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
-  widenClientFileUpload: true,
+  // Disable client-side source map uploads for smaller bundles
+  widenClientFileUpload: false,
 
   // Automatically annotate React components to show their full name in breadcrumbs and stack traces;
   // see https://docs.sentry.io/platforms/javascript/guides/nextjs/features/component-names/
@@ -67,3 +68,4 @@ const sentryConfig = {
 };
 
 export default withSentryConfig(withAxiom(nextConfig), sentryConfig);
+
