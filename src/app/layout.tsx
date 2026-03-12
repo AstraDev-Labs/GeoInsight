@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { AxiomWebVitals } from 'next-axiom';
 import { SITE_URL } from "@/lib/constants";
+import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -205,7 +206,7 @@ export default function RootLayout({
         <SpeedInsights />
         <Analytics />
         {/* Cloudflare Web Analytics */}
-        <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}'></script>
+        <Script src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}' strategy="afterInteractive" />
         {/* End Cloudflare Web Analytics */}
       </body>
     </html>
