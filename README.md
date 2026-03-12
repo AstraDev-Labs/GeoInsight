@@ -241,9 +241,9 @@ ADMIN_PASSWORD=YourSecurePassword
 # Email (Optional — emails skipped if not set)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
+SMTP_USER=admin@geoforesight.org
 SMTP_PASS=your-app-password
-SMTP_FROM=your-email@gmail.com
+SMTP_FROM=admin@geoforesight.org
 
 # Site
 NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app

@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const FROM_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@GeoForesight.com';
+const FROM_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'admin@geoforesight.org';
 import { SITE_URL } from "@/lib/constants";
 const SITE_NAME = 'GeoForesight';
 

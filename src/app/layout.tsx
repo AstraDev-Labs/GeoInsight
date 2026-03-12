@@ -206,7 +206,7 @@ export default function RootLayout({
         <SpeedInsights />
         <Analytics />
         {/* Cloudflare Web Analytics */}
-        <Script src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}' strategy="afterInteractive" />
+        <Script src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}' strategy="lazyOnload" />
         {/* End Cloudflare Web Analytics */}
       </body>
     </html>
