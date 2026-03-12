@@ -204,6 +204,9 @@ export default function RootLayout({
         <AxiomWebVitals />
         <SpeedInsights />
         <Analytics />
+        {/* Cloudflare Web Analytics */}
+        <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}'></script>
+        {/* End Cloudflare Web Analytics */}
       </body>
     </html>
   );
