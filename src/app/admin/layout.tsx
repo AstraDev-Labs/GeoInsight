@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Admin Terminal | GeoForesights',
+    title: 'Admin Terminal | GeoForesight',
     robots: {
         index: false,
         follow: false,

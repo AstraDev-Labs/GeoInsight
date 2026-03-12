@@ -3,8 +3,8 @@ import Footer from '@/components/Footer';
 import { Shield } from 'lucide-react';
 
 export const metadata = {
-    title: 'Privacy Policy | GeoForesights',
-    description: 'Privacy Policy for the GeoForesights Remote Sensing & GIS Intelligence platform. Learn how we collect, use, and protect your data.',
+    title: 'Privacy Policy | GeoForesight',
+    description: 'Privacy Policy for the GeoForesight Remote Sensing & GIS Intelligence platform. Learn how we collect, use, and protect your data.',
     alternates: {
         canonical: '/privacy',
     },
@@ -33,7 +33,7 @@ export default function PrivacyPolicy() {
                 <div className="prose  prose-lg max-w-none prose-headings:text-[#222] prose-headings:font-serif prose-p:text-[#444] prose-strong:text-[#111] prose-a:text-[#006699]">
                     <h2>1. Information We Collect</h2>
                     <p>
-                        When you submit a research post or interact with GeoForesights, we may collect the following information:
+                        When you submit a research post or interact with GeoForesight, we may collect the following information:
                     </p>
                     <ul>
                         <li><strong>Personal Information:</strong> Name, email address, and any other details you voluntarily provide when submitting content.</li>
@@ -72,7 +72,7 @@ export default function PrivacyPolicy() {
                     </ul>
 
                     <h2>5. Your Rights</h2>
-                    <p>As a user of GeoForesights, you have the right to:</p>
+                    <p>As a user of GeoForesight, you have the right to:</p>
                     <ul>
                         <li><strong>Access</strong> your personal data that we hold.</li>
                         <li><strong>Edit</strong> your published content using your author credentials.</li>
@@ -82,7 +82,7 @@ export default function PrivacyPolicy() {
 
                     <h2>6. Cookies</h2>
                     <p>
-                        GeoForesights uses minimal cookies strictly necessary for authentication (admin session tokens).
+                        GeoForesight uses minimal cookies strictly necessary for authentication (admin session tokens).
                         We do not use tracking cookies, advertising cookies, or any third-party analytics cookies.
                     </p>
 

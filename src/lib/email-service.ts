@@ -12,9 +12,9 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const FROM_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@GeoForesights.com';
+const FROM_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@GeoForesight.com';
 import { SITE_URL } from "@/lib/constants";
-const SITE_NAME = 'GeoForesights';
+const SITE_NAME = 'GeoForesight';
 
 function escapeHtml(unsafe: string): string {
     return unsafe
@@ -158,7 +158,7 @@ export async function sendPublishedEmail(authorEmail: string, authorName: string
             </a>
         </div>
         <p style="color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.6;">
-            Your research is now live and accessible to all visitors. Thank you for contributing to the GeoForesights community!
+            Your research is now live and accessible to all visitors. Thank you for contributing to the GeoForesight community!
         </p>
     `);
 

@@ -1,4 +1,4 @@
-# 🌐 GeoForesights — Remote Sensing & GIS Intelligence Platform
+# 🌐 GeoForesight — Remote Sensing & GIS Intelligence Platform
 
 A premium, full-stack collaborative research blog built with **Next.js 16**, **AWS (DynamoDB + S3)**, and **Framer Motion**. Designed for remote sensing teams to publish, review, and manage geospatial research findings with a sleek dark glassmorphic UI.
 
@@ -308,7 +308,7 @@ Create a bucket named `rs-blog-images` with:
 
 ### IndexNow (Bing/Yandex)
 1. Set `INDEX_NOW_KEY` in `.env.local` and in your deployment environment.
-2. GeoForesights serves the key dynamically at `/api/indexnow/key` from environment variables.
+2. GeoForesight serves the key dynamically at `/api/indexnow/key` from environment variables.
 3. Published/deleted blog URLs are auto-submitted to `https://api.indexnow.org/IndexNow` using `keyLocation=<your-domain>/api/indexnow/key`.
 
 ---
@@ -444,7 +444,7 @@ This project is licensed under the **MIT License**. See [LICENSE](./LICENSE) for
 ---
 
 <p align="center">
-  Built with ❤️ by the GeoForesights Team<br/>
+  Built with ❤️ by the GeoForesight Team<br/>
   <strong>Next.js • AWS • Framer Motion • TipTap</strong>
 </p>
  

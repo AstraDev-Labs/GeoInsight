@@ -9,7 +9,7 @@ export default function Navbar() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo.svg" alt="GeoForesight Logo" className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
                 <span className="text-white font-semibold text-xl tracking-tight">
-                    GeoForesights
+                    GeoForesight
                 </span>
             </Link>
 
