@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -203,8 +204,10 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased min-h-screen flex flex-col`}>
         {children}
         <AxiomWebVitals />
-        <SpeedInsights />
-        <Analytics />
+        <Suspense fallback={null}>
+          <SpeedInsights />
+          <Analytics />
+        </Suspense>
         {/* Cloudflare Web Analytics */}
         <Script src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}' strategy="lazyOnload" />
         {/* End Cloudflare Web Analytics */}
