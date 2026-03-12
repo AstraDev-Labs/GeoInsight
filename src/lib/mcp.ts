@@ -18,11 +18,11 @@ Sentry.init({
 
 /**
  * This is a standalone MCP server that allows AI agents (like Claude Desktop)
- * to interact with your GeoInsight project.
+ * to interact with your GeoForesight project.
  */
 const server = new Server(
     {
-        name: "geoinsight-server",
+        name: "GeoForesight-server",
         version: "0.1.0",
     },
     {
@@ -37,7 +37,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
             name: "get_latest_posts",
-            description: "Get the latest blog posts from GeoInsight",
+            description: "Get the latest blog posts from GeoForesight",
             inputSchema: {
                 type: "object",
                 properties: {
@@ -55,7 +55,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             content: [
                 {
                     type: "text",
-                    text: "GeoInsight Latest Posts: \n1. Introduction to GIS\n2. Modern Web Mapping",
+                    text: "GeoForesight Latest Posts: \n1. Introduction to GIS\n2. Modern Web Mapping",
                 },
             ],
         };
@@ -73,7 +73,7 @@ if (typeof wrapMcpWithSentry === "function") {
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error("GeoInsight MCP Server running on stdio");
+    console.error("GeoForesight MCP Server running on stdio");
 }
 
 main().catch((error) => {
@@ -81,3 +81,4 @@ main().catch((error) => {
     console.error("Fatal error in MCP server:", error);
     process.exit(1);
 });
+

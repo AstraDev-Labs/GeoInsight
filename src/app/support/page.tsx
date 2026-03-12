@@ -16,7 +16,7 @@ export default function SupportPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // In production, wire this to an API endpoint or mailto
-        const mailtoLink = `mailto:geoinsight.org@gmail.com?subject=Support Request from ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}%0A%0AFrom: ${encodeURIComponent(email)}`;
+        const mailtoLink = `mailto:GeoForesight.org@gmail.com?subject=Support Request from ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}%0A%0AFrom: ${encodeURIComponent(email)}`;
         window.open(mailtoLink);
         setSent(true);
     };
@@ -71,8 +71,8 @@ export default function SupportPage() {
                         <Mail className="text-[#222] mx-auto mb-4" size={28} />
                         <h3 className="font-bold text-lg mb-2">Email Us</h3>
                         <p className="text-[#555] text-sm mb-4">Reach out directly for urgent issues or detailed inquiries.</p>
-                        <a href="mailto:geoinsight.org@gmail.com" className="text-[#222] text-sm font-medium hover:underline">
-                            geoinsight.org@gmail.com
+                        <a href="mailto:GeoForesight.org@gmail.com" className="text-[#222] text-sm font-medium hover:underline">
+                            GeoForesight.org@gmail.com
                         </a>
                     </motion.div>
 
@@ -105,7 +105,7 @@ export default function SupportPage() {
                                 <span className="text-2xl font-bold text-[#222]">✓</span>
                             </div>
                             <h3 className="text-xl font-bold mb-2">Message Prepared!</h3>
-                            <p className="text-[#555] text-sm">Your email client should have opened. If not, email us directly at geoinsight.org@gmail.com</p>
+                            <p className="text-[#555] text-sm">Your email client should have opened. If not, email us directly at GeoForesight.org@gmail.com</p>
                             <button onClick={() => setSent(false)} className="mt-6 px-6 py-2 bg-[#f9f9f9] border border-[#e5e5e5] rounded-xl text-sm hover:bg-[#f0f0f0] transition-colors">
                                 Send Another Message
                             </button>
@@ -188,3 +188,4 @@ export default function SupportPage() {
         </main>
     );
 }
+

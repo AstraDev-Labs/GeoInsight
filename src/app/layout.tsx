@@ -21,8 +21,8 @@ export const metadata: Metadata = {
     apple: '/logo.svg',
   },
   title: {
-    default: "GeoInsights | Remote Sensing & GIS Intelligence Platform",
-    template: "%s | GeoInsights",
+    default: "GeoForesights | Remote Sensing & GIS Intelligence Platform",
+    template: "%s | GeoForesights",
   },
   description: "A collaborative intelligence platform for Remote Sensing and GIS professionals. Publish and discover research on satellite imagery, land cover change, hydrology, urban GIS, LiDAR, SAR, NDVI, precision agriculture, flood mapping, disaster management, and 70+ geospatial research domains.",
   keywords: [
@@ -109,9 +109,9 @@ export const metadata: Metadata = {
     "remote sensing blog",
     "GIS research platform",
   ],
-  authors: [{ name: "GeoInsights Team" }],
-  creator: "GeoInsights",
-  publisher: "GeoInsights",
+  authors: [{ name: "GeoForesights Team" }],
+  creator: "GeoForesights",
+  publisher: "GeoForesights",
   robots: {
     index: true,
     follow: true,
@@ -126,21 +126,21 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "GeoInsights",
-    title: "GeoInsights | Remote Sensing & GIS Intelligence Platform",
+    siteName: "GeoForesights",
+    title: "GeoForesights | Remote Sensing & GIS Intelligence Platform",
     description: "A collaborative intelligence platform for sharing spatial findings, environmental insights, and GIS research.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "GeoInsights - Remote Sensing & GIS Intelligence",
+        alt: "GeoForesights - Remote Sensing & GIS Intelligence",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GeoInsights | Remote Sensing & GIS Intelligence",
+    title: "GeoForesights | Remote Sensing & GIS Intelligence",
     description: "Explore cutting-edge GIS research, satellite analysis, and environmental intelligence.",
     images: ["/og-image.png"],
   },
@@ -172,7 +172,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "GeoInsights",
+              name: "GeoForesights",
               url: SITE_URL,
               description: "A collaborative intelligence platform for Remote Sensing and GIS research.",
               sameAs: [],
@@ -186,7 +186,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "GeoInsights",
+              name: "GeoForesights",
               url: SITE_URL,
               potentialAction: {
                 "@type": "SearchAction",
@@ -212,3 +212,4 @@ export default function RootLayout({
     </html>
   );
 }
+

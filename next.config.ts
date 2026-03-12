@@ -31,7 +31,7 @@ const sentryConfig = {
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
   org: "astradevs",
-  project: "geoinsight",
+  project: "GeoForesight",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
@@ -67,3 +67,4 @@ const sentryConfig = {
 };
 
 export default withSentryConfig(withAxiom(nextConfig), sentryConfig);
+

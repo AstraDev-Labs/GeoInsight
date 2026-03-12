@@ -4,8 +4,8 @@ import { Shield, FileText, Scale, Lock } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Terms of Service | GeoInsights',
-    description: 'Terms of Service for the GeoInsights Research Platform. Guidelines for research contribution, intellectual property, and data privacy.',
+    title: 'Terms of Service | GeoForesights',
+    description: 'Terms of Service for the GeoForesights Research Platform. Guidelines for research contribution, intellectual property, and data privacy.',
     alternates: {
         canonical: '/terms',
     },
@@ -35,7 +35,7 @@ export default function TermsPage() {
                             1. Agreement to Terms
                         </h2>
                         <p className="text-slate-600 leading-relaxed">
-                            By accessing or using the GeoInsights Research Platform (&quot;the Platform&quot;), you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you are prohibited from using the Platform. These terms govern the contribution of data, peer-review processes, and the consumption of Earth observation intelligence provided by GeoInsights.
+                            By accessing or using the GeoForesights Research Platform (&quot;the Platform&quot;), you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you are prohibited from using the Platform. These terms govern the contribution of data, peer-review processes, and the consumption of Earth observation intelligence provided by GeoForesights.
                         </p>
                     </section>
 
@@ -61,7 +61,7 @@ export default function TermsPage() {
                             3. Intellectual Property
                         </h2>
                         <p className="text-slate-600 leading-relaxed">
-                            Unless otherwise stated, all research published on GeoInsights is provided under an Open Access framework. However, the Platform retains the right to host and distribute the content. Authors maintain the right to their original findings but grant GeoInsights a perpetual, royalty-free license to display and archive the submission globally.
+                            Unless otherwise stated, all research published on GeoForesights is provided under an Open Access framework. However, the Platform retains the right to host and distribute the content. Authors maintain the right to their original findings but grant GeoForesights a perpetual, royalty-free license to display and archive the submission globally.
                         </p>
                     </section>
 
@@ -78,7 +78,7 @@ export default function TermsPage() {
 
                 <div className="mt-20 p-8 border border-slate-200 bg-slate-50 rounded-2xl">
                     <p className="text-center text-slate-500 text-sm italic">
-                        Questions regarding these terms should be directed to the GeoInsights Board via the Support Center.
+                        Questions regarding these terms should be directed to the GeoForesights Board via the Support Center.
                     </p>
                 </div>
             </section>
@@ -87,3 +87,4 @@ export default function TermsPage() {
         </main>
     );
 }
+

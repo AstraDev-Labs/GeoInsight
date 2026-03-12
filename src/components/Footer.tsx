@@ -11,7 +11,7 @@ export default function Footer() {
                     <Link href="/" className="flex items-center gap-3 group w-fit">
                         <Globe className="text-primary w-10 h-10 group-hover:rotate-180 transition-transform duration-500" />
                         <span className="text-white font-bold text-2xl tracking-tight leading-tight">
-                            GeoInsights
+                            GeoForesights
                         </span>
                     </Link>
                     <p className="text-muted-foreground text-sm leading-relaxed mt-2">
@@ -64,10 +64,11 @@ export default function Footer() {
                     </div>
                     <div className="flex gap-2">
                         <span className="text-white/30 font-medium">Responsible Official for Science:</span>
-                        <span className="text-white/80 font-bold">GeoInsights Intelligence Board</span>
+                        <span className="text-white/80 font-bold">GeoForesights Intelligence Board</span>
                     </div>
                 </div>
             </div>
         </footer>
     );
 }
+

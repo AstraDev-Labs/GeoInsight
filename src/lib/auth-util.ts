@@ -50,7 +50,7 @@ const getCommentAuthSecret = (): string => {
     return (
         (process.env.COMMENT_AUTH_SECRET || '').trim() ||
         (process.env.ADMIN_PASSWORD || '').trim() ||
-        'geoinsight-comment-secret'
+        'GeoForesight-comment-secret'
     );
 };
 
@@ -88,3 +88,4 @@ export function verifyCommentToken(token: string | undefined): CommentSession | 
         return null;
     }
 }
+

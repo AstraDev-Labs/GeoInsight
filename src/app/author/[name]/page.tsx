@@ -18,12 +18,12 @@ export async function generateMetadata({ params }: { params: Promise<{ name: str
 
     return {
         title: `${decodedName} | Author`,
-        description: `Research profile and published findings of ${decodedName} on GeoInsights.`,
+        description: `Research profile and published findings of ${decodedName} on GeoForesights.`,
         alternates: {
             canonical: canonicalPath,
         },
         openGraph: {
-            title: `${decodedName} | GeoInsights Author`,
+            title: `${decodedName} | GeoForesights Author`,
             description: `Published findings by ${decodedName}.`,
             type: 'profile',
             url: fullCanonicalUrl,

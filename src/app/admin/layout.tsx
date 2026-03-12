@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Admin Terminal | GeoInsights',
+    title: 'Admin Terminal | GeoForesights',
     robots: {
         index: false,
         follow: false,
@@ -18,3 +18,4 @@ export default function AdminLayout({
 }) {
     return <>{children}</>;
 }
+
