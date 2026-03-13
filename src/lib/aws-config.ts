@@ -16,7 +16,12 @@ if (useAWSFlag && accessKeyId && secretAccessKey) {
     const credentials = { accessKeyId, secretAccessKey };
 
     dynamoClient = new DynamoDBClient({ region, credentials });
-    s3Client = new S3Client({ region, credentials });
+    s3Client = new S3Client({ 
+        region, 
+        credentials,
+        endpoint: process.env.R2_ENDPOINT,
+        forcePathStyle: true
+    });
 
     console.log("✅ AWS DynamoDB + S3 clients initialized.");
 } else {
