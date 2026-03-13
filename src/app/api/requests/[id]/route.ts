@@ -7,6 +7,7 @@ import { cookies } from 'next/headers';
 import { verifyAdminToken } from '@/lib/auth-util';
 import { invalidatePostsCache, invalidateRequestsCache } from '@/lib/api-cache';
 import { sendDeclinedEmail } from '@/lib/email-service';
+import { deleteBucketFiles } from '@/lib/r2-utils';
 
 export async function PATCH(
     request: Request,
@@ -63,6 +64,10 @@ export async function PATCH(
             req.status = 'denied';
             await dataService.updateRequest(req);
             invalidateRequestsCache();
+            // Free up R2 Storage for denied items
+            const filesToDelete = [...(req.images || []), ...(req.attachments || [])];
+            await deleteBucketFiles(filesToDelete);
+            
             try {
                 const sent = await sendDeclinedEmail(
                     req.email,
@@ -82,6 +87,10 @@ export async function PATCH(
             req.status = 'denied';
             await dataService.updateRequest(req);
             invalidateRequestsCache();
+            
+            // Free up R2 Storage for denied items
+            const filesToDelete = [...(req.images || []), ...(req.attachments || [])];
+            await deleteBucketFiles(filesToDelete);
         }
 
         return NextResponse.json(req);
@@ -104,6 +113,13 @@ export async function DELETE(
 
     if (!isAdmin) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const requests = await dataService.getRequests();
+    const req = requests.find(r => r.id === id);
+    if (req) {
+        const filesToDelete = [...(req.images || []), ...(req.attachments || [])];
+        await deleteBucketFiles(filesToDelete);
     }
 
     await dataService.deleteRequest(id);

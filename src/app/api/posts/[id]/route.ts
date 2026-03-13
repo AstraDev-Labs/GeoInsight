@@ -12,6 +12,7 @@ import { sendPublishedEmail, sendDeclinedEmail } from '@/lib/email-service';
 import { invalidatePostsCache } from '@/lib/api-cache';
 import { s3, S3_BUCKET } from '@/lib/aws-config';
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { deleteBucketFiles } from '@/lib/r2-utils';
 
 export async function PATCH(
     request: Request,
@@ -215,82 +216,13 @@ export async function DELETE(
 
     const posts = await dataService.getPosts();
     const post = posts.find(p => p.id === id);
-    
-    // Helper to delete associated images from S3/R2
-    const deletePostImages = async (imageUrls: string[] | undefined) => {
-        if (!imageUrls || imageUrls.length === 0) {
-            console.log("ℹ️ No images to delete for post:", id);
-            return;
-        }
-
-        if (!s3) {
-            console.warn("⚠️ S3 client not initialized. Skipping image deletion.");
-            return;
-        }
-        
-        console.log(`🗑️ Starting cleanup for ${imageUrls.length} images...`);
-
-        for (const url of imageUrls) {
-            try {
-                let key = '';
-                const parsedUrl = new URL(url);
-                
-                // 1. Cloudflare R2 path-style or S3-style
-                if (url.includes('cloudflarestorage.com')) {
-                    // Path format: /<bucket>/<key>
-                    const bucketMatch = url.match(new RegExp(`/${S3_BUCKET}/(.+)`));
-                    if (bucketMatch) {
-                        key = bucketMatch[1];
-                    } else {
-                        // Fallback: take everything after the first slash in pathname
-                        key = parsedUrl.pathname.split('/').slice(2).join('/');
-                    }
-                } 
-                // 2. Cloudflare R2 Public URL (r2.dev)
-                else if (url.includes('.r2.dev')) {
-                    // Path format usually: /<key>
-                    key = parsedUrl.pathname.substring(1);
-                }
-                // 3. AWS S3 (Virtual Hosted or Path Style)
-                else if (url.includes('amazonaws.com')) {
-                    const hostParts = parsedUrl.hostname.split('.');
-                    if (hostParts[0] === S3_BUCKET) {
-                        // Virtual Hosted Style: bucket.s3.region.amazonaws.com/key
-                        key = parsedUrl.pathname.substring(1);
-                    } else {
-                        // Path Style: s3.region.amazonaws.com/bucket/key
-                        const bucketPrefix = `/${S3_BUCKET}/`;
-                        if (parsedUrl.pathname.startsWith(bucketPrefix)) {
-                            key = parsedUrl.pathname.substring(bucketPrefix.length);
-                        } else {
-                            key = parsedUrl.pathname.substring(1);
-                        }
-                    }
-                }
-                // 4. Fallback for any other internal-looking paths
-                else if (url.startsWith('/uploads/')) {
-                    key = url.substring(1);
-                }
-
-                if (key) {
-                    console.log(`   👉 Attempting to delete key: "${key}" from bucket: "${S3_BUCKET}"`);
-                    await s3.send(new DeleteObjectCommand({
-                        Bucket: S3_BUCKET,
-                        Key: key
-                    }));
-                    console.log(`   ✅ Successfully deleted: ${key}`);
-                } else {
-                    console.warn(`   ❓ Could not determine storage key for URL: ${url}`);
-                }
-            } catch (err) {
-                console.error(`   ❌ Failed to delete image ${url}:`, err);
-            }
-        }
-    };
 
     if (!post) {
         return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
+
+    // Extract file arrays for cleanup
+    const filesToDelete = [...(post.images || []), ...(post.attachments || [])];
 
     // Check if admin (has valid cookie)
     const cookieStore = await cookies();
@@ -301,7 +233,7 @@ export async function DELETE(
     if (isAdmin) {
         try {
             // Admin can delete any post
-            await deletePostImages(post.images);
+            await deleteBucketFiles(filesToDelete);
             await dataService.deletePost(id);
             invalidatePostsCache();
 
@@ -348,7 +280,7 @@ export async function DELETE(
             return NextResponse.json({ error: 'Invalid password' }, { status: 403 });
         }
 
-        await deletePostImages(post.images);
+        await deleteBucketFiles(filesToDelete);
         await dataService.deletePost(id);
         invalidatePostsCache();
         return NextResponse.json({ success: true, message: 'Post deleted by author (legacy req check)' });
@@ -370,7 +302,7 @@ export async function DELETE(
         return NextResponse.json({ error: 'Invalid password' }, { status: 403 });
     }
 
-    await deletePostImages(post.images);
+    await deleteBucketFiles(filesToDelete);
     await dataService.deletePost(id);
     invalidatePostsCache();
 
