@@ -79,8 +79,10 @@ export default function RequestPost() {
             body: formData,
         });
 
-        if (!res.ok) throw new Error('Upload failed');
         const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.error || 'Upload failed');
+        }
         return data.urls;
     };
 
@@ -154,9 +156,9 @@ export default function RequestPost() {
 
             await api.submitRequest(data);
             setSubmitted(true);
-        } catch (err) {
+        } catch (err: any) {
             console.error('Submission error:', err);
-            alert('There was an error submitting your request. Please try again.');
+            alert(`There was an error submitting your request:\n\n${err.message}`);
         } finally {
             setLoading(false);
             setUploading(false);
@@ -444,7 +446,7 @@ export default function RequestPost() {
                                     </div>
                                 )}
 
-                                <input ref={docInputRef} type="file" accept=".pdf,.doc,.docx,.xlsx,.csv,.zip,.txt" multiple onChange={handleDocSelect} className="hidden" />
+                                <input ref={docInputRef} type="file" multiple onChange={handleDocSelect} className="hidden" />
                                 <button
                                     type="button"
                                     onClick={() => docInputRef.current?.click()}
