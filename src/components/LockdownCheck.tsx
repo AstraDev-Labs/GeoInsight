@@ -13,18 +13,13 @@ export default function LockdownCheck({ children }: LockdownCheckProps) {
     const pathname = usePathname();
     const [lockdownMode, setLockdownMode] = useState<LockdownMode>('none');
     const [lockdownMessage, setLockdownMessage] = useState<string>();
-    const [checked, setChecked] = useState(false);
 
     const isAdminRoute = pathname.startsWith('/admin');
 
     const checkStatus = useCallback(async () => {
-        if (isAdminRoute) {
-            setChecked(true);
-            return;
-        }
+        if (isAdminRoute) return;
 
         try {
-            // Cache-busting timestamp to bypass any CDN/browser caching
             const res = await fetch(`/api/site-status?_t=${Date.now()}`, {
                 cache: 'no-store',
                 headers: { 'Cache-Control': 'no-cache' },
@@ -36,12 +31,10 @@ export default function LockdownCheck({ children }: LockdownCheckProps) {
             }
         } catch {
             // On error, allow access (fail-open)
-        } finally {
-            setChecked(true);
         }
     }, [isAdminRoute]);
 
-    // Check on mount, on every navigation, and poll every 30s
+    // Check on mount, on navigation, and poll every 30s
     useEffect(() => {
         checkStatus();
 
@@ -51,18 +44,12 @@ export default function LockdownCheck({ children }: LockdownCheckProps) {
         }
     }, [pathname, checkStatus, isAdminRoute]);
 
-    if (!checked) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
-                <div className="w-8 h-8 border-4 border-gray-700 border-t-gray-400 rounded-full animate-spin" />
-            </div>
-        );
-    }
-
+    // Admin routes always bypass lockdown
     if (isAdminRoute) {
         return <>{children}</>;
     }
 
+    // Show lockdown screen if active (no spinner — zero delay for normal visits)
     if (lockdownMode && lockdownMode !== 'none') {
         return (
             <LockdownScreen
