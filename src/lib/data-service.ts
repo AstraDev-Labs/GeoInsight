@@ -220,16 +220,13 @@ export const dataService = {
                     Key: { id }
                 }));
             } catch (error) {
-                console.error("AWS DynamoDB deletePost failed, falling back to local DB:", error);
-                const db = readDb();
-                db.posts = db.posts.filter(p => p.id !== id);
-                writeDb(db);
+                console.error("AWS DynamoDB deletePost failed, trying local DB only:", error);
             }
-        } else {
-            const db = readDb();
-            db.posts = db.posts.filter(p => p.id !== id);
-            writeDb(db);
         }
+        
+        const db = readDb();
+        db.posts = db.posts.filter(p => p.id !== id);
+        writeDb(db);
     },
 
     deleteRequest: async (id: string): Promise<void> => {
