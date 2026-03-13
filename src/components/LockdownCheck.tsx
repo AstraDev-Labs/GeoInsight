@@ -1,36 +1,69 @@
-import { dataService } from '@/lib/data-service';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import LockdownScreen from '@/components/LockdownScreen';
-import { headers } from 'next/headers';
-import { unstable_noStore as noStore } from 'next/cache';
+import type { LockdownMode } from '@/lib/types';
 
 interface LockdownCheckProps {
     children: React.ReactNode;
 }
 
-export default async function LockdownCheck({ children }: LockdownCheckProps) {
-    noStore(); // Prevent caching so lockdown changes take effect immediately
-    const headersList = await headers();
-    const pathname = headersList.get('x-pathname') || '/';
+export default function LockdownCheck({ children }: LockdownCheckProps) {
+    const pathname = usePathname();
+    const [lockdownMode, setLockdownMode] = useState<LockdownMode>('none');
+    const [lockdownMessage, setLockdownMessage] = useState<string>();
+    const [checked, setChecked] = useState(false);
 
-    // Allow admin routes and API routes to bypass lockdown
-    if (pathname.startsWith('/admin') || pathname.startsWith('/api')) {
+    // Skip lockdown for admin pages and API routes
+    const isAdminRoute = pathname.startsWith('/admin');
+
+    useEffect(() => {
+        if (isAdminRoute) {
+            setChecked(true);
+            return;
+        }
+
+        const checkStatus = async () => {
+            try {
+                const res = await fetch('/api/site-status', { cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    setLockdownMode(data.lockdownMode || 'none');
+                    setLockdownMessage(data.lockdownMessage);
+                }
+            } catch {
+                // On error, allow access (fail-open)
+            } finally {
+                setChecked(true);
+            }
+        };
+
+        checkStatus();
+    }, [pathname, isAdminRoute]);
+
+    // Show nothing until the check completes (prevents flash of content)
+    if (!checked) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+                <div className="w-8 h-8 border-4 border-gray-700 border-t-gray-400 rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    // Admin routes always bypass lockdown
+    if (isAdminRoute) {
         return <>{children}</>;
     }
 
-    try {
-        const settings = await dataService.getSiteSettings();
-
-        if (settings.lockdownMode && settings.lockdownMode !== 'none') {
-            return (
-                <LockdownScreen
-                    mode={settings.lockdownMode}
-                    message={settings.lockdownMessage}
-                />
-            );
-        }
-    } catch (error) {
-        console.error('Failed to check lockdown status:', error);
-        // On error, allow access (fail-open)
+    // Show lockdown screen if active
+    if (lockdownMode && lockdownMode !== 'none') {
+        return (
+            <LockdownScreen
+                mode={lockdownMode}
+                message={lockdownMessage}
+            />
+        );
     }
 
     return <>{children}</>;
