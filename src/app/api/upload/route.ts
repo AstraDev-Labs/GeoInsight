@@ -44,9 +44,13 @@ export async function POST(request: Request) {
                     ContentDisposition: 'inline',
                 }));
 
-                // Construct the URL
+                // Construct the public URL for the frontend
                 let url;
-                if (process.env.R2_ENDPOINT) {
+                if (process.env.NEXT_PUBLIC_R2_URL) {
+                    // Use custom domain or r2.dev public URL if provided
+                    url = `${process.env.NEXT_PUBLIC_R2_URL}/${key}`;
+                } else if (process.env.R2_ENDPOINT) {
+                    // Fallback to raw endpoint (Note: this often fails in <img> tags due to lack of auth Signature V4)
                     url = `${process.env.R2_ENDPOINT}/${S3_BUCKET}/${key}`;
                 } else {
                     const region = process.env.AWS_REGION || 'eu-north-1';
