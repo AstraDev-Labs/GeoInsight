@@ -312,8 +312,8 @@ export async function DELETE(
             return NextResponse.json({ success: true, message: 'Post deleted by admin' });
         } catch (error: any) {
             console.error("🚨 CRITICAL ERROR DURING ADMIN DELETION:", error);
-            // Include message for immediate debugging via Vercel network tab
-            return NextResponse.json({ error: 'Internal Server Error during deletion', details: error.message }, { status: 500 });
+            // Put the exact message inside the 'error' field so the UI prints it in the red alert box
+            return NextResponse.json({ error: `INTERNAL CRASH: ${error.message}` }, { status: 500 });
         }
     }
 
