@@ -61,38 +61,116 @@ const withPerfProfile = async <T>(label: string, fn: () => Promise<T>): Promise<
 export const dataService = {
     // Requests
     getRequests: async (): Promise<PostRequest[]> => withPerfProfile('dataService.getRequests', async () => {
-        return readDb().requests;
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const result = await ddbDocClient.send(new ScanCommand({
+                    TableName: TABLE_NAME,
+                    FilterExpression: "begins_with(id, :prefix)",
+                    ExpressionAttributeValues: { ":prefix": "req-" }
+                }));
+                return (result.Items as PostRequest[]) || [];
+            } catch (error) {
+                console.error("AWS DynamoDB getRequests failed, falling back to local DB:", error);
+                return readDb().requests;
+            }
+        } else {
+            return readDb().requests;
+        }
     }),
 
     addRequest: async (request: PostRequest): Promise<void> => {
-        const db = readDb();
-        db.requests.push(request);
-        writeDb(db);
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: request
+                }));
+            } catch (error) {
+                console.error("AWS DynamoDB addRequest failed, falling back to local DB:", error);
+                const db = readDb();
+                db.requests.push(request);
+                writeDb(db);
+            }
+        } else {
+            const db = readDb();
+            db.requests.push(request);
+            writeDb(db);
+        }
     },
 
     updateRequest: async (updatedRequest: PostRequest): Promise<void> => {
-        const db = readDb();
-        const index = db.requests.findIndex(r => r.id === updatedRequest.id);
-        if (index !== -1) {
-            db.requests[index] = updatedRequest;
-            writeDb(db);
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: updatedRequest
+                }));
+            } catch (error) {
+                console.error("AWS DynamoDB updateRequest failed, falling back to local DB:", error);
+                const db = readDb();
+                const index = db.requests.findIndex(r => r.id === updatedRequest.id);
+                if (index !== -1) {
+                    db.requests[index] = updatedRequest;
+                    writeDb(db);
+                }
+            }
+        } else {
+            const db = readDb();
+            const index = db.requests.findIndex(r => r.id === updatedRequest.id);
+            if (index !== -1) {
+                db.requests[index] = updatedRequest;
+                writeDb(db);
+            }
         }
     },
 
     // Posts
     getPosts: async (): Promise<BlogPost[]> => withPerfProfile('dataService.getPosts', async () => {
-        return readDb().posts;
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const result = await ddbDocClient.send(new ScanCommand({
+                    TableName: TABLE_NAME,
+                    FilterExpression: "begins_with(id, :prefix)",
+                    ExpressionAttributeValues: { ":prefix": "post-" }
+                }));
+                return (result.Items as BlogPost[]) || [];
+            } catch (error) {
+                console.error("AWS DynamoDB getPosts failed, falling back to local DB:", error);
+                return readDb().posts;
+            }
+        } else {
+            return readDb().posts;
+        }
     }),
 
     savePost: async (post: BlogPost): Promise<void> => {
-        const db = readDb();
-        const index = db.posts.findIndex(p => p.id === post.id);
-        if (index !== -1) {
-            db.posts[index] = post;
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: post
+                }));
+            } catch (error) {
+                console.error("AWS DynamoDB savePost failed, falling back to local DB:", error);
+                const db = readDb();
+                const index = db.posts.findIndex(p => p.id === post.id);
+                if (index !== -1) {
+                    db.posts[index] = post;
+                } else {
+                    db.posts.push(post);
+                }
+                writeDb(db);
+            }
         } else {
-            db.posts.push(post);
+            const db = readDb();
+            const index = db.posts.findIndex(p => p.id === post.id);
+            if (index !== -1) {
+                db.posts[index] = post;
+            } else {
+                db.posts.push(post);
+            }
+            writeDb(db);
         }
-        writeDb(db);
     },
 
     deletePost: async (id: string): Promise<void> => {
@@ -134,15 +212,45 @@ export const dataService = {
         }
 
         // 3. Delete from Database
-        const db = readDb();
-        db.posts = db.posts.filter(p => p.id !== id);
-        writeDb(db);
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const { DeleteCommand } = await import("@aws-sdk/lib-dynamodb");
+                await ddbDocClient.send(new DeleteCommand({
+                    TableName: TABLE_NAME,
+                    Key: { id }
+                }));
+            } catch (error) {
+                console.error("AWS DynamoDB deletePost failed, falling back to local DB:", error);
+                const db = readDb();
+                db.posts = db.posts.filter(p => p.id !== id);
+                writeDb(db);
+            }
+        } else {
+            const db = readDb();
+            db.posts = db.posts.filter(p => p.id !== id);
+            writeDb(db);
+        }
     },
 
     deleteRequest: async (id: string): Promise<void> => {
-        const db = readDb();
-        db.requests = db.requests.filter(r => r.id !== id);
-        writeDb(db);
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const { DeleteCommand } = await import("@aws-sdk/lib-dynamodb");
+                await ddbDocClient.send(new DeleteCommand({
+                    TableName: TABLE_NAME,
+                    Key: { id }
+                }));
+            } catch (error) {
+                console.error("AWS DynamoDB deleteRequest failed, falling back to local DB:", error);
+                const db = readDb();
+                db.requests = db.requests.filter(r => r.id !== id);
+                writeDb(db);
+            }
+        } else {
+            const db = readDb();
+            db.requests = db.requests.filter(r => r.id !== id);
+            writeDb(db);
+        }
     },
 
     clearHistory: async (): Promise<void> => {
@@ -160,7 +268,28 @@ export const dataService = {
             db.posts = safePosts.filter((post: BlogPost) => post.status !== 'rejected');
             writeDb(db);
 
-            // 3. (AWS Cleared disabled - Local only)
+            // 3. Clear AWS DynamoDB if active
+            if (awsEnabled && ddbDocClient) {
+                const client = ddbDocClient; // Capture non-null reference
+
+                // Identify items to delete
+                const requestsToDelete = allRequests.filter(r => r.status !== 'pending');
+                const postsToDelete = allPosts.filter(p => p.status === 'rejected');
+
+                console.log(`🧹 Clearing ${requestsToDelete.length} requests and ${postsToDelete.length} rejected posts from AWS...`);
+
+                // Parallel execution for speed (within limits)
+                const deletePromises = [
+                    ...requestsToDelete.map(req =>
+                        client.send(new DeleteCommand({ TableName: TABLE_NAME, Key: { id: req.id } }))
+                    ),
+                    ...postsToDelete.map(post =>
+                        client.send(new DeleteCommand({ TableName: TABLE_NAME, Key: { id: post.id } }))
+                    )
+                ];
+
+                await Promise.all(deletePromises);
+            }
         } catch (error: unknown) {
             console.error("CRITICAL: clearHistory failed:", error);
             const message = error instanceof Error ? error.message : "Failed to execute database purge";
@@ -170,11 +299,30 @@ export const dataService = {
 
     // Collaboration comments
     getCommentsForPost: async (postId: string): Promise<PostComment[]> => withPerfProfile(`dataService.getCommentsForPost:${postId}`, async () => {
-        return readDb()
-            .comments
-            .filter((comment) => comment.postId === postId)
-            .map(normalizeComment)
-            .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const result = await ddbDocClient.send(new ScanCommand({
+                    TableName: TABLE_NAME,
+                    FilterExpression: "begins_with(id, :prefix) AND postId = :postId",
+                    ExpressionAttributeValues: {
+                        ":prefix": "comment-",
+                        ":postId": postId
+                    }
+                }));
+                return ((result.Items as PostComment[]) || [])
+                    .map(normalizeComment)
+                    .sort(
+                        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+                    );
+            } catch (error) {
+                console.error("AWS DynamoDB getCommentsForPost failed, falling back to local DB:", error);
+                return readDb()
+                    .comments
+                    .filter((comment) => comment.postId === postId)
+                    .map(normalizeComment)
+                    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+            }
+        }
 
         return readDb()
             .comments
@@ -191,6 +339,18 @@ export const dataService = {
             ...payload,
         };
 
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: newComment
+                }));
+                return newComment;
+            } catch (error) {
+                console.error("AWS DynamoDB addComment failed, falling back to local DB:", error);
+            }
+        }
+
         const db = readDb();
         db.comments.push(newComment);
         writeDb(db);
@@ -201,6 +361,37 @@ export const dataService = {
         commentId: string,
         moderation: { status: 'visible' | 'hidden'; moderatedBy: string }
     ): Promise<PostComment | null> => {
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const commentsResult = await ddbDocClient.send(new ScanCommand({
+                    TableName: TABLE_NAME,
+                    FilterExpression: "id = :id",
+                    ExpressionAttributeValues: {
+                        ":id": commentId
+                    }
+                }));
+
+                const existing = (commentsResult.Items?.[0] as PostComment | undefined);
+                if (!existing) return null;
+
+                const updated: PostComment = {
+                    ...normalizeComment(existing),
+                    status: moderation.status,
+                    moderatedBy: moderation.moderatedBy,
+                    moderatedAt: new Date().toISOString(),
+                };
+
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: updated
+                }));
+
+                return updated;
+            } catch (error) {
+                console.error("AWS DynamoDB moderateComment failed, falling back to local DB:", error);
+            }
+        }
+
         const db = readDb();
         const index = db.comments.findIndex((comment) => comment.id === commentId);
         if (index === -1) return null;
@@ -217,6 +408,18 @@ export const dataService = {
     },
 
     deleteComment: async (commentId: string): Promise<boolean> => {
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new DeleteCommand({
+                    TableName: TABLE_NAME,
+                    Key: { id: commentId }
+                }));
+                return true;
+            } catch (error) {
+                console.error("AWS DynamoDB deleteComment failed, falling back to local DB:", error);
+            }
+        }
+
         const db = readDb();
         const before = db.comments.length;
         db.comments = db.comments.filter((comment) => comment.id !== commentId);
@@ -233,6 +436,26 @@ export const dataService = {
     getCommentSanction: async (subjectId: string): Promise<CommentSanction | null> => {
         if (!subjectId) return null;
 
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const result = await ddbDocClient.send(new ScanCommand({
+                    TableName: TABLE_NAME,
+                    FilterExpression: "id = :id",
+                    ExpressionAttributeValues: {
+                        ":id": toSanctionId(subjectId)
+                    }
+                }));
+
+                const item = result.Items?.[0] as (CommentSanction & { id?: string }) | undefined;
+                if (!item) return null;
+                const sanction = { ...item };
+                delete (sanction as { id?: string }).id;
+                return normalizeCommentSanction(sanction);
+            } catch (error) {
+                console.error("AWS DynamoDB getCommentSanction failed, falling back to local DB:", error);
+            }
+        }
+
         const db = readDb();
         const sanction = db.commentSanctions.find((item) => (item.subjectId || item.commenterKey) === subjectId);
         return sanction ? normalizeCommentSanction(sanction) : null;
@@ -240,6 +463,21 @@ export const dataService = {
 
     upsertCommentSanction: async (sanction: CommentSanction): Promise<CommentSanction> => {
         const normalized = normalizeCommentSanction(sanction);
+
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: {
+                        id: toSanctionId(normalized.subjectId),
+                        ...normalized
+                    }
+                }));
+                return normalized;
+            } catch (error) {
+                console.error("AWS DynamoDB upsertCommentSanction failed, falling back to local DB:", error);
+            }
+        }
 
         const db = readDb();
         const index = db.commentSanctions.findIndex((item) => (item.subjectId || item.commenterKey) === normalized.subjectId);
@@ -285,6 +523,26 @@ export const dataService = {
         const commenterKey = toCommenterKey(name);
         if (!commenterKey) return null;
 
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const result = await ddbDocClient.send(new ScanCommand({
+                    TableName: TABLE_NAME,
+                    FilterExpression: "id = :id",
+                    ExpressionAttributeValues: {
+                        ":id": toCommentUserId(commenterKey)
+                    }
+                }));
+
+                const item = result.Items?.[0] as (CommentUser & { id?: string }) | undefined;
+                if (!item) return null;
+                const user = { ...item };
+                delete (user as { id?: string }).id;
+                return normalizeCommentUser(user);
+            } catch (error) {
+                console.error("AWS DynamoDB getCommentUserByName failed, falling back to local DB:", error);
+            }
+        }
+
         const db = readDb();
         const user = db.commentUsers.find((record) => record.commenterKey === commenterKey);
         return user ? normalizeCommentUser(user) : null;
@@ -294,6 +552,27 @@ export const dataService = {
         const normalizedEmail = email.trim().toLowerCase();
         if (!normalizedEmail) return null;
 
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const result = await ddbDocClient.send(new ScanCommand({
+                    TableName: TABLE_NAME,
+                    FilterExpression: "begins_with(id, :prefix) AND email = :email",
+                    ExpressionAttributeValues: {
+                        ":prefix": "comment-user-",
+                        ":email": normalizedEmail,
+                    }
+                }));
+
+                const item = result.Items?.[0] as (CommentUser & { id?: string }) | undefined;
+                if (!item) return null;
+                const user = { ...item };
+                delete (user as { id?: string }).id;
+                return normalizeCommentUser(user);
+            } catch (error) {
+                console.error("AWS DynamoDB getCommentUserByEmail failed, falling back to local DB:", error);
+            }
+        }
+
         const db = readDb();
         const user = db.commentUsers.find((record) => record.email?.toLowerCase() === normalizedEmail);
         return user ? normalizeCommentUser(user) : null;
@@ -301,6 +580,21 @@ export const dataService = {
 
     updateCommentUser: async (user: CommentUser): Promise<CommentUser> => {
         const normalized = normalizeCommentUser(user);
+
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: {
+                        id: toCommentUserId(normalized.commenterKey),
+                        ...normalized
+                    }
+                }));
+                return normalized;
+            } catch (error) {
+                console.error("AWS DynamoDB updateCommentUser failed, falling back to local DB:", error);
+            }
+        }
 
         const db = readDb();
         const index = db.commentUsers.findIndex((existing) => existing.commenterKey === normalized.commenterKey);
@@ -336,6 +630,21 @@ export const dataService = {
             createdAt: new Date().toISOString(),
         };
 
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: {
+                        id: toCommentUserId(commenterKey),
+                        ...user
+                    }
+                }));
+                return user;
+            } catch (error) {
+                console.error("AWS DynamoDB createCommentUser failed, falling back to local DB:", error);
+            }
+        }
+
         const db = readDb();
         db.commentUsers = db.commentUsers.filter((existing) => existing.commenterKey !== commenterKey);
         db.commentUsers.push(user);
@@ -344,6 +653,24 @@ export const dataService = {
     },
 
     getBotSettings: async (): Promise<BotSettings> => {
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const result = await ddbDocClient.send(new GetCommand({
+                    TableName: TABLE_NAME,
+                    Key: { id: BOT_SETTINGS_ID },
+                }));
+
+                const item = result.Item as ({ id?: string } & Partial<BotSettings>) | undefined;
+                if (item) {
+                    const settings = { ...item };
+                    delete (settings as { id?: string }).id;
+                    return normalizeBotSettings(settings);
+                }
+            } catch (error) {
+                console.error("AWS DynamoDB getBotSettings failed, falling back to local DB:", error);
+            }
+        }
+
         const db = readDb();
         return normalizeBotSettings(db.botSettings);
     },
@@ -356,6 +683,21 @@ export const dataService = {
         const db = readDb();
         db.botSettings = merged;
         writeDb(db);
+
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: {
+                        id: BOT_SETTINGS_ID,
+                        ...merged,
+                    }
+                }));
+                return merged;
+            } catch (error) {
+                console.error("AWS DynamoDB saveBotSettings failed, falling back to local DB:", error);
+            }
+        }
 
         return merged;
     },
