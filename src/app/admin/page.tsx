@@ -4,8 +4,8 @@ import { useEffect, useState, useCallback } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { api } from '@/lib/mock-api';
-import { PostRequest, BlogPost } from '@/lib/types';
-import { Check, X, LogOut, FileText, Paperclip, Lock, Shield, Trash2, ChevronLeft, ChevronRight, Activity, Globe, LayoutDashboard, ImagePlus } from 'lucide-react';
+import { PostRequest, BlogPost, LockdownMode } from '@/lib/types';
+import { Check, X, LogOut, FileText, Paperclip, Lock, Shield, Trash2, ChevronLeft, ChevronRight, Activity, Globe, LayoutDashboard, ImagePlus, Wrench, AlertTriangle, Power } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import AdminAnalyticsPanel from '@/components/AdminAnalyticsPanel';
@@ -37,6 +37,22 @@ export default function AdminDashboard() {
     const [existingAttachments, setExistingAttachments] = useState<string[]>([]);
     const [publishing, setPublishing] = useState(false);
 
+    // Lockdown state
+    const [lockdownMode, setLockdownMode] = useState<LockdownMode>('none');
+    const [lockdownSaving, setLockdownSaving] = useState(false);
+
+    const fetchLockdownStatus = useCallback(async () => {
+        try {
+            const res = await fetch('/api/admin/settings');
+            if (res.ok) {
+                const data = await res.json();
+                setLockdownMode(data.lockdownMode || 'none');
+            }
+        } catch (err) {
+            console.error('Failed to fetch lockdown status:', err);
+        }
+    }, []);
+
     const fetchData = useCallback(async () => {
         const [reqs, posts] = await Promise.all([
             api.getRequests(),
@@ -45,7 +61,8 @@ export default function AdminDashboard() {
         setRequests(reqs);
         setAllPosts(posts);
         setLoading(false);
-    }, []);
+        fetchLockdownStatus();
+    }, [fetchLockdownStatus]);
 
     const checkAuth = useCallback(async () => {
         try {
@@ -101,6 +118,32 @@ export default function AdminDashboard() {
         setAllPosts([]);
     };
 
+    const handleLockdown = async (mode: LockdownMode) => {
+        const labels: Record<LockdownMode, string> = {
+            none: 'deactivate lockdown and make the site publicly accessible',
+            maintenance: 'put the site into MAINTENANCE mode (public users will be blocked)',
+            technical_difficulties: 'put the site into TECHNICAL DIFFICULTIES mode (public users will be blocked)',
+        };
+        if (!confirm(`Are you sure you want to ${labels[mode]}?`)) return;
+
+        setLockdownSaving(true);
+        try {
+            const res = await fetch('/api/admin/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lockdownMode: mode }),
+            });
+            if (res.ok) {
+                setLockdownMode(mode);
+            } else {
+                alert('Failed to update lockdown mode.');
+            }
+        } catch {
+            alert('Connection error. Please try again.');
+        } finally {
+            setLockdownSaving(false);
+        }
+    };
 
 
     const handleAction = async (id: string, status: 'accepted' | 'denied') => {
@@ -344,6 +387,64 @@ export default function AdminDashboard() {
 
                     <AdminAnalyticsPanel posts={allPosts} requests={requests} />
                     {/* <BotSettingsPanel canEdit={isAuthenticated} /> */}
+
+                    {/* Site Controls - Lockdown */}
+                    <div className="bg-white border border-[#e5e5e5] shadow-sm rounded-2xl p-6 mb-8">
+                        <h3 className="text-lg font-bold text-[#222] mb-1 flex items-center gap-2">
+                            <Shield size={20} className="text-[#006699]" /> Site Controls
+                        </h3>
+                        <p className="text-sm text-[#666] mb-5">Lock down the public site while keeping admin access available.</p>
+
+                        <div className="flex items-center gap-3 mb-4">
+                            <span className="text-sm font-medium text-[#444]">Current Status:</span>
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                                lockdownMode === 'none'
+                                    ? 'bg-[#d1e7dd] text-[#0f5132] border-[#a3cfbb]'
+                                    : lockdownMode === 'maintenance'
+                                        ? 'bg-amber-100 text-amber-800 border-amber-300'
+                                        : 'bg-red-100 text-red-700 border-red-300'
+                            }`}>
+                                <span className={`w-2 h-2 rounded-full ${lockdownMode === 'none' ? 'bg-[#0f5132]' : lockdownMode === 'maintenance' ? 'bg-amber-600 animate-pulse' : 'bg-red-600 animate-pulse'}`} />
+                                {lockdownMode === 'none' ? 'Site Active' : lockdownMode === 'maintenance' ? 'Maintenance' : 'Technical Difficulties'}
+                            </span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-3">
+                            <button
+                                onClick={() => handleLockdown('none')}
+                                disabled={lockdownSaving || lockdownMode === 'none'}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all border disabled:opacity-40 disabled:cursor-not-allowed ${
+                                    lockdownMode === 'none'
+                                        ? 'bg-[#d1e7dd] text-[#0f5132] border-[#a3cfbb]'
+                                        : 'bg-[#f9f9f9] text-[#444] border-[#e5e5e5] hover:bg-[#d1e7dd] hover:text-[#0f5132] hover:border-[#a3cfbb]'
+                                }`}
+                            >
+                                <Power size={16} /> Site Active
+                            </button>
+                            <button
+                                onClick={() => handleLockdown('maintenance')}
+                                disabled={lockdownSaving || lockdownMode === 'maintenance'}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all border disabled:opacity-40 disabled:cursor-not-allowed ${
+                                    lockdownMode === 'maintenance'
+                                        ? 'bg-amber-100 text-amber-800 border-amber-300'
+                                        : 'bg-[#f9f9f9] text-[#444] border-[#e5e5e5] hover:bg-amber-100 hover:text-amber-800 hover:border-amber-300'
+                                }`}
+                            >
+                                <Wrench size={16} /> Maintenance
+                            </button>
+                            <button
+                                onClick={() => handleLockdown('technical_difficulties')}
+                                disabled={lockdownSaving || lockdownMode === 'technical_difficulties'}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all border disabled:opacity-40 disabled:cursor-not-allowed ${
+                                    lockdownMode === 'technical_difficulties'
+                                        ? 'bg-red-100 text-red-700 border-red-300'
+                                        : 'bg-[#f9f9f9] text-[#444] border-[#e5e5e5] hover:bg-red-100 hover:text-red-700 hover:border-red-300'
+                                }`}
+                            >
+                                <AlertTriangle size={16} /> Technical Difficulties
+                            </button>
+                        </div>
+                    </div>
 
                     <div className="flex flex-wrap gap-4 mb-8">
                         <button

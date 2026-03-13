@@ -87,6 +87,13 @@ export interface BotSettings {
     autoBanOnSevere: boolean;
 }
 
+export type LockdownMode = 'none' | 'maintenance' | 'technical_difficulties';
+
+export interface SiteSettings {
+    lockdownMode: LockdownMode;
+    lockdownMessage?: string;
+}
+
 export interface EditPostResponse {
     success: boolean;
     error?: string;

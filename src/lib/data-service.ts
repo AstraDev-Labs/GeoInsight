@@ -1,6 +1,6 @@
 import { PutCommand, ScanCommand, DeleteCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { ddbDocClient, TABLE_NAME, useAWS as awsEnabled, s3, S3_BUCKET } from "./aws-config";
-import { BlogPost, BotSettings, CommentSanction, CommentUser, PostComment, PostRequest } from "./types";
+import { BlogPost, BotSettings, CommentSanction, CommentUser, PostComment, PostRequest, SiteSettings } from "./types";
 import { readDb, writeDb } from "./db-server";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import fs from 'fs';
@@ -30,6 +30,7 @@ const normalizeCommentSanction = (sanction: CommentSanction): CommentSanction =>
 const toSanctionId = (subjectId: string) => `sanction-${subjectId}`;
 const toCommentUserId = (commenterKey: string) => `comment-user-${commenterKey}`;
 const BOT_SETTINGS_ID = 'bot-settings-global';
+const SITE_SETTINGS_ID = 'site-settings-global';
 const MUTED_HOURS_ON_VIOLATION = 24;
 
 const normalizeBotSettings = (settings?: Partial<BotSettings> | null): BotSettings => ({
@@ -693,6 +694,57 @@ export const dataService = {
                 return merged;
             } catch (error) {
                 console.error("AWS DynamoDB saveBotSettings failed, falling back to local DB:", error);
+            }
+        }
+
+        return merged;
+    },
+
+    getSiteSettings: async (): Promise<SiteSettings> => {
+        const defaultSettings: SiteSettings = { lockdownMode: 'none' };
+
+        if (awsEnabled && ddbDocClient) {
+            try {
+                const result = await ddbDocClient.send(new GetCommand({
+                    TableName: TABLE_NAME,
+                    Key: { id: SITE_SETTINGS_ID },
+                }));
+
+                const item = result.Item as ({ id?: string } & Partial<SiteSettings>) | undefined;
+                if (item) {
+                    const settings = { ...item };
+                    delete (settings as { id?: string }).id;
+                    return { ...defaultSettings, ...settings };
+                }
+            } catch (error) {
+                console.error("AWS DynamoDB getSiteSettings failed, falling back to local DB:", error);
+            }
+        }
+
+        const db = readDb();
+        return { ...defaultSettings, ...db.siteSettings };
+    },
+
+    saveSiteSettings: async (settings: Partial<SiteSettings>): Promise<SiteSettings> => {
+        const current = await dataService.getSiteSettings();
+        const merged: SiteSettings = { ...current, ...settings };
+
+        const db = readDb();
+        db.siteSettings = merged;
+        writeDb(db);
+
+        if (awsEnabled && ddbDocClient) {
+            try {
+                await ddbDocClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: {
+                        id: SITE_SETTINGS_ID,
+                        ...merged,
+                    }
+                }));
+                return merged;
+            } catch (error) {
+                console.error("AWS DynamoDB saveSiteSettings failed, falling back to local DB:", error);
             }
         }
 

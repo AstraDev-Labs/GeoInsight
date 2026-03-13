@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { BlogPost, BotSettings, CommentSanction, CommentUser, PostComment, PostRequest } from './types';
+import { BlogPost, BotSettings, CommentSanction, CommentUser, PostComment, PostRequest, SiteSettings } from './types';
 
 const DB_PATH = path.join(process.cwd(), 'data', 'db.json');
 
@@ -11,6 +11,7 @@ export interface DbSchema {
     commentUsers: CommentUser[];
     commentSanctions: CommentSanction[];
     botSettings?: BotSettings;
+    siteSettings?: SiteSettings;
 }
 
 export const readDb = (): DbSchema => {
@@ -24,6 +25,7 @@ export const readDb = (): DbSchema => {
             commentUsers: Array.isArray(parsed.commentUsers) ? parsed.commentUsers : [],
             commentSanctions: Array.isArray(parsed.commentSanctions) ? parsed.commentSanctions : [],
             botSettings: parsed.botSettings,
+            siteSettings: parsed.siteSettings,
         };
     } catch {
         return { posts: [], requests: [], comments: [], commentUsers: [], commentSanctions: [] };

@@ -4,10 +4,6 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-
-    // Protected routes configuration
-    // (Bots can still be detected here if needed in the future)
-
     // ✅ Skip sitemap and robots
     if (
         pathname.startsWith('/sitemap.xml') ||
@@ -22,7 +18,10 @@ export function middleware(request: NextRequest) {
 
         // If it's the login page, allow access so they can log in
         if (pathname === '/admin') {
-            return NextResponse.next();
+            // Still pass pathname header
+            const response = NextResponse.next();
+            response.headers.set('x-pathname', pathname);
+            return response;
         }
 
         // For any sub-paths or protected admin areas, require a token
@@ -46,10 +45,15 @@ export function middleware(request: NextRequest) {
         }
     }
 
-    return NextResponse.next();
+    // Pass the pathname to layout via headers for lockdown check
+    const response = NextResponse.next();
+    response.headers.set('x-pathname', pathname);
+    return response;
 }
 
-// See "Matching Paths" below to learn more
+// Match all routes except static files and Next.js internals
 export const config = {
-    matcher: ['/admin/:path*', '/api/admin/:path*', '/robots.txt', '/sitemap.xml'],
+    matcher: [
+        '/((?!_next/static|_next/image|favicon.ico|icon.svg|logo.svg|og-image.png|uploads/).*)',
+    ],
 };

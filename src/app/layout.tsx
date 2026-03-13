@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { AxiomWebVitals } from 'next-axiom';
 import { SITE_URL } from "@/lib/constants";
 import Script from "next/script";
+import LockdownCheck from "@/components/LockdownCheck";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -202,7 +203,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-sans antialiased min-h-screen flex flex-col`}>
-        {children}
+        <LockdownCheck>
+          {children}
+        </LockdownCheck>
         <AxiomWebVitals />
         <Suspense fallback={null}>
           <SpeedInsights />
