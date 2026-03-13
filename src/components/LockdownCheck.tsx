@@ -1,12 +1,14 @@
 import { dataService } from '@/lib/data-service';
 import LockdownScreen from '@/components/LockdownScreen';
 import { headers } from 'next/headers';
+import { unstable_noStore as noStore } from 'next/cache';
 
 interface LockdownCheckProps {
     children: React.ReactNode;
 }
 
 export default async function LockdownCheck({ children }: LockdownCheckProps) {
+    noStore(); // Prevent caching so lockdown changes take effect immediately
     const headersList = await headers();
     const pathname = headersList.get('x-pathname') || '/';
 
