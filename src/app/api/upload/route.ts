@@ -4,6 +4,13 @@ import { PutObjectCommand } from '@aws-sdk/client-s3';
 import fs from 'fs';
 import path from 'path';
 
+// Disable standard Next.js body parsing size limits so large PDFs and datasets don't crash Vercel at the gateway
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+
 export async function POST(request: Request) {
     try {
         const formData = await request.formData();
@@ -60,9 +67,9 @@ export async function POST(request: Request) {
         }
 
         return NextResponse.json({ urls: uploadedUrls });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Upload error:', error);
-        return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+        return NextResponse.json({ error: `Upload failed: ${error.message}` }, { status: 500 });
     }
 }
 
