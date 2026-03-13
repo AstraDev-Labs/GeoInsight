@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import LockdownScreen from '@/components/LockdownScreen';
 import type { LockdownMode } from '@/lib/types';
@@ -15,34 +15,42 @@ export default function LockdownCheck({ children }: LockdownCheckProps) {
     const [lockdownMessage, setLockdownMessage] = useState<string>();
     const [checked, setChecked] = useState(false);
 
-    // Skip lockdown for admin pages and API routes
     const isAdminRoute = pathname.startsWith('/admin');
 
-    useEffect(() => {
+    const checkStatus = useCallback(async () => {
         if (isAdminRoute) {
             setChecked(true);
             return;
         }
 
-        const checkStatus = async () => {
-            try {
-                const res = await fetch('/api/site-status', { cache: 'no-store' });
-                if (res.ok) {
-                    const data = await res.json();
-                    setLockdownMode(data.lockdownMode || 'none');
-                    setLockdownMessage(data.lockdownMessage);
-                }
-            } catch {
-                // On error, allow access (fail-open)
-            } finally {
-                setChecked(true);
+        try {
+            // Cache-busting timestamp to bypass any CDN/browser caching
+            const res = await fetch(`/api/site-status?_t=${Date.now()}`, {
+                cache: 'no-store',
+                headers: { 'Cache-Control': 'no-cache' },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setLockdownMode(data.lockdownMode || 'none');
+                setLockdownMessage(data.lockdownMessage);
             }
-        };
+        } catch {
+            // On error, allow access (fail-open)
+        } finally {
+            setChecked(true);
+        }
+    }, [isAdminRoute]);
 
+    // Check on mount, on every navigation, and poll every 30s
+    useEffect(() => {
         checkStatus();
-    }, [pathname, isAdminRoute]);
 
-    // Show nothing until the check completes (prevents flash of content)
+        if (!isAdminRoute) {
+            const interval = setInterval(checkStatus, 30000);
+            return () => clearInterval(interval);
+        }
+    }, [pathname, checkStatus, isAdminRoute]);
+
     if (!checked) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
@@ -51,12 +59,10 @@ export default function LockdownCheck({ children }: LockdownCheckProps) {
         );
     }
 
-    // Admin routes always bypass lockdown
     if (isAdminRoute) {
         return <>{children}</>;
     }
 
-    // Show lockdown screen if active
     if (lockdownMode && lockdownMode !== 'none') {
         return (
             <LockdownScreen
