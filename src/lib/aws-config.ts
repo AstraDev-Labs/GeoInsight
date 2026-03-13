@@ -22,6 +22,7 @@ if (useAWSFlag && accessKeyId && secretAccessKey) {
     // DynamoDB requires a specific AWS region (R2 'auto' won't work)
     const ddbRegion = (region === "auto") ? "eu-north-1" : region;
 
+
     try {
         dynamoClient = new DynamoDBClient({ region: ddbRegion, credentials });
         

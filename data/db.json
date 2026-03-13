@@ -11,68 +11,6 @@
       "postedAt": "2026-02-21T06:47:25.975Z",
       "status": "published",
       "imageUrl": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=500"
-    },
-    {
-      "id": "post-jrmuqh3by",
-      "title": "AWS Research Check",
-      "excerpt": "Testing the persistent cloud storage with AWS DynamoDB.",
-      "content": "This data is now stored in the cloud.",
-      "author": "Researcher Ragefrost",
-      "category": "Land Cover Change",
-      "date": "21/2/2026",
-      "postedAt": "2026-02-21T07:12:39.038Z",
-      "images": [
-        "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "post-skslnjuma",
-      "title": "Cloud Fallback Check",
-      "excerpt": "Testing fallback logic.",
-      "content": "This is a test to verify that the fallback logic works as expected.",
-      "author": "Dr. Resilient",
-      "category": "Land Cover Change",
-      "date": "21/2/2026",
-      "postedAt": "2026-02-21T07:20:37.421Z",
-      "images": [
-        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "post-93g36jb1t",
-      "title": "Remote Sensing Proofs Check",
-      "excerpt": "Testing document attachment system for authors.",
-      "content": "",
-      "author": "Dr. Data Integrity",
-      "category": "Land Cover Change",
-      "date": "21/2/2026",
-      "postedAt": "2026-02-21T07:26:36.876Z",
-      "images": [
-        "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500"
-      ],
-      "attachments": [
-        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "post-x4dgjhhsn",
-      "title": "Test Blog",
-      "excerpt": "Test ",
-      "content": "",
-      "author": "Tharun G",
-      "category": "Urban GIS",
-      "date": "21/2/2026",
-      "postedAt": "2026-02-21T07:57:59.616Z",
-      "images": [
-        "/uploads/1771660656954-image_3.jpg"
-      ],
-      "attachments": [
-        "/uploads/1771660656924-lab_7.pdf"
-      ],
-      "status": "published"
     }
   ],
   "requests": [],
