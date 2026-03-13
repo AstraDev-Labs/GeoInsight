@@ -299,16 +299,22 @@ export async function DELETE(
     const isAdmin = verifyAdminToken(token, adminPassword);
 
     if (isAdmin) {
-        // Admin can delete any post
-        await deletePostImages(post.images);
-        await dataService.deletePost(id);
-        invalidatePostsCache();
+        try {
+            // Admin can delete any post
+            await deletePostImages(post.images);
+            await dataService.deletePost(id);
+            invalidatePostsCache();
 
-        // Notify IndexNow about deletion
-        const postUrl = `${SITE_URL}/blog/${id}`;
-        submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on delete:', err));
+            // Notify IndexNow about deletion
+            const postUrl = `${SITE_URL}/blog/${id}`;
+            submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on delete:', err));
 
-        return NextResponse.json({ success: true, message: 'Post deleted by admin' });
+            return NextResponse.json({ success: true, message: 'Post deleted by admin' });
+        } catch (error: any) {
+            console.error("🚨 CRITICAL ERROR DURING ADMIN DELETION:", error);
+            // Include message for immediate debugging via Vercel network tab
+            return NextResponse.json({ error: 'Internal Server Error during deletion', details: error.message }, { status: 500 });
+        }
     }
 
     // Author self-delete: verify by email and password
