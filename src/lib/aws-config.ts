@@ -30,7 +30,7 @@ if (useAWSFlag && accessKeyId && secretAccessKey) {
             : credentials;
 
         s3Client = new S3Client({ 
-            region, 
+            region: process.env.R2_ENDPOINT ? 'auto' : region, 
             credentials: s3Credentials,
             endpoint: process.env.R2_ENDPOINT,
             forcePathStyle: true
