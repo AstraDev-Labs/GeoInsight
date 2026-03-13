@@ -16,8 +16,10 @@ if (useAWSFlag && accessKeyId && secretAccessKey) {
     const credentials = { accessKeyId, secretAccessKey };
 
     // DynamoDB requires a specific AWS region (R2 'auto' won't work)
-        try {
-            dynamoClient = new DynamoDBClient({ region: ddbRegion, credentials });
+    const ddbRegion = (region === "auto") ? "eu-north-1" : region;
+
+    try {
+        dynamoClient = new DynamoDBClient({ region: ddbRegion, credentials });
             s3Client = new S3Client({ 
                 region, 
                 credentials,
