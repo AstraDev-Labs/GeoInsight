@@ -198,6 +198,13 @@ export async function PATCH(
             console.error('Failed to send post status notification email:', error);
         }
     }
+    
+    // Cleanup R2 Storage if admin declines a pending post
+    if (isAdmin && updatedPost.status === 'rejected') {
+        console.log(`🗑️ Post ${id} rejected. Executing R2 file cleanup...`);
+        const filesToDelete = [...(updatedPost.images || []), ...(updatedPost.attachments || [])];
+        await deleteBucketFiles(filesToDelete);
+    }
 
     // Notify IndexNow if published
     if (updatedPost.status === 'published') {

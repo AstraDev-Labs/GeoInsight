@@ -117,7 +117,10 @@ export async function DELETE(
 
     const requests = await dataService.getRequests();
     const req = requests.find(r => r.id === id);
-    if (req) {
+    
+    // Critical: Do NOT delete files if the request was accepted, 
+    // because those files are now being used by the active Blog Post!
+    if (req && req.status !== 'accepted') {
         const filesToDelete = [...(req.images || []), ...(req.attachments || [])];
         await deleteBucketFiles(filesToDelete);
     }
