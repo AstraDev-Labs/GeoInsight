@@ -729,10 +729,7 @@ export const dataService = {
         const current = await dataService.getSiteSettings();
         const merged: SiteSettings = { ...current, ...settings };
 
-        const db = readDb();
-        db.siteSettings = merged;
-        writeDb(db);
-
+        // Try DynamoDB first (works on Vercel's read-only filesystem)
         if (awsEnabled && ddbDocClient) {
             try {
                 await ddbDocClient.send(new PutCommand({
@@ -742,10 +739,18 @@ export const dataService = {
                         ...merged,
                     }
                 }));
-                return merged;
             } catch (error) {
-                console.error("AWS DynamoDB saveSiteSettings failed, falling back to local DB:", error);
+                console.error("AWS DynamoDB saveSiteSettings failed:", error);
             }
+        }
+
+        // Mirror to local DB (may fail on read-only filesystems like Vercel)
+        try {
+            const db = readDb();
+            db.siteSettings = merged;
+            writeDb(db);
+        } catch (error) {
+            console.warn("Local DB write skipped (read-only filesystem):", error);
         }
 
         return merged;
