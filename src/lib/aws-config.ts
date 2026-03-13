@@ -9,6 +9,10 @@ const region = process.env.AWS_REGION || "us-east-1";
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
+// R2 specific credentials (falls back to AWS if not provided)
+const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID || accessKeyId;
+const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY || secretAccessKey;
+
 let dynamoClient: DynamoDBClient | null = null;
 let s3Client: S3Client | null = null;
 
@@ -20,12 +24,17 @@ if (useAWSFlag && accessKeyId && secretAccessKey) {
 
     try {
         dynamoClient = new DynamoDBClient({ region: ddbRegion, credentials });
-            s3Client = new S3Client({ 
-                region, 
-                credentials,
-                endpoint: process.env.R2_ENDPOINT,
-                forcePathStyle: true
-            });
+        
+        const s3Credentials = (r2AccessKeyId && r2SecretAccessKey) 
+            ? { accessKeyId: r2AccessKeyId, secretAccessKey: r2SecretAccessKey }
+            : credentials;
+
+        s3Client = new S3Client({ 
+            region, 
+            credentials: s3Credentials,
+            endpoint: process.env.R2_ENDPOINT,
+            forcePathStyle: true
+        });
             console.log("✅ AWS DynamoDB + S3 clients initialized.");
         } catch (initErr) {
             console.error("🚨 CRITICAL: Failed to initialize AWS clients:", initErr);
