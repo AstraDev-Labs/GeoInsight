@@ -13,7 +13,6 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-<<<<<<< HEAD
         hostname: '**.r2.cloudflarestorage.com',
       },
       {
