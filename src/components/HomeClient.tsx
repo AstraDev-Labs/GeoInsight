@@ -172,7 +172,7 @@ export default function HomeClient() {
                                                         src={hero}
                                                         alt={post.title}
                                                         fill
-                                                        priority={index < 2}
+                                                        priority={index < 4}
                                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                         className="object-cover transition-transform duration-1000 group-hover:scale-110"
                                                     />
