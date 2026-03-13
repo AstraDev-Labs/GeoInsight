@@ -35,9 +35,14 @@ export async function POST(request: Request) {
                     ContentDisposition: 'inline',
                 }));
 
-                // Construct the S3 URL (region-specific)
-                const region = process.env.AWS_REGION || 'eu-north-1';
-                const url = `https://${S3_BUCKET}.s3.${region}.amazonaws.com/${key}`;
+                // Construct the URL
+                let url;
+                if (process.env.R2_ENDPOINT) {
+                    url = `${process.env.R2_ENDPOINT}/${S3_BUCKET}/${key}`;
+                } else {
+                    const region = process.env.AWS_REGION || 'eu-north-1';
+                    url = `https://${S3_BUCKET}.s3.${region}.amazonaws.com/${key}`;
+                }
                 uploadedUrls.push(url);
             } else {
                 // Save locally to public/uploads/
