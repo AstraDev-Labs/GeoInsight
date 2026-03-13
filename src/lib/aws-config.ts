@@ -16,17 +16,21 @@ if (useAWSFlag && accessKeyId && secretAccessKey) {
     const credentials = { accessKeyId, secretAccessKey };
 
     // DynamoDB requires a specific AWS region (R2 'auto' won't work)
-    const ddbRegion = (region === "auto") ? "eu-north-1" : region;
-    
-    dynamoClient = new DynamoDBClient({ region: ddbRegion, credentials });
-    s3Client = new S3Client({ 
-        region, 
-        credentials,
-        endpoint: process.env.R2_ENDPOINT,
-        forcePathStyle: true
-    });
-
-    console.log("✅ AWS DynamoDB + S3 clients initialized.");
+        try {
+            dynamoClient = new DynamoDBClient({ region: ddbRegion, credentials });
+            s3Client = new S3Client({ 
+                region, 
+                credentials,
+                endpoint: process.env.R2_ENDPOINT,
+                forcePathStyle: true
+            });
+            console.log("✅ AWS DynamoDB + S3 clients initialized.");
+        } catch (initErr) {
+            console.error("🚨 CRITICAL: Failed to initialize AWS clients:", initErr);
+            // Fallback to null to gracefully handle errors instead of crashing the whole API
+            dynamoClient = null;
+            s3Client = null;
+        }
 } else {
     console.log("📁 Using local storage. Set USE_AWS=true in .env.local to enable AWS.");
 }
