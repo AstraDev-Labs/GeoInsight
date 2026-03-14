@@ -1,8 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const CANONICAL_DOMAIN = 'www.geoforesight.org';
+
 export function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
+    const hostname = request.headers.get('host') || '';
+    const { pathname, search } = request.nextUrl;
+
+    // 301 redirect Vercel subdomain to canonical custom domain
+    if (hostname.includes('vercel.app')) {
+        return NextResponse.redirect(
+            `https://${CANONICAL_DOMAIN}${pathname}${search}`,
+            { status: 301 }
+        );
+    }
 
     // ✅ Skip sitemap and robots
     if (
