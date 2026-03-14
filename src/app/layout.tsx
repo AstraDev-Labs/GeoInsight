@@ -167,6 +167,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Preconnect to R2 CDN for faster image loading */}
+        <link rel="dns-prefetch" href="https://pub-0cba2aa942e04470b879546bcb1f18cf.r2.dev" />
+        <link rel="preconnect" href="https://pub-0cba2aa942e04470b879546bcb1f18cf.r2.dev" crossOrigin="anonymous" />
         {/* Structured Data - Organization */}
         <script
           type="application/ld+json"

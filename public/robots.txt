@@ -1,13 +1,16 @@
 User-Agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin/
 
 User-Agent: Googlebot
 Allow: /
 Disallow: /api/
+Disallow: /admin/
 
 User-Agent: Bingbot
 Allow: /
 Disallow: /api/
+Disallow: /admin/
 
-Sitemap: https://geo-insight-seven.vercel.app/sitemap.xml
+Sitemap: https://www.geoforesight.org/sitemap.xml
