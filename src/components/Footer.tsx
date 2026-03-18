@@ -56,7 +56,7 @@ export default function Footer() {
                 <div className="flex flex-wrap items-center gap-x-12 gap-y-3 text-[13px] text-white/60">
                     <div className="flex gap-2">
                         <span className="text-white/30 font-medium">Page Last Updated:</span>
-                        <span className="text-white/80 font-bold">Feb 23, 2026</span>
+                        <span className="text-white/80 font-bold">Mar 18, 2026</span>
                     </div>
                     <div className="flex gap-2">
                         <span className="text-white/30 font-medium">Page Editor:</span>
