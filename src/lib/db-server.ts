@@ -37,9 +37,10 @@ export const writeDb = (data: DbSchema) => {
         fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
     } catch (error: unknown) {
         if ((error as { code?: string }).code === 'EROFS') {
-            throw new Error("Local DB write failed: Read-only filesystem.");
+            console.warn("Local DB write skipped: Read-only filesystem.");
+            return;
         }
         const message = error instanceof Error ? error.message : 'Unknown error';
-        throw new Error(`Failed to write to local DB: ${message}`);
+        console.error(`Failed to write to local DB: ${message}`);
     }
 };
