@@ -70,7 +70,8 @@ export async function POST(request: Request) {
         return NextResponse.json({ urls: uploadedUrls });
     } catch (error) {
         console.error('Upload error:', error);
-        return NextResponse.json({ error: `Upload failed: ${error.message}` }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        return NextResponse.json({ error: `Upload failed: ${errorMessage}` }, { status: 500 });
     }
 }
 
