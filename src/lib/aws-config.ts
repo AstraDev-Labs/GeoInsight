@@ -1,54 +1,30 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { S3Client } from "@aws-sdk/client-s3";
 
-// Set USE_AWS=true in .env.local to enable DynamoDB + S3
-// Without NEXT_PUBLIC_ prefix, these stay server-side only (more secure)
-const useAWSFlag = process.env.USE_AWS === "true";
-const region = process.env.AWS_REGION || "us-east-1";
-const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+// Cloudflare R2 Storage (S3-compatible API)
+const useR2 = process.env.USE_AWS === "true";
+const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID;
+const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+const r2Endpoint = process.env.R2_ENDPOINT;
 
-// R2 specific credentials (falls back to AWS if not provided)
-const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID || accessKeyId;
-const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY || secretAccessKey;
-
-let dynamoClient: DynamoDBClient | null = null;
 let s3Client: S3Client | null = null;
 
-if (useAWSFlag && accessKeyId && secretAccessKey) {
-    const credentials = { accessKeyId, secretAccessKey };
-
-    // DynamoDB requires a specific AWS region (R2 'auto' won't work)
-    const ddbRegion = (region === "auto") ? "eu-north-1" : region;
-
-
+if (useR2 && r2AccessKeyId && r2SecretAccessKey) {
     try {
-        dynamoClient = new DynamoDBClient({ region: ddbRegion, credentials });
-        
-        const s3Credentials = (r2AccessKeyId && r2SecretAccessKey) 
-            ? { accessKeyId: r2AccessKeyId, secretAccessKey: r2SecretAccessKey }
-            : credentials;
-
-        s3Client = new S3Client({ 
-            region: process.env.R2_ENDPOINT ? 'auto' : region, 
-            credentials: s3Credentials,
-            endpoint: process.env.R2_ENDPOINT,
+        s3Client = new S3Client({
+            region: 'auto',
+            credentials: { accessKeyId: r2AccessKeyId, secretAccessKey: r2SecretAccessKey },
+            endpoint: r2Endpoint,
             forcePathStyle: true
         });
-            console.log("✅ AWS DynamoDB + S3 clients initialized.");
-        } catch (initErr) {
-            console.error("🚨 CRITICAL: Failed to initialize AWS clients:", initErr);
-            // Fallback to null to gracefully handle errors instead of crashing the whole API
-            dynamoClient = null;
-            s3Client = null;
-        }
+        console.log("✅ Cloudflare R2 client initialized.");
+    } catch (err) {
+        console.error("🚨 Failed to initialize R2 client:", err);
+        s3Client = null;
+    }
 } else {
-    console.log("📁 Using local storage. Set USE_AWS=true in .env.local to enable AWS.");
+    console.log("📁 R2 not configured. Set USE_AWS=true + R2 credentials in .env.local.");
 }
 
-export const ddbDocClient = dynamoClient ? DynamoDBDocumentClient.from(dynamoClient) : null;
 export const s3 = s3Client;
-export const TABLE_NAME = process.env.DYNAMODB_TABLE || "RSBlogTable";
-export const S3_BUCKET = process.env.S3_BUCKET || "rs-blog-uploads";
-export const useAWS = useAWSFlag;
+export const S3_BUCKET = process.env.S3_BUCKET || "geoforesight-assets";
+export const useAWS = useR2;

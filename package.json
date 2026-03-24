@@ -14,10 +14,8 @@
     "mcp:start": "tsx src/lib/mcp.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.995.0",
     "@aws-sdk/client-s3": "^3.995.0",
-    "@aws-sdk/client-ses": "^3.995.0",
-    "@aws-sdk/lib-dynamodb": "^3.995.0",
+    "@cloudflare/next-on-pages": "^1.13.0",
     "@fontsource/inter": "^5.2.8",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@sentry/nextjs": "^10.40.0",

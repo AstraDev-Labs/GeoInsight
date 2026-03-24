@@ -13,6 +13,7 @@ import { invalidatePostsCache } from '@/lib/api-cache';
 import { s3, S3_BUCKET } from '@/lib/aws-config';
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { deleteBucketFiles } from '@/lib/r2-utils';
+import { slugify } from '@/lib/utils';
 
 export async function PATCH(
     request: Request,
@@ -146,7 +147,7 @@ export async function PATCH(
             }
         }
 
-        const postUrl = `${SITE_URL}/blog/${mergedPost.id}`;
+        const postUrl = `${SITE_URL}/blog/${slugify(mergedPost.title)}`;
         submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on update:', err));
 
         return NextResponse.json(mergedPost);
@@ -208,7 +209,7 @@ export async function PATCH(
 
     // Notify IndexNow if published
     if (updatedPost.status === 'published') {
-        const postUrl = `${SITE_URL}/blog/${id}`;
+        const postUrl = `${SITE_URL}/blog/${slugify(updatedPost.title)}`;
         submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on update:', err));
     }
 
@@ -317,7 +318,7 @@ export async function DELETE(
             invalidatePostsCache();
 
             // Notify IndexNow about deletion
-            const postUrl = `${SITE_URL}/blog/${id}`;
+            const postUrl = `${SITE_URL}/blog/${slugify(post.title)}`;
             submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on delete:', err));
 
             return NextResponse.json({ success: true, message: 'Post deleted by admin' });
@@ -386,7 +387,7 @@ export async function DELETE(
     invalidatePostsCache();
 
     // Notify IndexNow about deletion
-    const postUrl = `${SITE_URL}/blog/${id}`;
+    const postUrl = `${SITE_URL}/blog/${slugify(post.title)}`;
     submitToIndexNow(postUrl).catch(err => console.error('Failed to notify IndexNow on author delete:', err));
 
     return NextResponse.json({ success: true, message: 'Post deleted by author' });

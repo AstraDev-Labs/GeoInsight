@@ -12,6 +12,7 @@ import { useSearchParams } from 'next/navigation';
 import type { BlogPost } from '@/lib/types';
 import { RESEARCH_VECTOR_GROUPS } from '@/lib/categories';
 import { metrics } from '@/lib/sentry-utils';
+import { slugify } from '@/lib/utils';
 
 export default function HomeClient() {
     const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -164,7 +165,7 @@ export default function HomeClient() {
                                 const hero = (post as BlogPost & { imageUrl?: string }).images?.[0] || (post as BlogPost & { imageUrl?: string }).imageUrl;
                                 return (
                                     <div key={post.id} className="group w-full flex flex-col h-full bg-card border rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] relative">
-                                        <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
+                                        <Link href={`/blog/${slugify(post.title)}`} className="flex-1 flex flex-col">
                                             {/* Image Container */}
                                             {hero ? (
                                                 <div className="relative h-64 w-full overflow-hidden border-b">

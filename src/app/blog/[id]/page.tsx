@@ -13,11 +13,14 @@ import type { Metadata } from 'next';
 import { cache } from 'react';
 
 import { SITE_URL } from "@/lib/constants";
+import { slugify } from '@/lib/utils';
 type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
 
-const getPublishedPostById = cache(async (id: string): Promise<BlogPostWithLegacyImage | null> => {
+const getPublishedPostById = cache(async (idOrSlug: string): Promise<BlogPostWithLegacyImage | null> => {
     const posts = await dataService.getPosts();
-    const post = posts.find((entry) => entry.id === id);
+    const post = posts.find((entry) => 
+        entry.id === idOrSlug || slugify(entry.title) === idOrSlug
+    );
     if (!post || post.status !== 'published') {
         return null;
     }
@@ -42,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         };
     }
 
-    const canonicalPath = `/blog/${post.id}`;
+    const canonicalPath = `/blog/${slugify(post.title)}`;
     const fullCanonicalUrl = `${SITE_URL}${canonicalPath}`;
     const publishedTime = post.postedAt || post.date;
     const image = getPrimaryImage(post);
@@ -92,7 +95,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
         dateModified: post.postedAt || post.date,
         articleSection: post.category,
         image: primaryImage ? [primaryImage] : undefined,
-        mainEntityOfPage: `${SITE_URL}/blog/${post.id}`,
+        mainEntityOfPage: `${SITE_URL}/blog/${slugify(post.title)}`,
     };
 
     return (

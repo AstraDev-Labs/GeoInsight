@@ -2,6 +2,7 @@ import { dataService } from '@/lib/data-service';
 import { SITE_URL } from '@/lib/constants';
 import type { MetadataRoute } from 'next';
 import type { BlogPost } from '@/lib/types';
+import { slugify } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Revalidate every hour
@@ -49,7 +50,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
 
     const postPages: MetadataRoute.Sitemap = posts.map((post: BlogPost) => ({
-        url: `${SITE_URL}/blog/${post.id}`,
+        url: `${SITE_URL}/blog/${slugify(post.title)}`,
         lastModified: new Date(post.date),
         changeFrequency: 'monthly' as const,
         priority: 0.7,
