@@ -5,20 +5,47 @@ import Footer from '@/components/Footer';
 import { LifeBuoy, Mail, MessageSquare, FileText, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import TurnstileWidget from "@/components/TurnstileWidget";
 import Link from 'next/link';
 
 export default function SupportPage() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
     const [sent, setSent] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // In production, wire this to an API endpoint or mailto
-        const mailtoLink = `mailto:contact@geoforesight.org?subject=Support Request from ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}%0A%0AFrom: ${encodeURIComponent(email)}`;
-        window.open(mailtoLink);
-        setSent(true);
+        setError('');
+
+        if (!turnstileToken) {
+            setError('Please complete the security check.');
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, message, turnstileToken }),
+            });
+
+            if (response.ok) {
+                setSent(true);
+            } else {
+                const data = await response.json();
+                setError(data.message || 'Something went wrong. Please try again.');
+            }
+        } catch (err) {
+            setError('Network error. Please try again later.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -104,8 +131,8 @@ export default function SupportPage() {
                             <div className="w-16 h-16 bg-[#f0f0f0] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#e5e5e5]">
                                 <span className="text-2xl font-bold text-[#222]">✓</span>
                             </div>
-                            <h3 className="text-xl font-bold mb-2">Message Prepared!</h3>
-                            <p className="text-[#555] text-sm">Your email client should have opened. If not, email us directly at contact@geoforesight.org</p>
+                            <h3 className="text-xl font-bold mb-2">Message Sent!</h3>
+                            <p className="text-[#555] text-sm">We have received your message and will get back to you shortly.</p>
                             <button onClick={() => setSent(false)} className="mt-6 px-6 py-2 bg-[#f9f9f9] border border-[#e5e5e5] rounded-xl text-sm hover:bg-[#f0f0f0] transition-colors">
                                 Send Another Message
                             </button>
@@ -146,11 +173,16 @@ export default function SupportPage() {
                                     placeholder="Describe your issue or question..."
                                 />
                             </div>
+                            {error && <p className="text-red-500 text-sm font-semibold text-center mt-4">{error}</p>}
+
+                            <TurnstileWidget onVerify={setTurnstileToken} action="contact_support" />
+
                             <button
                                 type="submit"
-                                className="w-full py-4 rounded-xl bg-[#006699] hover:bg-[#006699]/90 text-[#222] font-bold text-lg shadow-sm hover:shadow-sm flex items-center justify-center gap-3 transition-all"
+                                disabled={isSubmitting || !turnstileToken}
+                                className="w-full py-4 rounded-xl bg-[#006699] hover:bg-[#006699]/90 text-white font-bold text-lg shadow-sm hover:shadow-sm flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Send size={20} /> Send Message
+                                <Send size={20} /> {isSubmitting ? 'Sending...' : 'Send Message'}
                             </button>
                         </form>
                     )}

@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 import { generateAdminToken } from "@/lib/auth-util";
+import { verifyTurnstileToken } from "@/lib/turnstile-util";
 
 export async function POST(request: Request) {
     try {
-        const { password } = await request.json();
+        const { password, turnstileToken } = await request.json();
+
+        // Verify Turnstile Token first to prevent brute-force
+        const isHuman = await verifyTurnstileToken(turnstileToken);
+        if (!isHuman) {
+            return NextResponse.json(
+                { success: false, message: "Security check failed. Please try again." },
+                { status: 403 }
+            );
+        }
 
         // Admin password stored as env var
         const adminPassword = (process.env.ADMIN_PASSWORD || "").trim();

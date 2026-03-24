@@ -4,17 +4,6 @@ import {
     CallToolRequestSchema,
     ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import * as Sentry from "@sentry/nextjs";
-
-// Handle potential ESM/CJS interop issues for the wrapper function
-const wrapMcpWithSentry = (Sentry as any).wrapMcpServerWithSentry ||
-    (Sentry as any).default?.wrapMcpServerWithSentry;
-
-// Initialize Sentry for the standalone process
-Sentry.init({
-    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-    tracesSampleRate: 1.0,
-});
 
 /**
  * This is a standalone MCP server that allows AI agents (like Claude Desktop)
@@ -63,13 +52,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     throw new Error("Tool not found");
 });
 
-// WRAP the server with Sentry for monitoring!
-if (typeof wrapMcpWithSentry === "function") {
-    wrapMcpWithSentry(server);
-} else {
-    console.error("Warning: Sentry.wrapMcpServerWithSentry not found in current environment");
-}
-
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
@@ -77,8 +59,6 @@ async function main() {
 }
 
 main().catch((error) => {
-    Sentry.captureException(error);
     console.error("Fatal error in MCP server:", error);
     process.exit(1);
 });
-

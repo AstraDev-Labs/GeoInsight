@@ -29,8 +29,15 @@ export async function GET(request: Request) {
     return response;
 }
 
+import { verifyTurnstileToken } from "@/lib/turnstile-util";
+
 export async function POST(request: Request) {
     const data = await request.json();
+
+    const isHuman = await verifyTurnstileToken(data.turnstileToken);
+    if (!isHuman) {
+        return NextResponse.json({ error: "Security check failed. Please try again." }, { status: 403 });
+    }
 
     let hashedPassword = undefined;
     if (data.authorPassword) {

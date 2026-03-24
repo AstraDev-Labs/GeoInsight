@@ -1,3 +1,5 @@
+import TurnstileWidget from "@/components/TurnstileWidget";
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -16,6 +18,8 @@ export default function RequestPost() {
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [password, setPassword] = useState('');
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    const [errorMsg, setErrorMsg] = useState('');
     const [richContent, setRichContent] = useState('');
     const [selectedCategories, setSelectedCategories] = useState<string[]>(['Land Cover Change']);
 
@@ -457,8 +461,13 @@ export default function RequestPost() {
                                 </button>
                             </div>
 
+                            {errorMsg && <p className="text-destructive font-semibold text-center mt-4">{errorMsg}</p>}
+
+                            <TurnstileWidget onVerify={setTurnstileToken} action="request_post" />
+
                             <button
                                 type="submit"
+                                disabled={isSubmitting || !turnstileToken}
                                 disabled={loading}
                                 className="w-full mt-12 py-5 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all disabled:opacity-50 shadow-xl hover:shadow-primary/40 rounded-2xl relative overflow-hidden text-xs"
                             >
