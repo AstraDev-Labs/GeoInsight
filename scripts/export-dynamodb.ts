@@ -1,23 +1,21 @@
-// @ts-nocheck
-
 /**
  * DynamoDB → Cloudflare D1 Data Export Script
- *
+ * 
  * This script connects to your AWS DynamoDB table, reads all items,
  * and generates SQL INSERT statements compatible with the Cloudflare D1 schema.
- *
+ * 
  * Usage:
  *   Set your REAL AWS credentials (not R2) before running:
- *
+ * 
  *   $env:AWS_REGION="eu-north-1"
  *   $env:AWS_ACCESS_KEY_ID="YOUR_REAL_AWS_KEY"
  *   $env:AWS_SECRET_ACCESS_KEY="YOUR_REAL_AWS_SECRET"
  *   $env:DYNAMODB_TABLE="RSBlogTable"
  *   npx tsx scripts/export-dynamodb.ts
- *
+ * 
  *   Or pass them inline:
  *   AWS_REGION=eu-north-1 AWS_ACCESS_KEY_ID=xxx AWS_SECRET_ACCESS_KEY=xxx npx tsx scripts/export-dynamodb.ts
- *
+ * 
  * Output: scripts/d1-seed.sql (ready to run with wrangler d1 execute)
  */
 
@@ -80,7 +78,7 @@ async function scanAll(): Promise<any[]> {
 
 function classifyItem(item: any): { type: string; data: any } {
     const id = item.id as string;
-
+    
     if (id.startsWith("comment-user-")) {
         return { type: "comment_user", data: item };
     }
@@ -117,7 +115,7 @@ function toPostSQL(item: any): string {
     // Remove the DynamoDB partition key
     const { id: rawId, ...rest } = item;
     const id = rawId.startsWith("post-") ? rawId : rawId;
-
+    
     return `INSERT OR IGNORE INTO posts (id, requestId, editOfId, title, excerpt, content, author, category, date, postedAt, images, status, reviewerNotes, attachments, authorPassword, authorEmail, satellite, areaOfInterest)
 VALUES (${escapeSQL(id)}, ${escapeSQL(rest.requestId)}, ${escapeSQL(rest.editOfId)}, ${escapeSQL(rest.title)}, ${escapeSQL(rest.excerpt)}, ${escapeSQL(rest.content)}, ${escapeSQL(rest.author)}, ${escapeSQL(rest.category)}, ${escapeSQL(rest.date)}, ${escapeSQL(rest.postedAt)}, ${escapeJSON(rest.images)}, ${escapeSQL(rest.status)}, ${escapeSQL(rest.reviewerNotes)}, ${escapeJSON(rest.attachments)}, ${escapeSQL(rest.authorPassword)}, ${escapeSQL(rest.authorEmail)}, ${escapeSQL(rest.satellite)}, ${escapeSQL(rest.areaOfInterest)});`;
 }
@@ -153,7 +151,7 @@ function toSettingsSQL(key: string, item: any): string {
 
 async function main() {
     console.log(`📊 Scanning DynamoDB table: ${tableName} (region: ${region})`);
-
+    
     const items = await scanAll();
     console.log(`✅ Found ${items.length} items in DynamoDB`);
 

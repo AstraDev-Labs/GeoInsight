@@ -1,0 +1,91 @@
+
+> rs-blog-gis@0.1.0 build
+> next build
+
+[@sentry/nextjs] DEPRECATION WARNING: disableLogger is deprecated and will be removed in a future version. Use webpack.treeshake.removeDebugLogging instead. (Not supported with Turbopack.)
+[@sentry/nextjs] DEPRECATION WARNING: reactComponentAnnotation is deprecated and will be removed in a future version. Use webpack.reactComponentAnnotation instead. (Not supported with Turbopack.)
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  ┬╖ clientTraceMetadata
+  ┬╖ optimizePackageImports
+  ┬╖ serverActions
+
+ΓÜá The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+[@sentry/nextjs] DEPRECATION WARNING: disableLogger is deprecated and will be removed in a future version. Use webpack.treeshake.removeDebugLogging instead. (Not supported with Turbopack.)
+[@sentry/nextjs] DEPRECATION WARNING: reactComponentAnnotation is deprecated and will be removed in a future version. Use webpack.reactComponentAnnotation instead. (Not supported with Turbopack.)
+Turbopack build encountered 1 warnings:
+./src/app/api/upload/route.ts:8:14
+Next.js can't recognize the exported `config` field in route. Page config in `config` is deprecated and ignored, use individual exports instead.
+   6 |
+   7 | // Disable standard Next.js body parsing size limits so large PDFs and datasets don't crash Vercel at the gateway
+>  8 | export const config = {
+     |              ^^^^^^
+   9 |     api: {
+  10 |         bodyParser: false,
+  11 |     },
+
+The exported configuration object in a source file needs to have a very specific format from which some properties can be statically parsed at compiled-time.
+
+https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+
+
+Γ£ô Compiled successfully in 12.2s
+  Running next.config.js provided runAfterProductionCompile ...
+Γ£ô Completed runAfterProductionCompile in 9657ms
+  Running TypeScript ...
+  Collecting page data using 15 workers ...
+Γ£à Cloudflare R2 client initialized.
+Γ£à Cloudflare R2 client initialized.
+Γ£à Cloudflare R2 client initialized.
+  Generating static pages using 15 workers (0/25) ...
+  Generating static pages using 15 workers (6/25) 
+  Generating static pages using 15 workers (12/25) 
+Γ£à Cloudflare R2 client initialized.
+  Generating static pages using 15 workers (18/25) 
+Γ£ô Generating static pages using 15 workers (25/25) in 2.2s
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ Γùï /admin
+Γö£ ╞Æ /api/admin/bot-settings
+Γö£ ╞Æ /api/admin/clear-history
+Γö£ ╞Æ /api/admin/login
+Γö£ ╞Æ /api/admin/logout
+Γö£ ╞Æ /api/admin/notify
+Γö£ ╞Æ /api/admin/settings
+Γö£ ╞Æ /api/admin/verify
+Γö£ ╞Æ /api/comments/auth/login
+Γö£ ╞Æ /api/comments/auth/logout
+Γö£ ╞Æ /api/comments/auth/session
+Γö£ ╞Æ /api/comments/auth/signup
+Γö£ ╞Æ /api/comments/auth/verify-email
+Γö£ ╞Æ /api/indexnow/key
+Γö£ ╞Æ /api/posts
+Γö£ ╞Æ /api/posts/[id]
+Γö£ ╞Æ /api/posts/[id]/comments
+Γö£ ╞Æ /api/requests
+Γö£ ╞Æ /api/requests/[id]
+Γö£ ╞Æ /api/sentry-test
+Γö£ ╞Æ /api/site-status
+Γö£ ╞Æ /api/upload
+Γö£ ╞Æ /author/[name]
+Γö£ ╞Æ /blog/[id]
+Γö£ Γùï /categories
+Γö£ Γùï /icon.svg
+Γö£ Γùï /privacy
+Γö£ Γùï /request-post
+Γö£ Γùï /robots.txt
+Γö£ ╞Æ /sitemap.xml
+Γö£ Γùï /support
+Γöö Γùï /terms
+
+
+╞Æ Proxy (Middleware)
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+

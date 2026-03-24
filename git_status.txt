@@ -1,0 +1,96 @@
+On branch fix-cloudflare-security-insights-10856937864748390464
+Your branch is up to date with 'github/fix-cloudflare-security-insights-10856937864748390464'.
+
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Changes to be committed:
+	new file:   build_output.log
+	new file:   data/schema.sql
+	modified:   package-lock.json
+	modified:   package.json
+	new file:   scripts/d1-seed.sql
+	new file:   scripts/export-dynamodb.ts
+	new file:   scripts/fix-quotes.js
+	new file:   scripts/migration.sql
+	modified:   src/app/api/posts/[id]/route.ts
+	modified:   src/app/api/upload/route.ts
+	modified:   src/app/author/[name]/page.tsx
+	modified:   src/app/blog/[id]/page.tsx
+	modified:   src/app/privacy/page.tsx
+	modified:   src/app/request-post/page.tsx
+	modified:   src/app/sitemap.ts
+	modified:   src/components/LockdownCheck.tsx
+	modified:   src/lib/aws-config.ts
+	new file:   src/lib/d1-client.ts
+	modified:   src/lib/data-service.ts
+	modified:   src/lib/utils.ts
+	new file:   wrangler.toml
+
+Unmerged paths:
+  (use "git add/rm <file>..." as appropriate to mark resolution)
+	deleted by us:   src/app/api/sentry-test/route.ts
+	both modified:   src/components/HomeClient.tsx
+	deleted by us:   src/instrumentation.ts
+	both modified:   src/lib/mcp.ts
+	deleted by us:   src/lib/sentry-utils.ts
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .gitignore
+	modified:   .vscode/settings.json
+	modified:   CLOUDFLARE_SECURITY_SETUP.md
+	modified:   LICENSE
+	modified:   README.md
+	modified:   data/schema.sql
+	modified:   fix_admin_theme.mjs
+	modified:   fix_pages_theme.mjs
+	modified:   next.config.ts
+	modified:   package-lock.json
+	modified:   package.json
+	modified:   public/.well-known/security.txt
+	modified:   public/logo.svg
+	modified:   public/sitemap.xml
+	modified:   scripts/d1-seed.sql
+	modified:   scripts/export-dynamodb.ts
+	modified:   scripts/fix-quotes.js
+	modified:   scripts/migration.sql
+	modified:   src/app/admin/layout.tsx
+	modified:   src/app/admin/page.tsx
+	modified:   src/app/api/admin/login/route.ts
+	modified:   src/app/api/contact/route.ts
+	modified:   src/app/api/posts/[id]/route.ts
+	modified:   src/app/api/requests/route.ts
+	modified:   src/app/api/upload/route.ts
+	modified:   src/app/author/[name]/page.tsx
+	modified:   src/app/blog/[id]/page.tsx
+	modified:   src/app/categories/layout.tsx
+	modified:   src/app/icon.svg
+	modified:   src/app/layout.tsx
+	modified:   src/app/privacy/page.tsx
+	modified:   src/app/request-post/layout.tsx
+	modified:   src/app/request-post/page.tsx
+	modified:   src/app/sitemap.ts
+	modified:   src/app/support/layout.tsx
+	modified:   src/app/support/page.tsx
+	modified:   src/app/terms/page.tsx
+	modified:   src/components/Footer.tsx
+	modified:   src/components/LockdownCheck.tsx
+	modified:   src/components/Navbar.tsx
+	modified:   src/components/TurnstileWidget.tsx
+	modified:   src/lib/auth-util.ts
+	modified:   src/lib/aws-config.ts
+	modified:   src/lib/d1-client.ts
+	modified:   src/lib/data-service.ts
+	modified:   src/lib/email-service.ts
+	modified:   src/lib/index-now.ts
+	modified:   src/lib/turnstile-util.ts
+	modified:   src/lib/utils.ts
+	modified:   wrangler.toml
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	git_status.txt
+
