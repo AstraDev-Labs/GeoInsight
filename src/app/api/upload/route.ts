@@ -48,7 +48,7 @@ export async function POST(request: Request) {
                     // Fallback to raw endpoint (Note: this often fails in <img> tags due to lack of auth Signature V4)
                     url = `${process.env.R2_ENDPOINT}/${S3_BUCKET}/${key}`;
                 } else {
-                    const region = process.env.AWS_REGION || 'eu-north-1';
+                    const region = process.env.R2_REGION || 'auto';
                     url = `https://${S3_BUCKET}.s3.${region}.amazonaws.com/${key}`;
                 }
                 uploadedUrls.push(url);

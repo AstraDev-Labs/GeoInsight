@@ -57,18 +57,18 @@ export default function PrivacyPolicy() {
                     </p>
                     <ul>
                         <li>Passwords are hashed using <strong>bcrypt</strong> and never stored in plain text.</li>
-                        <li>Files and images are stored on <strong>Amazon Web Services (AWS) S3</strong> with encryption at rest.</li>
-                        <li>Database records are stored on <strong>AWS DynamoDB</strong> with access controls.</li>
+                        <li>Files and images are stored on <strong>Cloudflare R2</strong> with encryption at rest.</li>
+                        <li>Database records are stored on <strong>Cloudflare D1</strong> with access controls.</li>
                         <li>All connections to the platform are encrypted via <strong>HTTPS/TLS</strong>.</li>
                     </ul>
 
                     <h2>4. Third-Party Services</h2>
                     <p>We use the following third-party services:</p>
                     <ul>
-                        <li><strong>Amazon Web Services (AWS):</strong> Cloud hosting, storage (S3), and database (DynamoDB).</li>
+                        <li><strong>Cloudflare:</strong> Performance optimization, storage (R2), and relational database (D1).</li>
                         <li><strong>Vercel:</strong> Application hosting and deployment.</li>
                         <li><strong>Google/Bing:</strong> Search engine indexing for discoverability.</li>
-                        <li><strong>SMTP (Gmail/SES):</strong> Email notification delivery.</li>
+                        <li><strong>Email Services:</strong> Secure notification delivery.</li>
                     </ul>
 
                     <h2>5. Your Rights</h2>

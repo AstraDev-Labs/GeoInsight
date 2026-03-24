@@ -14,10 +14,8 @@
     "mcp:start": "tsx src/lib/mcp.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.995.0",
     "@aws-sdk/client-s3": "^3.995.0",
-    "@aws-sdk/client-ses": "^3.995.0",
-    "@aws-sdk/lib-dynamodb": "^3.995.0",
+    "@cloudflare/next-on-pages": "^1.13.0",
     "@fontsource/inter": "^5.2.8",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@sentry/profiling-node": "^10.40.0",
@@ -31,7 +29,7 @@
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
-    "next": "^16.1.6",
+    "next": "^15.0.0",
     "next-axiom": "^1.10.0",
     "nodemailer": "^8.0.1",
     "react": "^19.2.4",

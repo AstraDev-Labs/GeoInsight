@@ -5,6 +5,7 @@ import type { BlogPost } from '@/lib/types';
 import { Calendar, User, Map } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { slugify } from '@/lib/utils';
 
 import { SITE_URL } from "@/lib/constants";
 type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
@@ -71,7 +72,7 @@ export default async function AuthorProfile({ params }: { params: Promise<{ name
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {authorPosts.map(post => (
                                 <div key={post.id} className="group border border-[#e5e5e5] bg-white transition-all flex flex-col h-full hover:shadow-md">
-                                    <Link href={`/blog/${post.id}`} className="flex-1 flex flex-col">
+                                    <Link href={`/blog/${slugify(post.title)}`} className="flex-1 flex flex-col">
                                         {(post.images && post.images.length > 0) || post.imageUrl ? (
                                             <div className="relative h-48 overflow-hidden bg-[#f0f0f0]">
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
