@@ -104,6 +104,7 @@ class HttpD1Database implements D1Database {
       body: JSON.stringify(payload),
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data = await response.json() as any;
     if (!response.ok || !data.success) {
       const error = data.errors?.[0]?.message || 'Unknown D1 API Error';
