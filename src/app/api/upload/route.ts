@@ -4,12 +4,7 @@ import { PutObjectCommand } from '@aws-sdk/client-s3';
 import fs from 'fs';
 import path from 'path';
 
-// Disable standard Next.js body parsing size limits so large PDFs and datasets don't crash Vercel at the gateway
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
+
 
 export const runtime = 'nodejs';
 

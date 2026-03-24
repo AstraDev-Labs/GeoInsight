@@ -1,6 +1,5 @@
-import TurnstileWidget from "@/components/TurnstileWidget";
-
 'use client';
+import TurnstileWidget from "@/components/TurnstileWidget";
 
 import { useState, useRef } from 'react';
 import Navbar from '@/components/Navbar';

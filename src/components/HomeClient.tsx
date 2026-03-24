@@ -11,7 +11,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { BlogPost } from '@/lib/types';
 import { RESEARCH_VECTOR_GROUPS } from '@/lib/categories';
-import { metrics } from '@/lib/sentry-utils';
 
 export default function HomeClient() {
     const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -22,8 +21,7 @@ export default function HomeClient() {
 
     // TRIGGER SENTRY METRIC FOR VERIFICATION
     useEffect(() => {
-        metrics.count('app_visit', 1, { page: 'home' });
-    }, []);
+            }, []);
     const searchParamKey = searchParams.toString();
     const queryCategory = searchParams.get('category') || 'All';
     const activeCategory = manualCategory ?? queryCategory;
