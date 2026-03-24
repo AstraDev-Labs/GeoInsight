@@ -41,8 +41,9 @@ class HttpD1PreparedStatement implements D1PreparedStatement {
     const res = await this.db.execute([{ sql: this.query, params: this.params }]);
     const results = res[0].results;
     if (!results || results.length === 0) return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const row = results[0] as any;
-    if (column && row.hasOwnProperty(column)) {
+    if (column && Object.prototype.hasOwnProperty.call(row, column)) {
       return row[column] as T;
     }
     return row as T;
