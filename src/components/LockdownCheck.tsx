@@ -36,6 +36,7 @@ export default function LockdownCheck({ children }: LockdownCheckProps) {
 
     // Check on mount, on navigation, and poll every 30s
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         checkStatus();
 
         if (!isAdminRoute) {

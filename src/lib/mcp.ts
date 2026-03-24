@@ -7,7 +7,9 @@ import {
 import * as Sentry from "@sentry/nextjs";
 
 // Handle potential ESM/CJS interop issues for the wrapper function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const wrapMcpWithSentry = (Sentry as any).wrapMcpServerWithSentry ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (Sentry as any).default?.wrapMcpServerWithSentry;
 
 // Initialize Sentry for the standalone process

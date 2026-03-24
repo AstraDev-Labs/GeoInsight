@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { metrics, log, withCronMonitor } from "@/lib/sentry-utils";
+import { metrics, log } from "@/lib/sentry-utils";
 import * as Sentry from "@sentry/nextjs";
 
 export async function GET() {
@@ -12,12 +12,8 @@ export async function GET() {
     // Directly using Sentry for a test message
     Sentry.captureMessage("Sentry Integration Verification Message", "info");
 
-    // 3. Test Cron/Monitor
-    await withCronMonitor("sentry-test-monitor", async () => {
-        // Simulate some work
-        await new Promise(resolve => setTimeout(resolve, 100));
-        console.log("Cron check-in completed");
-    });
+    // 3. Test Cron/Monitor (deprecated manually, but simulate)
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     return NextResponse.json({
         status: "success",

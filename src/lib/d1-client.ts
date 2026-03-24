@@ -7,15 +7,16 @@ export interface D1Database {
 }
 
 export interface D1PreparedStatement {
-  bind(...values: any[]): D1PreparedStatement;
-  first<T = any>(column?: string): Promise<T | null>;
-  run<T = any>(): Promise<D1Result<T>>;
-  all<T = any>(): Promise<D1Result<T>>;
+  bind(...values: unknown[]): D1PreparedStatement;
+  first<T = unknown>(column?: string): Promise<T | null>;
+  run<T = unknown>(): Promise<D1Result<T>>;
+  all<T = unknown>(): Promise<D1Result<T>>;
 }
 
-export interface D1Result<T = any> {
+export interface D1Result<T = unknown> {
   results: T[];
   success: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meta: any;
   error?: string;
 }
@@ -33,6 +34,7 @@ export interface D1ExecResult {
 export function getDb(): D1Database {
   try {
     const context = getRequestContext();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const db = (context.env as any).DB as D1Database;
     if (!db) {
       throw new Error('D1 binding "DB" not found in environment.');

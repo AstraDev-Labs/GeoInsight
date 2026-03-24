@@ -156,9 +156,9 @@ export default function RequestPost() {
 
             await api.submitRequest(data);
             setSubmitted(true);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Submission error:', err);
-            alert(`There was an error submitting your request:\n\n${err.message}`);
+            alert(`There was an error submitting your request:\n\n${(err as Error).message || 'Unknown error'}`);
         } finally {
             setLoading(false);
             setUploading(false);

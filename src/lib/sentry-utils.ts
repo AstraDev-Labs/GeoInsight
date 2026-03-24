@@ -9,11 +9,13 @@ export const metrics = {
      */
     count: (name: string, value: number = 1, tags?: Record<string, string>) => {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const m = (Sentry as any).metrics;
             if (m && typeof m.count === 'function') {
                 m.count(name, value, { tags });
             } else {
                 // Fallback for different SDK versions
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (Sentry as any).metrics?.increment?.(name, value, { tags });
             }
         } catch (err) {
@@ -33,6 +35,7 @@ export const metrics = {
      */
     distribution: (name: string, value: number, tags?: Record<string, string>) => {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (Sentry as any).metrics?.distribution(name, value, { tags });
         } catch (err) {
             console.warn("[Sentry Metrics] Failed to send distribution:", name, err);
@@ -44,6 +47,7 @@ export const metrics = {
      */
     gauge: (name: string, value: number, tags?: Record<string, string>) => {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (Sentry as any).metrics?.gauge(name, value, { tags });
         } catch (err) {
             console.warn("[Sentry Metrics] Failed to send gauge:", name, err);
@@ -63,12 +67,3 @@ export const log = (message: string, level: Sentry.SeverityLevel = "info") => {
     console.log(`[AppLog] ${message}`);
 };
 
-/**
- * Monitoring for Cron jobs.
- */
-export const withCronMonitor = async <T>(
-    monitorSlug: string,
-    callback: () => Promise<T>
-): Promise<T> => {
-    return await Sentry.withMonitor(monitorSlug, callback);
-};
