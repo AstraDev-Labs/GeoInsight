@@ -24,7 +24,6 @@ export default function TurnstileWidget({ onVerify, action = 'login' }: Turnstil
     } else {
       // If script is already there, check if turnstile object is available
       if (window.turnstile) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         setTimeout(() => setIsLoaded(true), 0);
       } else {
         // Fallback: poll for it

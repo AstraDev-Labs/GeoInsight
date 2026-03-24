@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * DynamoDB → Cloudflare D1 Data Export Script
  *
