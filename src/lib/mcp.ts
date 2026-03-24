@@ -4,22 +4,7 @@ import {
     CallToolRequestSchema,
     ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-<<<<<<< HEAD
-=======
-import * as Sentry from "@sentry/nextjs";
 
-// Handle potential ESM/CJS interop issues for the wrapper function
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const wrapMcpWithSentry = (Sentry as any).wrapMcpServerWithSentry ||
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (Sentry as any).default?.wrapMcpServerWithSentry;
-
-// Initialize Sentry for the standalone process
-Sentry.init({
-    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-    tracesSampleRate: 1.0,
-});
->>>>>>> origin/main
 
 /**
  * This is a standalone MCP server that allows AI agents (like Claude Desktop)
