@@ -5,7 +5,6 @@ import {
     ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
-
 /**
  * This is a standalone MCP server that allows AI agents (like Claude Desktop)
  * to interact with your GeoForesight project.

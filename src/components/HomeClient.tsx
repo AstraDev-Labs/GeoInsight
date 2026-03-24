@@ -11,7 +11,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { BlogPost } from '@/lib/types';
 import { RESEARCH_VECTOR_GROUPS } from '@/lib/categories';
-
 import { slugify } from '@/lib/utils';
 
 export default function HomeClient() {

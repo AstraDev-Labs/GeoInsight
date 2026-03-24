@@ -4,15 +4,15 @@
 -- 1. Seed Posts
 INSERT INTO posts (id, title, excerpt, content, author, category, date, postedAt, status, images)
 VALUES (
-    'post-vb71s5rzp', 
-    'Persistent GIS', 
-    'Persistent testing', 
-    'Test persistent content', 
-    'Dr. Persist', 
-    'Land Cover Change', 
-    '21/2/2026', 
-    '2026-02-21T06:47:25.975Z', 
-    'published', 
+    'post-vb71s5rzp',
+    'Persistent GIS',
+    'Persistent testing',
+    'Test persistent content',
+    'Dr. Persist',
+    'Land Cover Change',
+    '21/2/2026',
+    '2026-02-21T06:47:25.975Z',
+    'published',
     '[]'
 );
 
@@ -20,14 +20,14 @@ VALUES (
 -- Bot Settings
 INSERT INTO settings (key, value)
 VALUES (
-    'bot-settings', 
+    'bot-settings',
     '{"autoModerationEnabled":true,"violationTerms":["slur","hate speech","porn","xxx","nude","nsfw","sex video","racist"],"severeTerms":["child porn","sexual assault","rape","kill yourself","terror attack"],"violationMuteHours":24,"autoBanOnSevere":true}'
 );
 
 -- Site Settings
 INSERT INTO settings (key, value)
 VALUES (
-    'site-settings', 
+    'site-settings',
     '{"lockdownMode":"none"}'
 );
 
