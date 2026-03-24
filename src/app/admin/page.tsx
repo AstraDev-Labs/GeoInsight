@@ -297,7 +297,7 @@ export default function AdminDashboard() {
 
                             <button
                                 type="submit"
-                                disabled={loggingIn}
+                                disabled={loggingIn || !turnstileToken}
                                 className="w-full py-4 rounded-xl bg-[#006699] hover:bg-[#006699]/90 text-white font-bold transition-all shadow-sm hover:shadow-sm disabled:opacity-50"
                             >
                                 {loggingIn ? 'Authenticating...' : 'Unlock Dashboard'}
