@@ -41,7 +41,7 @@ export default function SupportPage() {
                 const data = await response.json();
                 setError(data.message || 'Something went wrong. Please try again.');
             }
-        } catch (err) {
+        } catch {
             setError('Network error. Please try again later.');
         } finally {
             setIsSubmitting(false);

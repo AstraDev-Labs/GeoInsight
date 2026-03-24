@@ -10,8 +10,6 @@ import { submitToIndexNow } from '@/lib/index-now';
 import { SITE_URL } from '@/lib/constants';
 import { sendPublishedEmail, sendDeclinedEmail } from '@/lib/email-service';
 import { invalidatePostsCache } from '@/lib/api-cache';
-import { s3, S3_BUCKET } from '@/lib/aws-config';
-import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { deleteBucketFiles } from '@/lib/r2-utils';
 import { slugify } from '@/lib/utils';
 

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { BlogPost, BotSettings, CommentSanction, CommentUser, PostComment, PostRequest, SiteSettings } from "./types";
 import { readDb, writeDb } from "./db-server";
 import { getDb } from "./d1-client";
