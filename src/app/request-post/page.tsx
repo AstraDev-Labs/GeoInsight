@@ -91,6 +91,13 @@ export default function RequestPost() {
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setErrorMsg('');
+
+        if (!turnstileToken) {
+            setErrorMsg('Please complete the security check.');
+            return;
+        }
+
         setLoading(true);
         setUploading(true);
 
@@ -466,8 +473,7 @@ export default function RequestPost() {
 
                             <button
                                 type="submit"
-                                disabled={isSubmitting || !turnstileToken}
-                                disabled={loading}
+                                disabled={loading || !turnstileToken}
                                 className="w-full mt-12 py-5 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all disabled:opacity-50 shadow-xl hover:shadow-primary/40 rounded-2xl relative overflow-hidden text-xs"
                             >
                                 {loading ? (
