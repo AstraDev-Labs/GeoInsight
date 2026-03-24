@@ -87,24 +87,31 @@ class HttpD1Database implements D1Database {
   }
 
   async execute(statements: {sql: string, params?: unknown[]}[]): Promise<D1Result[]> {
+    // The Cloudflare /query API expects a single object for single queries.
+    // We currently only support single queries in this proxy for simplicity.
+    if (statements.length === 0) return [];
+    
+    // For now, we only handle the first statement if it's called via execute.
+    // If batching is needed later, we can implement it properly.
+    const payload = statements[0];
+
     const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${this.accountId}/d1/database/${this.dbId}/query`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(statements)
+      body: JSON.stringify(payload),
     });
 
-    const data = await response.json() as { success: boolean, result: D1Result[], errors: Array<{message: string}> };
-    if (!data.success) {
-        let msg = "Cloudflare D1 HTTP Error";
-        if (data.errors && data.errors.length > 0) {
-            msg = data.errors.map(e => e.message).join(", ");
-        }
-        throw new Error(`D1 API Error: ${msg}`);
+    const data = await response.json() as any;
+    if (!response.ok || !data.success) {
+      const error = data.errors?.[0]?.message || 'Unknown D1 API Error';
+      throw new Error(`D1 API Error: ${error}`);
     }
 
+    // The API returns { result: [ { results: [], success: true, meta: {} } ] }
+    // We return the array of result objects.
     return data.result;
   }
 }
