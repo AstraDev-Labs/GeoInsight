@@ -111,8 +111,8 @@ export async function sendEmail({
     const apiKey = process.env.RESEND_API_KEY;
 
     if (!apiKey) {
-        console.warn(`[Email Simulation] From: ${IDENTITIES[identity].email} To: ${to} Subject: ${subject}`);
-        return { success: true, message: 'Simulated success (API Key missing)' };
+        console.error("❌ ERROR: RESEND_API_KEY is not set in environment variables.");
+        return { success: false, message: 'Configuration error: Email API Key missing.' };
     }
 
     try {
@@ -136,13 +136,13 @@ export async function sendEmail({
 
         if (!response.ok) {
             console.error('Resend Error:', data);
-            throw new Error(data.message || 'Failed to send email');
+            return { success: false, message: data.message || 'Failed to send email' };
         }
 
         return { success: true, data };
     } catch (error) {
         console.error('Email Delivery Failed:', error);
-        return { success: false, error };
+        return { success: false, message: 'Network error while sending email' };
     }
 }
 

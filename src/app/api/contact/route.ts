@@ -44,7 +44,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: true, message: "Message sent successfully" });
         } else {
             return NextResponse.json(
-                { success: false, message: "Failed to send message. Please try again later." },
+                { success: false, message: result.message || "Failed to send message. Please try again later." },
                 { status: 500 }
             );
         }
