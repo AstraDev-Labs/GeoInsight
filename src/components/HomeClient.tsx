@@ -220,6 +220,71 @@ export default function HomeClient() {
                 )}
             </section>
 
+            {/* SEO/GEO Content Section */}
+            <section className="bg-muted/30 border-t py-24 px-4 md:px-8 lg:px-16">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                        <div>
+                            <h2 className="text-3xl font-black tracking-tight mb-8">About GeoForesight Intelligence</h2>
+                            <div className="space-y-6 text-muted-foreground leading-relaxed">
+                                <p>
+                                    GeoForesight is a dedicated collaborative intelligence space for remote sensing peers, GIS professionals, and Earth observation scientists. Our platform facilitates the sharing of critical findings, the analysis of satellite telemetry, and the exploration of complex geospatial research.
+                                </p>
+                                <p>
+                                    By providing a centralized feed for mission intelligence, we enable researchers to stay ahead of environmental changes, urban development, and global sustainability trends. Whether you are analyzing NDVI vegetation indices, processing LiDAR point clouds, or monitoring land cover change via SAR, GeoForesight provides the infrastructure to archive and disseminate your work.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-8">
+                            <div>
+                                <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                                    <Globe2 className="w-4 h-4 text-primary" /> Earth Monitoring
+                                </h3>
+                                <ul className="text-sm space-y-2 text-muted-foreground">
+                                    <li>Satellite Telemetry</li>
+                                    <li>Climate Dynamics</li>
+                                    <li>Oceanography</li>
+                                    <li>Glacier Tracking</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                                    <Activity className="w-4 h-4 text-primary" /> Urban Analytics
+                                </h3>
+                                <ul className="text-sm space-y-2 text-muted-foreground">
+                                    <li>Smart City GIS</li>
+                                    <li>Infrastructure Mapping</li>
+                                    <li>Transport Logistics</li>
+                                    <li>Urban Heat Islands</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                                    <Filter className="w-4 h-4 text-primary" /> Agriculture
+                                </h3>
+                                <ul className="text-sm space-y-2 text-muted-foreground">
+                                    <li>Precision Farming</li>
+                                    <li>Crop Yield Analysis</li>
+                                    <li>Soil Moisture Mapping</li>
+                                    <li>Pest Detection</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                                    <Search className="w-4 h-4 text-primary" /> Disaster Mgmt
+                                </h3>
+                                <ul className="text-sm space-y-2 text-muted-foreground">
+                                    <li>Flood Risk Analysis</li>
+                                    <li>Wildfire Detection</li>
+                                    <li>Landslide Monitoring</li>
+                                    <li>Post-Disaster Recovery</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <Footer />
         </main>
     );

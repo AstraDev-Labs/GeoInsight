@@ -24,7 +24,7 @@ const IDENTITIES: Record<EmailIdentity, { name: string; email: string }> = {
     },
     notifications: {
         name: 'GeoForesight',
-        email: 'no-reply@geoforesight.org'
+        email: 'updates@geoforesight.org' // Changed from no-reply to updates as per user request
     }
 };
 
@@ -135,14 +135,28 @@ export async function sendEmail({
         const data = await response.json();
 
         if (!response.ok) {
-            console.error('Resend Error:', data);
-            return { success: false, message: data.message || 'Failed to send email' };
+            console.error('❌ Resend API Error:', {
+                status: response.status,
+                statusText: response.statusText,
+                data,
+                identity,
+                to
+            });
+            return { 
+                success: false, 
+                message: data.message || `Resend error: ${response.status} ${response.statusText}` 
+            };
         }
 
+        console.log('✅ Email sent successfully via Resend:', {
+            id: data.id,
+            identity,
+            to
+        });
         return { success: true, data };
     } catch (error) {
-        console.error('Email Delivery Failed:', error);
-        return { success: false, message: 'Network error while sending email' };
+        console.error('❌ Email Delivery Failed (Exception):', error);
+        return { success: false, message: 'Network error or internal exception while sending email' };
     }
 }
 
