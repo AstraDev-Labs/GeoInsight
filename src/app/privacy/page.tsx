@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Shield } from 'lucide-react';
+import Link from 'next/link';
 
 export const metadata = {
     title: 'Privacy Policy | GeoForesight',
@@ -103,7 +104,7 @@ export default function PrivacyPolicy() {
                     <h2>9. Contact Us</h2>
                     <p>
                         If you have any questions or concerns about this Privacy Policy or your data, please reach out to us
-                        through our <a href="/support">Support page</a>.
+                        through our <Link href="/support">Support page</Link>.
                     </p>
                 </div>
             </article>
