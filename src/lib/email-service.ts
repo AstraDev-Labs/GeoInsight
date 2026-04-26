@@ -2,14 +2,20 @@ import nodemailer from 'nodemailer';
 
 // Email configuration - uses SMTP credentials from .env.local
 // For production, use AWS SES, SendGrid, or similar
+const port = parseInt(process.env.SMTP_PORT || '587');
+
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
+    host: process.env.SMTP_HOST || 'smtp.resend.com',
+    port: port,
+    secure: port === 465, // Port 465 must be true, others (587) must be false
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
+    // Add timeouts to prevent Vercel from hanging
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000,
 });
 
 const FROM_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'admin@geoforesight.org';
