@@ -4,10 +4,11 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const key = (process.env.INDEX_NOW_KEY || '').trim();
-    const requestedId = (await params).id;
+    const resolvedParams = await params;
+    const requestedId = resolvedParams.id;
 
     // Only respond if the requested filename matches our key
     if (key && requestedId === key) {
