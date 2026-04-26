@@ -153,7 +153,7 @@ export const metadata: Metadata = {
     google: process.env.GOOGLE_SITE_VERIFICATION || '',
     yandex: '',
     other: {
-      'msvalidate.01': process.env.BING_SITE_VERIFICATION || '',
+      'msvalidate.01': 'FB1B3A419F297191832EB5B2C780F9CB',
     },
   },
   category: 'science',
