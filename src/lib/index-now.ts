@@ -2,7 +2,7 @@ import { SITE_URL } from "./constants";
 
 const INDEX_NOW_KEY = (process.env.INDEX_NOW_KEY || "").trim();
 const NORMALIZED_SITE_URL = SITE_URL.replace(/\/$/, "");
-const INDEX_NOW_KEY_LOCATION = `${NORMALIZED_SITE_URL}/api/indexnow/key`;
+const INDEX_NOW_KEY_LOCATION = `${NORMALIZED_SITE_URL}/${INDEX_NOW_KEY}.txt`;
 
 export async function submitToIndexNow(url: string) {
     if (!INDEX_NOW_KEY) {
