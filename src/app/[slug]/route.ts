@@ -4,14 +4,14 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
     request: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ slug: string }> }
 ) {
     const key = (process.env.INDEX_NOW_KEY || '').trim();
     const resolvedParams = await params;
-    const requestedId = resolvedParams.id;
+    const requestedSlug = resolvedParams.slug;
 
-    // Only respond if the requested filename matches our key
-    if (key && requestedId === key) {
+    // Check if the requested URL is exactly [key].txt
+    if (key && requestedSlug === `${key}.txt`) {
         return new NextResponse(key, {
             status: 200,
             headers: {
@@ -20,5 +20,6 @@ export async function GET(
         });
     }
 
+    // Fallback to 404 for any other random root-level slugs
     return new NextResponse('Not Found', { status: 404 });
 }
