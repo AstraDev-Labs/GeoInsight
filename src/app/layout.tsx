@@ -18,10 +18,20 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  manifest: '/manifest.json',
   icons: {
-    icon: '/logo.svg',
-    shortcut: '/logo.svg',
-    apple: '/logo.svg',
+    icon: [
+      { url: '/logo.svg' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    shortcut: '/icons/icon-192.png',
+    apple: '/icons/icon-192.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'GeoForesight',
   },
   title: {
     default: "GeoForesight | Remote Sensing & GIS Intelligence Platform",
@@ -171,6 +181,10 @@ export default function RootLayout({
         {/* Preconnect to R2 CDN for faster image loading */}
         <link rel="dns-prefetch" href="https://pub-0cba2aa942e04470b879546bcb1f18cf.r2.dev" />
         <link rel="preconnect" href="https://pub-0cba2aa942e04470b879546bcb1f18cf.r2.dev" crossOrigin="anonymous" />
+        {/* PWA / TWA */}
+        <meta name="theme-color" content="#006699" />
+        <meta name="mobile-web-app-capable" content="yes" />
+
         {/* Structured Data - Organization */}
         <script
           type="application/ld+json"
