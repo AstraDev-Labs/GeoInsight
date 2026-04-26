@@ -98,8 +98,8 @@ export default function SupportPage() {
                         <Mail className="text-[#222] mx-auto mb-4" size={28} />
                         <h3 className="font-bold text-lg mb-2">Email Us</h3>
                         <p className="text-[#555] text-sm mb-4">Reach out directly for urgent issues or detailed inquiries.</p>
-                        <a href="mailto:contact@geoforesight.org" className="text-[#222] text-sm font-medium hover:underline">
-                            contact@geoforesight.org
+                        <a href="mailto:support@geoforesight.org" className="text-[#222] text-sm font-medium hover:underline">
+                            support@geoforesight.org
                         </a>
                     </motion.div>
 
