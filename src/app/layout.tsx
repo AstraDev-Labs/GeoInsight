@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { AxiomWebVitals } from 'next-axiom';
 import { SITE_URL } from "@/lib/constants";
 import Script from "next/script";
@@ -214,6 +215,26 @@ export default function RootLayout({
           <SpeedInsights />
           <Analytics />
         </Suspense>
+        {/* Microsoft Clarity */}
+        {process.env.NEXT_PUBLIC_CLARITY_ID && (
+          <Script
+            id="microsoft-clarity"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(c,l,a,r,i,t,y){
+                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "${process.env.NEXT_PUBLIC_CLARITY_ID}");
+              `,
+            }}
+          />
+        )}
+        {/* Google Analytics */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
         {/* Cloudflare Web Analytics */}
         <Script src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "33dd9409d9164dfea9f791806a267e1e"}' strategy="lazyOnload" />
         {/* End Cloudflare Web Analytics */}
