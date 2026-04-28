@@ -7,7 +7,8 @@ import { cookies } from 'next/headers';
 import { verifyAdminToken } from '@/lib/auth-util';
 import { invalidatePostsCache, invalidateRequestsCache } from '@/lib/api-cache';
 import { sendDeclinedEmail } from '@/lib/email-service';
-import { deleteBucketFiles } from '@/lib/r2-utils';
+import { deleteR2Files } from '@/lib/r2-utils';
+
 
 export async function PATCH(
     request: Request,
@@ -64,9 +65,7 @@ export async function PATCH(
             req.status = 'denied';
             await dataService.updateRequest(req);
             invalidateRequestsCache();
-            // Free up R2 Storage for denied items
-            const filesToDelete = [...(req.images || []), ...(req.attachments || [])];
-            await deleteBucketFiles(filesToDelete);
+
             
             try {
                 const sent = await sendDeclinedEmail(
@@ -87,10 +86,7 @@ export async function PATCH(
             req.status = 'denied';
             await dataService.updateRequest(req);
             invalidateRequestsCache();
-            
-            // Free up R2 Storage for denied items
-            const filesToDelete = [...(req.images || []), ...(req.attachments || [])];
-            await deleteBucketFiles(filesToDelete);
+
         }
 
         return NextResponse.json(req);
@@ -117,12 +113,11 @@ export async function DELETE(
 
     const requests = await dataService.getRequests();
     const req = requests.find(r => r.id === id);
-    
-    // Critical: Do NOT delete files if the request was accepted, 
-    // because those files are now being used by the active Blog Post!
-    if (req && req.status !== 'accepted') {
-        const filesToDelete = [...(req.images || []), ...(req.attachments || [])];
-        await deleteBucketFiles(filesToDelete);
+
+    // Clean up files in R2
+    if (req) {
+        const allFiles = [...(req.images || []), ...(req.attachments || [])];
+        await deleteR2Files(allFiles);
     }
 
     await dataService.deleteRequest(id);

@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
-import { s3, S3_BUCKET, useAWS } from '@/lib/aws-config';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
 import fs from 'fs';
 import path from 'path';
-
-
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { r2Client, R2_BUCKET_NAME, R2_PUBLIC_URL, isR2Configured } from '@/lib/r2-client';
 
 export const runtime = 'nodejs';
 
@@ -28,32 +26,27 @@ export async function POST(request: Request) {
             const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
             const filename = `${timestamp}-${safeName}`;
 
-            if (useAWS && s3) {
-                // Upload to S3
-                const key = `uploads/${filename}`;
-                await s3.send(new PutObjectCommand({
-                    Bucket: S3_BUCKET,
-                    Key: key,
-                    Body: buffer,
-                    ContentType: file.type,
-                    ContentDisposition: 'inline',
-                }));
+            if (isR2Configured) {
+                // Upload to Cloudflare R2
+                const contentType = file.type || 'application/octet-stream';
+                
+                await r2Client.send(
+                    new PutObjectCommand({
+                        Bucket: R2_BUCKET_NAME,
+                        Key: `uploads/${filename}`,
+                        Body: buffer,
+                        ContentType: contentType,
+                    })
+                );
 
-                // Construct the public URL for the frontend
-                let url;
-                if (process.env.NEXT_PUBLIC_R2_URL) {
-                    // Use custom domain or r2.dev public URL if provided
-                    url = `${process.env.NEXT_PUBLIC_R2_URL}/${key}`;
-                } else if (process.env.R2_ENDPOINT) {
-                    // Fallback to raw endpoint (Note: this often fails in <img> tags due to lack of auth Signature V4)
-                    url = `${process.env.R2_ENDPOINT}/${S3_BUCKET}/${key}`;
-                } else {
-                    const region = process.env.R2_REGION || 'auto';
-                    url = `https://${S3_BUCKET}.s3.${region}.amazonaws.com/${key}`;
-                }
-                uploadedUrls.push(url);
+                // Use public URL if available, otherwise assume a standard R2 dev URL structure
+                const fileUrl = R2_PUBLIC_URL 
+                    ? `${R2_PUBLIC_URL}/uploads/${filename}`
+                    : `/api/files/${filename}`; // Fallback or proxy
+                
+                uploadedUrls.push(fileUrl);
             } else {
-                // Save locally to public/uploads/
+                // Fallback: Save locally to public/uploads/ (Warning: Volatile on Vercel)
                 const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
                 if (!fs.existsSync(uploadsDir)) {
                     fs.mkdirSync(uploadsDir, { recursive: true });
@@ -61,8 +54,6 @@ export async function POST(request: Request) {
 
                 const filePath = path.join(uploadsDir, filename);
                 fs.writeFileSync(filePath, buffer);
-
-                // Return a URL that Next.js can serve from /public
                 uploadedUrls.push(`/uploads/${filename}`);
             }
         }
@@ -74,5 +65,3 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: `Upload failed: ${errorMessage}` }, { status: 500 });
     }
 }
-
-

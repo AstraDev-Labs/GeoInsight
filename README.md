@@ -1,9 +1,9 @@
 # 🌐 GeoForesight — Remote Sensing & GIS Intelligence Platform
 
-A premium, full-stack collaborative research blog built with **Next.js 16**, **AWS (DynamoDB + S3)**, and **Framer Motion**. Designed for remote sensing teams to publish, review, and manage geospatial research findings with a sleek dark glassmorphic UI.
+A premium, full-stack collaborative research blog built with **Next.js 16**, **Cloudflare (D1 + R2)**, and **Framer Motion**. Designed for remote sensing teams to publish, review, and manage geospatial research findings with a sleek dark glassmorphic UI.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
-![AWS](https://img.shields.io/badge/AWS-DynamoDB%20%2B%20S3-orange?logo=amazon-aws)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-D1%20%2B%20R2-orange?logo=cloudflare)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8?logo=tailwindcss)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -22,7 +22,7 @@ A premium, full-stack collaborative research blog built with **Next.js 16**, **A
 - Added DB-backed comment auth with signup, email verification, and login by username/email.
 - Added role-aware moderation (`user`/`bot`/`admin`) and AutoMod sanctions (hide/mute/ban).
 - Added Admin Bot Settings panel + `/api/admin/bot-settings` to configure moderation behavior.
-- Improved Bot Settings persistence reliability (AWS + local DB mirror fallback).
+- Improved Bot Settings persistence reliability (Cloudflare D1 + local DB mirror fallback).
 - Added SEO validation tooling (`scripts/seo-check.mjs`) for JSON-LD/canonical/OG/robots checks.
 - Added API performance observability:
   - response-time headers
@@ -37,7 +37,7 @@ A premium, full-stack collaborative research blog built with **Next.js 16**, **A
 
 ### 📝 Research Publishing
 - **Rich Text Editor (TipTap)** — Full WYSIWYG editor with headings, bold, italic, lists, blockquotes, code blocks, links, and undo/redo
-- **Image & Document Uploads** — Drag-and-drop file uploads stored on AWS S3 with automatic preview generation
+- **Image & Document Uploads** — Drag-and-drop file uploads stored on Cloudflare R2 with automatic preview generation
 - **Category System** — Posts organized by research vectors: Land Cover Change, Urban GIS, Hydrology, Agriculture, Climate Analysis
 - **Markdown + HTML Support** — Renders both legacy Markdown and new rich text content seamlessly
 
@@ -99,7 +99,7 @@ A premium, full-stack collaborative research blog built with **Next.js 16**, **A
 - **Admin Bot Settings API**:
   - `GET /api/admin/bot-settings`
   - `PUT /api/admin/bot-settings`
-- Settings persist reliably (AWS + local mirror fallback)
+- Settings persist reliably (Cloudflare D1 + local mirror fallback)
 
 ### ⚡ Performance & Observability (New)
 - **List API Instrumentation**
@@ -153,8 +153,8 @@ A premium, full-stack collaborative research blog built with **Next.js 16**, **A
 | **Styling** | Tailwind CSS 3.4 + Custom CSS |
 | **Animations** | Framer Motion |
 | **Rich Text** | TipTap (Headless Editor) |
-| **Database** | AWS DynamoDB |
-| **File Storage** | AWS S3 |
+| **Database** | Cloudflare D1 |
+| **File Storage** | Cloudflare R2 |
 | **Email** | Nodemailer (SMTP) |
 | **Auth** | bcrypt.js (Password Hashing) |
 | **Icons** | Lucide React |
@@ -210,7 +210,7 @@ src/
 ### Prerequisites
 - Node.js 18+
 - npm or yarn
-- AWS Account (for DynamoDB + S3)
+- Cloudflare Account (for D1 + R2)
 
 ### 1. Clone the Repository
 ```bash
@@ -227,13 +227,15 @@ npm install
 Create a `.env.local` file in the root:
 
 ```env
-# AWS
-USE_AWS=true
-AWS_REGION=eu-north-1
-AWS_ACCESS_KEY_ID=your-access-key
-AWS_SECRET_ACCESS_KEY=your-secret-key
-DYNAMODB_TABLE=RSBlogTable
-S3_BUCKET=rs-blog-images
+# Cloudflare
+CLOUDFLARE_ACCOUNT_ID=your-account-id
+CLOUDFLARE_DATABASE_ID=your-database-id
+CLOUDFLARE_API_TOKEN=your-api-token
+R2_ACCESS_KEY_ID=your-r2-access-key
+R2_SECRET_ACCESS_KEY=your-r2-secret-key
+R2_ENDPOINT=your-r2-endpoint
+S3_BUCKET=your-r2-bucket-name
+NEXT_PUBLIC_R2_PUBLIC_URL=https://your-r2-public-url.r2.dev
 
 # Admin
 ADMIN_PASSWORD=YourSecurePassword
@@ -277,17 +279,16 @@ Or connect your GitHub repo directly in [vercel.com/dashboard](https://vercel.co
 
 ---
 
-## 🔧 AWS Setup
+## 🔧 Cloudflare Setup
 
-### DynamoDB Table
-Create a table named `RSBlogTable` with:
-- **Partition Key:** `PK` (String)
-- **Sort Key:** `SK` (String)
+### D1 Database
+Create a D1 database named `geoinsight-db` and update `wrangler.toml` with the generated `database_id`.
 
-### S3 Bucket
-Create a bucket named `rs-blog-images` with:
-- Public read access for uploaded images
-- CORS configured for your domain
+### R2 Bucket
+Create an R2 bucket and configure:
+- CORS for your domain
+- Public access or a custom domain if serving images directly
+- Add credentials to environment variables
 
 ---
 
@@ -404,10 +405,10 @@ npm run quality:gate:lint
 2. Generate an [App Password](https://myaccount.google.com/apppasswords)
 3. Use the 16-character app password as `SMTP_PASS`
 
-### AWS SES (Recommended for Production)
-1. Verify your domain in AWS SES
-2. Use SES SMTP credentials
-3. Update `SMTP_HOST` to your SES endpoint
+### Resend or Cloudflare (Recommended for Production)
+1. Verify your domain in your email provider.
+2. Use the provided SMTP credentials.
+3. Update `SMTP_HOST` to the provider's endpoint.
 
 ---
 
@@ -445,7 +446,7 @@ This project is licensed under the **MIT License**. See [LICENSE](./LICENSE) for
 
 <p align="center">
   Built with ❤️ by the GeoForesight Team<br/>
-  <strong>Next.js • AWS • Framer Motion • TipTap</strong>
+  <strong>Next.js • Cloudflare • Framer Motion • TipTap</strong>
 </p>
  
 

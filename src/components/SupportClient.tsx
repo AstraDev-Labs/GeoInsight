@@ -5,14 +5,12 @@ import Footer from '@/components/Footer';
 import { LifeBuoy, Mail, MessageSquare, FileText, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import TurnstileWidget from "@/components/TurnstileWidget";
 import Link from 'next/link';
 
 export default function SupportClient() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
-    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [sent, setSent] = useState(false);
@@ -21,18 +19,13 @@ export default function SupportClient() {
         e.preventDefault();
         setError('');
 
-        if (!turnstileToken) {
-            setError('Please complete the security check.');
-            return;
-        }
-
         setIsSubmitting(true);
 
         try {
             const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, message, turnstileToken }),
+                body: JSON.stringify({ name, email, message }),
             });
 
             if (response.ok) {
@@ -172,11 +165,9 @@ export default function SupportClient() {
                             </div>
                             {error && <p className="text-red-500 text-sm font-semibold text-center mt-4">{error}</p>}
 
-                            <TurnstileWidget onVerify={setTurnstileToken} action="contact_support" />
-
                             <button
                                 type="submit"
-                                disabled={isSubmitting || !turnstileToken}
+                                disabled={isSubmitting}
                                 className="w-full py-4 rounded-xl bg-[#006699] hover:bg-[#006699]/90 text-white font-bold text-lg shadow-sm hover:shadow-sm flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <Send size={20} /> {isSubmitting ? 'Sending...' : 'Send Message'}
@@ -202,7 +193,7 @@ export default function SupportClient() {
                             { q: 'Can I edit my post after publication?', a: 'Yes! On your published post page, scroll to the "Author Controls" section. Enter your author email and password to request edits. Edited posts are re-submitted for admin approval.' },
                             { q: 'How do I delete my post?', a: 'On your published post page, use the "Delete This Post" button in the Author Controls section. You will need to verify your identity with your author credentials.' },
                             { q: 'What file formats are supported for uploads?', a: 'For images: JPG, PNG, GIF, WebP. For documents: PDF, DOC, DOCX, XLSX, CSV, ZIP, TXT. Maximum file sizes apply depending on the hosting configuration.' },
-                            { q: 'Is my data secure?', a: 'Yes. Passwords are hashed with bcrypt, files are stored on encrypted AWS S3, and all connections use HTTPS. Read our full Privacy Policy for more details.' },
+                            { q: 'Is my data secure?', a: 'Yes. Passwords are hashed with bcrypt, files are stored on encrypted Cloudflare R2, and all connections use HTTPS. Read our full Privacy Policy for more details.' },
                         ].map((faq, i) => (
                             <div key={i} className="bg-[#f9f9f9] border border-[#e5e5e5] shadow-sm p-6">
                                 <h3 className="font-bold text-[#222] mb-2">{faq.q}</h3>

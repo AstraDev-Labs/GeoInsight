@@ -1,25 +1,15 @@
 import { NextResponse } from "next/server";
-import { verifyTurnstileToken } from "@/lib/turnstile-util";
 import { sendEmail } from "@/lib/email-service";
 
 export async function POST(request: Request) {
     try {
-        const { name, email, message, turnstileToken } = await request.json();
+        const { name, email, message } = await request.json();
 
         // Validate basic inputs
         if (!name || !email || !message) {
             return NextResponse.json(
                 { success: false, message: "Missing required fields" },
                 { status: 400 }
-            );
-        }
-
-        // Verify Turnstile Token
-        const isHuman = await verifyTurnstileToken(turnstileToken);
-        if (!isHuman) {
-            return NextResponse.json(
-                { success: false, message: "Security check failed. Please try again." },
-                { status: 403 }
             );
         }
 

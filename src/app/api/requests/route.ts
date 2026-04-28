@@ -4,7 +4,6 @@ import { PostRequest } from '@/lib/types';
 import bcrypt from 'bcryptjs';
 import { sendSubmissionReceivedEmail } from '@/lib/email-service';
 import { invalidateRequestsCache } from '@/lib/api-cache';
-import { verifyTurnstileToken } from "@/lib/turnstile-util";
 
 export const dynamic = 'force-dynamic';
 
@@ -33,15 +32,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     const data = await request.json();
-
-    const isHuman = await verifyTurnstileToken(data.turnstileToken);
-
-    if (!isHuman) {
-        return NextResponse.json(
-            { error: 'Security verification failed. Please try again.' },
-            { status: 403 }
-        );
-    }
 
     let hashedPassword = undefined;
     if (data.authorPassword) {

@@ -10,7 +10,8 @@ import { submitToIndexNow } from '@/lib/index-now';
 import { SITE_URL } from '@/lib/constants';
 import { sendPublishedEmail, sendDeclinedEmail } from '@/lib/email-service';
 import { invalidatePostsCache } from '@/lib/api-cache';
-import { deleteBucketFiles } from '@/lib/r2-utils';
+
+import { deleteR2Files } from '@/lib/r2-utils';
 import { slugify } from '@/lib/utils';
 
 export async function PATCH(
@@ -198,12 +199,7 @@ export async function PATCH(
         }
     }
     
-    // Cleanup R2 Storage if admin declines a pending post
-    if (isAdmin && updatedPost.status === 'rejected') {
-        console.log(`🗑️ Post ${id} rejected. Executing R2 file cleanup...`);
-        const filesToDelete = [...(updatedPost.images || []), ...(updatedPost.attachments || [])];
-        await deleteBucketFiles(filesToDelete);
-    }
+
 
     // Notify IndexNow if published
     if (updatedPost.status === 'published') {
@@ -223,14 +219,13 @@ export async function DELETE(
     const posts = await dataService.getPosts();
     const post = posts.find(p => p.id === id);
     
-    // Removed legacy deletePostImages in favor of deleteBucketFiles
+
 
     if (!post) {
         return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    // Extract file arrays for cleanup
-    const filesToDelete = [...(post.images || []), ...(post.attachments || [])];
+
 
     // Check if admin (has valid cookie)
     const cookieStore = await cookies();
@@ -240,10 +235,12 @@ export async function DELETE(
 
     if (isAdmin) {
         try {
-            // Admin can delete any post
-            await deleteBucketFiles(filesToDelete);
             await dataService.deletePost(id);
             invalidatePostsCache();
+
+            // Clean up files in R2
+            const allFiles = [...(post.images || []), ...(post.attachments || [])];
+            await deleteR2Files(allFiles);
 
             // Notify IndexNow about deletion
             const postUrl = `${SITE_URL}/blog/${slugify(post.title)}`;
@@ -288,7 +285,6 @@ export async function DELETE(
             return NextResponse.json({ error: 'Invalid password' }, { status: 403 });
         }
 
-        await deleteBucketFiles(filesToDelete);
         await dataService.deletePost(id);
         invalidatePostsCache();
         return NextResponse.json({ success: true, message: 'Post deleted by author (legacy req check)' });
@@ -310,7 +306,6 @@ export async function DELETE(
         return NextResponse.json({ error: 'Invalid password' }, { status: 403 });
     }
 
-    await deleteBucketFiles(filesToDelete);
     await dataService.deletePost(id);
     invalidatePostsCache();
 

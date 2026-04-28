@@ -1,7 +1,7 @@
 import { BlogPost, PostRequest } from './types';
 
 // This client-side API layer now calls our server-side API routes
-// which interact with a shared DB (db.json simulating AWS)
+// which interact with a shared DB (Cloudflare D1)
 
 export const api = {
     _jsonOrError: async (res: Response) => {

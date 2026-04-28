@@ -8,7 +8,6 @@ import { api } from '@/lib/mock-api';
 import { PostRequest, BlogPost, LockdownMode } from '@/lib/types';
 import { Check, X, LogOut, FileText, Paperclip, Lock, Shield, Trash2, ChevronLeft, ChevronRight, Activity, Globe, LayoutDashboard, ImagePlus, Wrench, AlertTriangle, Power } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import TurnstileWidget from "@/components/TurnstileWidget";
 import dynamic from 'next/dynamic';
 import AdminAnalyticsPanel from '@/components/AdminAnalyticsPanel';
 // import BotSettingsPanel from '@/components/BotSettingsPanel';
@@ -20,7 +19,6 @@ export default function AdminDashboard() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [authLoading, setAuthLoading] = useState(true);
     const [password, setPassword] = useState('');
-    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const [authError, setAuthError] = useState('');
     const [loggingIn, setLoggingIn] = useState(false);
 
@@ -95,7 +93,7 @@ export default function AdminDashboard() {
             const res = await fetch('/api/admin/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password, turnstileToken })
+                body: JSON.stringify({ password })
             });
 
             const data = await res.json();
@@ -274,8 +272,6 @@ export default function AdminDashboard() {
                         <p className="text-[#666] mb-8 text-sm">Enter the secure master key to access the intelligence dashboard.</p>
 
                         <form onSubmit={handleLogin} className="space-y-6">
-                            <TurnstileWidget onVerify={setTurnstileToken} action="admin_login" />
-
                             <div className="relative">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666] w-5 h-5" />
                                 <input
@@ -297,7 +293,7 @@ export default function AdminDashboard() {
 
                             <button
                                 type="submit"
-                                disabled={loggingIn || !turnstileToken}
+                                disabled={loggingIn}
                                 className="w-full py-4 rounded-xl bg-[#006699] hover:bg-[#006699]/90 text-white font-bold transition-all shadow-sm hover:shadow-sm disabled:opacity-50"
                             >
                                 {loggingIn ? 'Authenticating...' : 'Unlock Dashboard'}

@@ -5,10 +5,7 @@ const nextConfig: NextConfig = {
   // Allow serving uploaded images
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.amazonaws.com',
-      },
+
       {
         protocol: 'https',
         hostname: '**.r2.cloudflarestorage.com',
