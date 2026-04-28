@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { r2Client, R2_BUCKET_NAME, R2_PUBLIC_URL, isR2Configured } from '@/lib/r2-client';
+import { r2Client, R2_BUCKET_NAME, R2_PUBLIC_URL, isR2Configured, getMissingR2Vars } from '@/lib/r2-client';
 
 export const runtime = 'nodejs';
 
@@ -39,17 +40,33 @@ export async function POST(request: Request) {
                     })
                 );
 
-                // Use public URL if available, otherwise assume a standard R2 dev URL structure
                 const fileUrl = R2_PUBLIC_URL 
                     ? `${R2_PUBLIC_URL}/uploads/${filename}`
-                    : `/api/files/${filename}`; // Fallback or proxy
+                    : `/api/files/${filename}`;
                 
                 uploadedUrls.push(fileUrl);
             } else {
-                // Fallback: Save locally to public/uploads/ (Warning: Volatile on Vercel)
-                const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-                if (!fs.existsSync(uploadsDir)) {
-                    fs.mkdirSync(uploadsDir, { recursive: true });
+                // Check if we are on Vercel or similar read-only environment
+                const isProduction = process.env.NODE_ENV === 'production';
+                
+                if (isProduction) {
+                    const missingVars = getMissingR2Vars();
+                    throw new Error(`Cloudflare R2 is not configured for production. Missing variables: ${missingVars.join(', ')}`);
+                }
+
+                // Local development fallback using os.tmpdir() if public/uploads is unavailable
+                let uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+                
+                try {
+                    if (!fs.existsSync(uploadsDir)) {
+                        fs.mkdirSync(uploadsDir, { recursive: true });
+                    }
+                } catch (e) {
+                    console.warn('Could not create public/uploads, falling back to temp dir:', e);
+                    uploadsDir = path.join(os.tmpdir(), 'geoinsight-uploads');
+                    if (!fs.existsSync(uploadsDir)) {
+                        fs.mkdirSync(uploadsDir, { recursive: true });
+                    }
                 }
 
                 const filePath = path.join(uploadsDir, filename);
@@ -65,3 +82,4 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: `Upload failed: ${errorMessage}` }, { status: 500 });
     }
 }
+
