@@ -185,11 +185,15 @@ export const dataService = {
     deletePost: async (id: string): Promise<void> => {
         try {
             const db = getDb();
-            await db.prepare("DELETE FROM posts WHERE id = ?").bind(id).run();
+            await db.batch([
+                db.prepare("DELETE FROM posts WHERE id = ?").bind(id),
+                db.prepare("DELETE FROM comments WHERE postId = ?").bind(id)
+            ]);
         } catch (error) {
             console.error("D1 deletePost failed, falling back to local DB:", error);
             const db = readDb();
             db.posts = db.posts.filter(p => p.id !== id);
+            db.comments = (db.comments || []).filter(c => c.postId !== id);
             writeDb(db);
         }
     },

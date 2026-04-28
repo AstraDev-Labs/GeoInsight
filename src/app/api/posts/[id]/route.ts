@@ -152,6 +152,44 @@ export async function PATCH(
         return NextResponse.json(mergedPost);
     }
 
+    // Admin rejecting a post or edit request: remove the record and clean up files.
+    if (isAdmin && updates.status === 'rejected') {
+        // Resolve notification email first
+        let notificationEmail = post.authorEmail;
+        if (!notificationEmail) {
+            const reqs = await dataService.getRequests();
+            const matchingRequest = reqs.find((r) => r.title === post.title && r.author === post.author);
+            notificationEmail = matchingRequest?.email;
+        }
+
+        // Send email first while we still have data
+        if (notificationEmail) {
+            try {
+                await sendDeclinedEmail(
+                    notificationEmail,
+                    post.author,
+                    post.title,
+                    updates.reviewerNotes || post.reviewerNotes
+                );
+            } catch (error) {
+                console.error('Failed to send decline email:', error);
+            }
+        }
+
+        // Delete from DB
+        await dataService.deletePost(id);
+        invalidatePostsCache();
+
+        // If it's NOT an edit of an existing post, clean up files in R2.
+        // If it IS an edit, we keep files for now because they might be shared with the original.
+        if (!post.editOfId) {
+            const allFiles = [...(post.images || []), ...(post.attachments || [])];
+            await deleteR2Files(allFiles);
+        }
+
+        return NextResponse.json({ success: true, message: 'Post rejected and purged' });
+    }
+
     await dataService.savePost(updatedPost);
     invalidatePostsCache();
 
@@ -164,35 +202,15 @@ export async function PATCH(
     }
 
     // Send status notification email from server-side for reliability.
-    // This avoids client-side fire-and-forget requests getting dropped.
     if (isAdmin && notificationEmail) {
         try {
             if (updatedPost.status === 'published') {
-                const sent = await sendPublishedEmail(
+                await sendPublishedEmail(
                     notificationEmail,
                     updatedPost.author,
                     updatedPost.title,
                     updatedPost.id
                 );
-                if (!sent) {
-                    console.warn('Publish notification email was not sent.', {
-                        to: notificationEmail,
-                        postId: updatedPost.id,
-                    });
-                }
-            } else if (updatedPost.status === 'rejected') {
-                const sent = await sendDeclinedEmail(
-                    notificationEmail,
-                    updatedPost.author,
-                    updatedPost.title,
-                    updatedPost.reviewerNotes
-                );
-                if (!sent) {
-                    console.warn('Decline notification email was not sent.', {
-                        to: notificationEmail,
-                        postId: updatedPost.id,
-                    });
-                }
             }
         } catch (error) {
             console.error('Failed to send post status notification email:', error);
@@ -287,6 +305,11 @@ export async function DELETE(
 
         await dataService.deletePost(id);
         invalidatePostsCache();
+        
+        // Clean up files in R2
+        const allFiles = [...(post.images || []), ...(post.attachments || [])];
+        await deleteR2Files(allFiles);
+
         return NextResponse.json({ success: true, message: 'Post deleted by author (legacy req check)' });
     }
 
@@ -308,6 +331,10 @@ export async function DELETE(
 
     await dataService.deletePost(id);
     invalidatePostsCache();
+
+    // Clean up files in R2
+    const allFiles = [...(post.images || []), ...(post.attachments || [])];
+    await deleteR2Files(allFiles);
 
     // Notify IndexNow about deletion
     const postUrl = `${SITE_URL}/blog/${slugify(post.title)}`;

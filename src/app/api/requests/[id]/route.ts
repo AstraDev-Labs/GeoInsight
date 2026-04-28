@@ -61,32 +61,27 @@ export async function PATCH(
             req.status = 'accepted';
             await dataService.updateRequest(req);
             invalidateRequestsCache();
-        } else if (status === 'denied' && req.email) {
-            req.status = 'denied';
-            await dataService.updateRequest(req);
-            invalidateRequestsCache();
+        } else if (status === 'denied') {
+            // Clean up files in R2 before deleting the record
+            const allFiles = [...(req.images || []), ...(req.attachments || [])];
+            await deleteR2Files(allFiles);
 
-            
-            try {
-                const sent = await sendDeclinedEmail(
-                    req.email,
-                    req.author,
-                    req.title
-                );
-                if (!sent) {
-                    console.warn('Request denial email was not sent.', {
-                        to: req.email,
-                        requestId: req.id,
-                    });
+            // Send rejection email if email exists
+            if (req.email) {
+                try {
+                    await sendDeclinedEmail(
+                        req.email,
+                        req.author,
+                        req.title
+                    );
+                } catch (error) {
+                    console.error('Failed to send request denial email:', error);
                 }
-            } catch (error) {
-                console.error('Failed to send request denial email:', error);
             }
-        } else {
-            req.status = 'denied';
-            await dataService.updateRequest(req);
-            invalidateRequestsCache();
 
+            await dataService.deleteRequest(id);
+            invalidateRequestsCache();
+            return NextResponse.json({ success: true, message: 'Request rejected and deleted' });
         }
 
         return NextResponse.json(req);
