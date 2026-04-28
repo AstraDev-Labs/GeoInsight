@@ -5,9 +5,9 @@ const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY
 const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY;
 const r2Endpoint = process.env.R2_ENDPOINT;
 
-// Fallback to S3_BUCKET if R2_BUCKET is not set
-export const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME || process.env.S3_BUCKET || '';
-export const R2_PUBLIC_URL = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || '';
+// Fallback to S3_BUCKET or R2_BUCKET if R2_BUCKET_NAME is not set
+export const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME || process.env.S3_BUCKET || process.env.R2_BUCKET || '';
+export const R2_PUBLIC_URL = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || process.env.NEXT_PUBLIC_R2_URL || '';
 
 export const r2Client = new S3Client({
   region: 'auto',
@@ -30,6 +30,6 @@ export const getMissingR2Vars = () => {
   if (!r2AccountID && !r2Endpoint) vars.push('CLOUDFLARE_ACCOUNT_ID or R2_ENDPOINT');
   if (!r2AccessKeyId) vars.push('R2_ACCESS_KEY_ID');
   if (!r2SecretAccessKey) vars.push('R2_SECRET_ACCESS_KEY');
-  if (!R2_BUCKET_NAME) vars.push('R2_BUCKET_NAME (or S3_BUCKET)');
+  if (!R2_BUCKET_NAME) vars.push('R2_BUCKET_NAME (or R2_BUCKET / S3_BUCKET)');
   return vars;
 };
