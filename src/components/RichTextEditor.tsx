@@ -35,7 +35,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         content: content || '',
         editorProps: {
             attributes: {
-                class: 'prose prose-invert prose-sm max-w-none focus:outline-none min-h-[300px] px-5 py-4 text-white/90 leading-relaxed',
+                class: 'prose prose-sm max-w-none focus:outline-none min-h-[300px] px-5 py-4 text-foreground caret-primary leading-relaxed bg-white rounded-b-xl border-t border-border shadow-inner',
             },
         },
         onUpdate: ({ editor }) => {
@@ -72,16 +72,16 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             type="button"
             onClick={onClick}
             title={title}
-            className={`p-1.5 rounded-lg transition-all ${isActive ? 'bg-primary/30 text-primary shadow-[0_0_8px_rgba(56,189,248,0.3)]' : 'text-white/50 hover:bg-white/10 hover:text-white/80'}`}
+            className={`p-1.5 rounded-lg transition-all ${isActive ? 'bg-primary/10 text-primary shadow-[0_2px_8px_rgba(14,165,233,0.15)] font-bold' : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'}`}
         >
             {children}
         </button>
     );
 
     return (
-        <div className="rounded-xl border border-white/10 overflow-hidden bg-black/50 backdrop-blur-md focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+        <div className="rounded-xl border border-border overflow-hidden bg-muted/10 focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/5 transition-all">
             {/* Toolbar */}
-            <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-white/10 bg-white/[0.02]">
+            <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-border bg-muted/20">
                 <ToolbarButton
                     onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                     isActive={editor.isActive('heading', { level: 1 })}
@@ -104,7 +104,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     <Heading3 size={16} />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-white/10 mx-1" />
+                <div className="w-px h-5 bg-border mx-1" />
 
                 <ToolbarButton
                     onClick={() => editor.chain().focus().toggleBold().run()}
@@ -128,7 +128,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     <Strikethrough size={16} />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-white/10 mx-1" />
+                <div className="w-px h-5 bg-border mx-1" />
 
                 <ToolbarButton
                     onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -145,7 +145,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     <ListOrdered size={16} />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-white/10 mx-1" />
+                <div className="w-px h-5 bg-border mx-1" />
 
                 <ToolbarButton
                     onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -168,7 +168,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                     <Minus size={16} />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-white/10 mx-1" />
+                <div className="w-px h-5 bg-border mx-1" />
 
                 <ToolbarButton
                     onClick={setLink}
@@ -206,8 +206,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             <EditorContent editor={editor} />
 
             {/* Character count */}
-            <div className="px-4 py-2 border-t border-white/5 text-right">
-                <span className="text-xs text-white/30">
+            <div className="px-4 py-2 border-t border-border text-right bg-muted/5">
+                <span className="text-xs text-muted-foreground/60 font-bold">
                     {editor.storage.characterCount?.characters?.() ?? editor.getText().length} characters
                 </span>
             </div>
