@@ -1,0 +1,42 @@
+{
+  "posts": [
+    {
+      "id": "post-vb71s5rzp",
+      "title": "Persistent GIS",
+      "excerpt": "Persistent testing",
+      "content": "Test persistent content",
+      "author": "Dr. Persist",
+      "category": "Land Cover Change",
+      "date": "21/2/2026",
+      "postedAt": "2026-02-21T06:47:25.975Z",
+      "status": "published",
+      "imageUrl": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=500"
+    }
+  ],
+  "requests": [],
+  "comments": [],
+  "commentUsers": [],
+  "commentSanctions": [],
+  "botSettings": {
+    "autoModerationEnabled": true,
+    "violationTerms": [
+      "slur",
+      "hate speech",
+      "porn",
+      "xxx",
+      "nude",
+      "nsfw",
+      "sex video",
+      "racist"
+    ],
+    "severeTerms": [
+      "child porn",
+      "sexual assault",
+      "rape",
+      "kill yourself",
+      "terror attack"
+    ],
+    "violationMuteHours": 24,
+    "autoBanOnSevere": true
+  }
+}

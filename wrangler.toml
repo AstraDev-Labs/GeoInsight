@@ -1,0 +1,9 @@
+name = "rs-blog-gis"
+compatibility_date = "2024-03-24"
+pages_build_output_dir = ".next"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "geoinsight-db"
+database_id = "982fe54a-6a45-48e8-a84d-fee6418f9fe8"
+migrations_dir = "data"

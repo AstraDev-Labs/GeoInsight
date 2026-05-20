@@ -1,0 +1,24 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle for a "Premium" Button Feel -->
+  <circle cx="256" cy="256" r="256" fill="#000000" />
+  
+  <!-- Outer Orbiting Ring -->
+  <circle cx="256" cy="256" r="220" stroke="#006699" stroke-width="8" stroke-dasharray="40 20" />
+  
+  <!-- Main Globe Shell -->
+  <circle cx="256" cy="256" r="180" stroke="#06b6d4" stroke-width="15" />
+  
+  <!-- Latitude/Longitude Lines -->
+  <path d="M76 256H436" stroke="#006699" stroke-width="4" stroke-opacity="0.5" />
+  <path d="M256 76V436" stroke="#006699" stroke-width="4" stroke-opacity="0.5" />
+  
+  <!-- Crosshair/Scanner Target Focus -->
+  <rect x="206" y="206" width="100" height="100" rx="10" stroke="#06b6d4" stroke-width="12" />
+  <circle cx="256" cy="256" r="15" fill="#ffffff" />
+  
+  <!-- Corner Accents for Tech Look -->
+  <path d="M180 180V150H150" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+  <path d="M332 180V150H362" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+  <path d="M180 332V362H150" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+  <path d="M332 332V362H362" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+</svg>
