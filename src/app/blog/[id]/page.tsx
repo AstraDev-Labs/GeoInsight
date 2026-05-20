@@ -14,6 +14,7 @@ import { cache } from 'react';
 
 import { SITE_URL } from "@/lib/constants";
 import { slugify } from '@/lib/utils';
+import ImageSlider from '@/components/ImageSlider';
 type BlogPostWithLegacyImage = BlogPost & { imageUrl?: string };
 
 const getPublishedPostById = cache(async (idOrSlug: string): Promise<BlogPostWithLegacyImage | null> => {
@@ -116,25 +117,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
                     </Link>
                 </div>
 
-                {/* NASA Style Main Image at Top */}
+                {/* NASA Style Main Image at Top (Dynamic Premium Slider) */}
                 <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center font-sans">
-                    {primaryImage ? (
-                        <div className="mb-8 w-full">
-                            <a href={primaryImage} target="_blank" rel="noopener noreferrer" className="block outline-none select-none relative group cursor-pointer bg-[#f9f9f9]">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={primaryImage}
-                                    alt={post.title}
-                                    className="w-full h-auto object-cover max-h-[700px] transition-transform duration-300 rounded-none shadow-sm"
-                                />
-                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-end">
-                                    <span className="text-white text-sm flex items-center gap-2 font-bold tracking-widest uppercase">
-                                        <ExternalLink size={16} /> View Full-Res
-                                    </span>
-                                </div>
-                            </a>
-                        </div>
-                    ) : null}
+                    <ImageSlider 
+                        images={post.images && post.images.length > 0 ? post.images : (post.imageUrl ? [post.imageUrl] : [])} 
+                        title={post.title} 
+                    />
 
                     {/* Title and Metadata below image */}
                     <div className="text-left w-full border-b pb-10">
