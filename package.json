@@ -18,7 +18,7 @@
     "@aws-sdk/s3-request-presigner": "^3.1038.0",
     "@cloudflare/next-on-pages": "^1.13.0",
     "@fontsource/inter": "^5.2.8",
-    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@modelcontextprotocol/sdk": "^1.32.0",
     "@next/third-parties": "^16.2.4",
     "@tiptap/extension-link": "^3.20.0",
     "@tiptap/extension-placeholder": "^3.20.0",
